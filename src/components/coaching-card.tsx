@@ -1,3 +1,4 @@
+import { useState } from 'preact/hooks';
 import type { CoachingCard as CoachingCardType, DiscType } from '../engine/types.ts';
 import { DISC_LABELS } from '../engine/types.ts';
 
@@ -49,6 +50,8 @@ export function CoachingCardView({ card, hasAssessment }: CoachingCardProps) {
       <Section title="Expect this" content={card.theirReaction} />
       <Section title="If it goes sideways" content={card.ifGoesWrong} />
       <Section title="Body language" content={card.bodyLanguage} />
+
+      <ShareButton card={card} />
     </div>
   );
 }
@@ -70,6 +73,25 @@ function PhraseList({ title, items, variant }: { title: string; items: string[];
         {items.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
     </div>
+  );
+}
+
+function ShareButton({ card }: { card: CoachingCardType }) {
+  const [copied, setCopied] = useState(false);
+  const url = `${window.location.origin}/insight/${card.yourType.toLowerCase()}-to-${card.theirType.toLowerCase()}/${card.situation}`;
+
+  async function handleShare() {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* clipboard not available */ }
+  }
+
+  return (
+    <button class="share-btn" type="button" onClick={handleShare}>
+      {copied ? 'Link copied!' : 'Share this insight'}
+    </button>
   );
 }
 

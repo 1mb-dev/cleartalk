@@ -5,6 +5,7 @@ import { People } from './routes/people.tsx';
 import { PersonDetail } from './routes/person.tsx';
 import { Log } from './routes/log.tsx';
 import { Profile } from './routes/profile.tsx';
+import { Insight } from './routes/insight.tsx';
 
 export function App() {
   return (
@@ -17,6 +18,7 @@ export function App() {
         <Route path="/people/:id" component={PersonDetail} />
         <Route path="/log" component={Log} />
         <Route path="/profile" component={Profile} />
+        <Route path="/insight/:pair/:situation" component={Insight} />
         <Route>
           <div class="route-shell">
             <h1>Not found</h1>
