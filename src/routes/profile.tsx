@@ -187,6 +187,12 @@ export function Profile() {
           </button>
         </div>
       </div>
+
+      <p class="about-section">
+        ClearTalk helps you prepare for conversations with the people who matter.
+        Built on DISC behavioral science. No AI, no accounts, no tracking.
+        Your data never leaves your device.
+      </p>
     </div>
   );
 }

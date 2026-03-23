@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
-import { getContact, deleteContact, getJournalForContact } from '../db/queries.ts';
+import { getContact, deleteContact, updateContact, getJournalForContact } from '../db/queries.ts';
 import { SITUATION_LABELS } from '../engine/types.ts';
 import { DiscWheel } from '../components/disc-wheel.tsx';
 import { typeProfiles } from '../data/blind-spots.ts';
@@ -15,6 +15,8 @@ export function PersonDetail() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState('');
 
   useEffect(() => {
     if (id) loadPerson(id);
@@ -60,7 +62,36 @@ export function PersonDetail() {
         {'\u2190'} People
       </button>
 
-      <h1>{contact.name}</h1>
+      {editingName ? (
+        <form class="inline-edit" onSubmit={async (e) => {
+          e.preventDefault();
+          if (nameInput.trim() && id) {
+            await updateContact(id, { name: nameInput.trim() });
+            setContact(prev => prev ? { ...prev, name: nameInput.trim() } : prev);
+            setEditingName(false);
+          }
+        }}>
+          <input
+            type="text"
+            class="quicktag-name-input"
+            value={nameInput}
+            onInput={(e) => setNameInput((e.target as HTMLInputElement).value)}
+            autoFocus
+            maxLength={60}
+          />
+          <div class="inline-edit-actions">
+            <button class="btn-primary btn-sm" type="submit" disabled={!nameInput.trim()}>Save</button>
+            <button class="btn-secondary btn-sm" type="button" onClick={() => setEditingName(false)}>Cancel</button>
+          </div>
+        </form>
+      ) : (
+        <div class="person-name-row">
+          <h1>{contact.name}</h1>
+          <button class="btn-ghost" type="button" onClick={() => { setNameInput(contact.name); setEditingName(true); }}>
+            Edit
+          </button>
+        </div>
+      )}
       <p class="coach-subtitle">
         {profile.label} type
         {contact.confidence !== 'high' && ` -- ${contact.confidence} confidence`}
