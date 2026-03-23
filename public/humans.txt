@@ -1,0 +1,8 @@
+/* TEAM */
+Builder: 1mb-dev
+Site: https://cleartalk.1mb.dev
+
+/* TECHNOLOGY */
+Framework: Preact
+Build: Vite
+Host: Cloudflare Pages
