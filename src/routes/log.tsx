@@ -13,9 +13,16 @@ export function Log() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Pre-fill from URL params (coach-to-log bridge)
+  const urlParams = new URLSearchParams(window.location.search);
+  const prefillContact = urlParams.get('contact') ?? '';
+  const prefillSituation = urlParams.get('situation') ?? '';
+
   // Form state
-  const [contactId, setContactId] = useState('');
-  const [situation, setSituation] = useState<SituationType | ''>('');
+  const [contactId, setContactId] = useState(prefillContact);
+  const [situation, setSituation] = useState<SituationType | ''>(
+    prefillSituation in SITUATION_LABELS ? prefillSituation as SituationType : '',
+  );
   const [outcome, setOutcome] = useState<1 | 2 | 3 | 4 | 5 | null>(null);
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);

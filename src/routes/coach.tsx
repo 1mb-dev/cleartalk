@@ -104,6 +104,17 @@ export function Coach() {
         </button>
         <h1>{SITUATION_LABELS[params.situation]}</h1>
         <CoachingCardView card={card} hasAssessment={!!user?.discProfile} />
+
+        <div class="coach-log-bridge">
+          <p class="coach-log-prompt">After the conversation:</p>
+          <button
+            class="btn-secondary"
+            type="button"
+            onClick={() => navigate(() => setLocation(`/log?contact=${params.contactId}&situation=${params.situation}`))}
+          >
+            Log how it went
+          </button>
+        </div>
       </div>
     );
   }
