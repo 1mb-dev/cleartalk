@@ -853,6 +853,105 @@
   color: var(--color-text-muted);
 }
 
+/* Insights */
+.insights-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.insights-overview {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.insight-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.insight-number {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.insight-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.insights-by-type {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.insight-type-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.insight-type-name {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  min-width: 70px;
+}
+
+.insight-type-avg {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  min-width: 24px;
+}
+
+.insight-type-count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  flex: 1;
+}
+
+.insight-trend {
+  font-size: var(--font-size-base);
+  flex-shrink: 0;
+}
+
+.trend-improving { color: var(--color-outcome-5); }
+.trend-stable { color: var(--color-text-subtle); }
+.trend-declining { color: var(--color-outcome-1); }
+
+.insights-tips {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.insights-tips h4 {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.insights-tips ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.insights-tips li {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-body);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-accent-subtle);
+  border-radius: var(--radius);
+}
+
 .profile-settings {
   display: flex;
   flex-direction: column;

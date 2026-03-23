@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'preact/hooks';
 import { Assessment } from '../components/assessment.tsx';
 import { DiscWheel } from '../components/disc-wheel.tsx';
-import { getOrCreateUser, getJournalCount } from '../db/queries.ts';
+import { getOrCreateUser, getJournalEntries, getContacts } from '../db/queries.ts';
 import { typeProfiles } from '../data/blind-spots.ts';
+import { calculateInsights } from '../engine/insights.ts';
 import { exportData, downloadJson } from '../lib/storage.ts';
-import type { User, DiscProfile } from '../engine/types.ts';
+import { DISC_LABELS } from '../engine/types.ts';
+import type { User, DiscProfile, JournalEntry } from '../engine/types.ts';
+import type { InsightsSummary } from '../engine/insights.ts';
 
 export function Profile() {
   const [user, setUser] = useState<User | null>(null);
-  const [journalCount, setJournalCount] = useState(0);
+  const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [insights, setInsights] = useState<InsightsSummary | null>(null);
   const [showAssessment, setShowAssessment] = useState(false);
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState<'auto' | 'light' | 'dark'>(() => {
@@ -23,9 +27,14 @@ export function Profile() {
 
   async function loadProfile() {
     setLoading(true);
-    const [u, count] = await Promise.all([getOrCreateUser(), getJournalCount()]);
+    const [u, e, c] = await Promise.all([
+      getOrCreateUser(),
+      getJournalEntries(200),
+      getContacts(),
+    ]);
     setUser(u);
-    setJournalCount(count);
+    setEntries(e);
+    setInsights(calculateInsights(e, c));
     setLoading(false);
   }
 
@@ -110,17 +119,53 @@ export function Profile() {
         </div>
       )}
 
-      {journalCount > 0 && (
+      {/* Patterns */}
+      {entries.length > 0 && (
         <div class="patterns-section">
           <h2>Your patterns</h2>
-          {journalCount < 5 ? (
-            <p class="patterns-empty">
-              Patterns will appear here as you log more conversations.
-              You have {journalCount} of 5 needed.
-            </p>
+
+          {insights ? (
+            <div class="insights-content">
+              <div class="insights-overview">
+                <div class="insight-stat">
+                  <span class="insight-number">{insights.overallAverage}</span>
+                  <span class="insight-label">average outcome</span>
+                </div>
+                <div class="insight-stat">
+                  <span class="insight-number">{insights.totalEntries}</span>
+                  <span class="insight-label">conversations logged</span>
+                </div>
+              </div>
+
+              {insights.byType.length > 0 && (
+                <div class="insights-by-type">
+                  {insights.byType.map(stat => (
+                    <div key={stat.theirType} class="insight-type-row">
+                      <span class={`type-dot disc-${stat.theirType.toLowerCase()}`} aria-hidden="true" />
+                      <span class="insight-type-name">{DISC_LABELS[stat.theirType]}</span>
+                      <span class="insight-type-avg">{stat.average}</span>
+                      <span class="insight-type-count">{stat.count} logged</span>
+                      <span class={`insight-trend trend-${stat.trend}`}>
+                        {stat.trend === 'improving' ? '\u2191' : stat.trend === 'declining' ? '\u2193' : '\u2192'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {insights.tips.length > 0 && (
+                <div class="insights-tips">
+                  <h4>Growth</h4>
+                  <ul>
+                    {insights.tips.map((tip, i) => <li key={i}>{tip}</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
           ) : (
             <p class="patterns-empty">
-              You have {journalCount} logged conversations. Adaptation insights are coming soon.
+              Patterns will appear here as you log more conversations.
+              You have {entries.length} of 5 needed.
             </p>
           )}
         </div>
