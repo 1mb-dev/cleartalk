@@ -1,4 +1,5 @@
 import { render } from 'preact';
+import { ErrorBoundary } from './components/error-boundary.tsx';
 import { App } from './app.tsx';
 import './styles/tokens.css';
 import './styles/base.css';
@@ -13,4 +14,9 @@ try {
   }
 } catch { /* private browsing */ }
 
-render(<App />, document.getElementById('app')!);
+render(
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>,
+  document.getElementById('app')!,
+);

@@ -435,6 +435,22 @@
   border-radius: var(--radius);
 }
 
+/* Coach-to-log bridge */
+.coach-log-bridge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) 0 var(--space-2);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.coach-log-prompt {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
 /* Back link */
 .back-link {
   display: inline-flex;
@@ -653,6 +669,49 @@
   min-height: 32px;
   padding: var(--space-1) var(--space-3);
   font-size: var(--font-size-sm);
+}
+
+/* Person edit */
+.person-name-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.btn-ghost {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  min-height: 32px;
+}
+
+.btn-ghost:hover {
+  color: var(--color-accent);
+}
+
+.inline-edit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.inline-edit-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* About */
+.about-section {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-body);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.about-section a {
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Person detail */
@@ -1074,6 +1133,42 @@
 .insight-cta-text {
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
+}
+
+/* Error boundary */
+.error-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-12) var(--space-4);
+  text-align: center;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.error-details {
+  width: 100%;
+  text-align: left;
+}
+
+.error-details summary {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.error-details pre {
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-mono);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* View Transitions */
