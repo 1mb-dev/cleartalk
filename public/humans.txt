@@ -1,8 +1,11 @@
 /* TEAM */
-Builder: 1mb-dev
+Built by one person who reads about communication styles
+and wanted a tool that actually helps in real conversations.
+
 Site: https://cleartalk.1mb.dev
+Org: 1mb-dev -- small libraries, sharp tools.
 
 /* TECHNOLOGY */
-Framework: Preact
-Build: Vite
-Host: Cloudflare Pages
+Preact, Vite, Dexie.js
+Hosted on Cloudflare Pages
+No tracking. No accounts. Your data stays on your device.
