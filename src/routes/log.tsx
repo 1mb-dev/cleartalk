@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'preact/hooks';
+import { useLocation } from 'wouter';
 import { OutcomeInput } from '../components/outcome-input.tsx';
 import { getContacts, addJournalEntry, getJournalEntries } from '../db/queries.ts';
 import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
 import type { Contact, JournalEntry, SituationType } from '../engine/types.ts';
+import { formatRelativeDate } from '../lib/format.ts';
+import { navigate } from '../lib/transitions.ts';
 
 export function Log() {
+  const [, setLocation] = useLocation();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +74,9 @@ export function Log() {
             Small observations add up -- you'll see your own patterns
             within a week.
           </p>
-          <p class="welcome-hint">Add someone in the Coach or People tab first.</p>
+          <button class="btn-secondary" type="button" onClick={() => navigate(() => setLocation('/'))}>
+            Add someone to get started
+          </button>
         </div>
       </div>
     );
@@ -155,7 +161,7 @@ export function Log() {
                     <span class="journal-situation">{SITUATION_LABELS[e.situationType]}</span>
                     {e.note && <span class="journal-note">{e.note}</span>}
                   </div>
-                  <span class="journal-date">{formatDate(e.loggedAt)}</span>
+                  <span class="journal-date">{formatRelativeDate(e.loggedAt)}</span>
                 </div>
               );
             })}
@@ -166,13 +172,3 @@ export function Log() {
   );
 }
 
-function formatDate(ts: number): string {
-  const d = new Date(ts);
-  const now = new Date();
-  const diff = now.getTime() - d.getTime();
-  const days = Math.floor(diff / 86400000);
-  if (days === 0) return 'Today';
-  if (days === 1) return 'Yesterday';
-  if (days < 7) return `${days}d ago`;
-  return d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
-}

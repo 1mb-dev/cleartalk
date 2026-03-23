@@ -110,18 +110,21 @@ export function Profile() {
         </div>
       )}
 
-      {/* Patterns placeholder (Phase 4) */}
-      <div class="patterns-section">
-        <h2>Your patterns</h2>
-        {journalCount < 5 ? (
-          <p class="patterns-empty">
-            Log a few more conversations to see patterns emerge.
-            You have {journalCount} of 5 needed.
-          </p>
-        ) : (
-          <p class="patterns-empty">Insights coming in Phase 4.</p>
-        )}
-      </div>
+      {journalCount > 0 && (
+        <div class="patterns-section">
+          <h2>Your patterns</h2>
+          {journalCount < 5 ? (
+            <p class="patterns-empty">
+              Patterns will appear here as you log more conversations.
+              You have {journalCount} of 5 needed.
+            </p>
+          ) : (
+            <p class="patterns-empty">
+              You have {journalCount} logged conversations. Adaptation insights are coming soon.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Settings */}
       <div class="profile-settings">

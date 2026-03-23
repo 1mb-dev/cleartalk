@@ -8,6 +8,10 @@ import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
 import type { Contact, CoachingCard, SituationType, User } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
 
+function isValidSituation(s: string | undefined): s is SituationType {
+  return !!s && s in SITUATION_LABELS;
+}
+
 type CoachParams = { contactId?: string; situation?: string };
 
 export function Coach() {
@@ -37,12 +41,12 @@ export function Coach() {
       const contact = await getContact(params.contactId);
       setSelectedContact(contact ?? null);
 
-      if (contact && params.situation) {
+      if (contact && isValidSituation(params.situation)) {
         const yourType = u.discProfile?.primary ?? contact.discProfile.primary;
         const loaded = await getCoachingCard(
           yourType,
           contact.discProfile.primary,
-          params.situation as SituationType,
+          params.situation,
         );
         setCard(loaded);
       } else {
@@ -92,13 +96,13 @@ export function Coach() {
   }
 
   // Step 3: Show coaching card
-  if (selectedContact && card && params.situation) {
+  if (selectedContact && card && isValidSituation(params.situation)) {
     return (
       <div class="route-shell">
         <button class="back-link" type="button" onClick={goBack}>
           {'\u2190'} {selectedContact.name}
         </button>
-        <h1>{SITUATION_LABELS[params.situation as SituationType]}</h1>
+        <h1>{SITUATION_LABELS[params.situation]}</h1>
         <CoachingCardView card={card} hasAssessment={!!user?.discProfile} />
       </div>
     );

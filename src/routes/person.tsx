@@ -6,6 +6,7 @@ import { DiscWheel } from '../components/disc-wheel.tsx';
 import { typeProfiles } from '../data/blind-spots.ts';
 import type { Contact, JournalEntry, SituationType } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
+import { formatRelativeDate } from '../lib/format.ts';
 
 export function PersonDetail() {
   const { id } = useParams<{ id: string }>();
@@ -104,7 +105,7 @@ export function PersonDetail() {
                   <span class="journal-situation">{SITUATION_LABELS[e.situationType]}</span>
                   {e.note && <span class="journal-note">{e.note}</span>}
                 </div>
-                <span class="journal-date">{formatDate(e.loggedAt)}</span>
+                <span class="journal-date">{formatRelativeDate(e.loggedAt)}</span>
               </div>
             ))}
           </div>
@@ -114,7 +115,7 @@ export function PersonDetail() {
       <div class="danger-zone">
         {confirmDelete ? (
           <div class="confirm-delete">
-            <p>Remove {contact.name}? This also removes their interaction history.</p>
+            <p>Remove {contact.name}? Their profile and all your conversation notes will be gone.</p>
             <div class="confirm-delete-actions">
               <button class="btn-danger" type="button" onClick={handleDelete}>Remove</button>
               <button class="btn-secondary btn-sm" type="button" onClick={() => setConfirmDelete(false)}>Cancel</button>
@@ -130,13 +131,3 @@ export function PersonDetail() {
   );
 }
 
-function formatDate(ts: number): string {
-  const d = new Date(ts);
-  const now = new Date();
-  const diff = now.getTime() - d.getTime();
-  const days = Math.floor(diff / 86400000);
-  if (days === 0) return 'Today';
-  if (days === 1) return 'Yesterday';
-  if (days < 7) return `${days}d ago`;
-  return d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
-}

@@ -60,7 +60,10 @@ export async function updateContact(id: string, updates: Partial<Contact>): Prom
 }
 
 export async function deleteContact(id: string): Promise<void> {
-  await db.contacts.delete(id);
+  await db.transaction('rw', [db.contacts, db.journal], async () => {
+    await db.journal.where('[userId+contactId]').equals([DEFAULT_USER_ID, id]).delete();
+    await db.contacts.delete(id);
+  });
 }
 
 export async function addJournalEntry(entry: Omit<JournalEntry, 'id' | 'userId'>): Promise<string> {
