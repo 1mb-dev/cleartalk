@@ -19,6 +19,9 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
+# Dev notes
+todos/
+
 # Editors
 .vscode/*
 !.vscode/extensions.json
