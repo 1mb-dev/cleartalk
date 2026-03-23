@@ -29,18 +29,15 @@
 .tab-bar {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--max-width);
   display: flex;
-  justify-content: center;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
   padding-bottom: var(--safe-area-bottom);
   z-index: 50;
-}
-
-.tab-bar > * {
-  max-width: calc(var(--max-width) / 4);
 }
 
 .tab-item {
@@ -72,6 +69,67 @@
 .tab-label {
   font-size: var(--font-size-xs);
   font-weight: 500;
+}
+
+/* Welcome blocks (empty states) */
+.welcome-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-5);
+  padding: var(--space-10) var(--space-4) var(--space-8);
+}
+
+.welcome-text {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-body);
+  max-width: 320px;
+}
+
+.welcome-hint {
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-sm);
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  border-radius: var(--radius);
+  transition: background var(--transition-fast);
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.btn-secondary:hover {
+  background: var(--color-border-subtle);
+  border-color: var(--color-accent);
 }
 
 /* View Transitions */

@@ -34,7 +34,8 @@ export async function saveAssessment(assessment: Omit<Assessment, 'id'>): Promis
 }
 
 export async function getContacts(): Promise<Contact[]> {
-  return db.contacts.where('userId').equals(DEFAULT_USER_ID).sortBy('updatedAt');
+  const contacts = await db.contacts.where('userId').equals(DEFAULT_USER_ID).sortBy('updatedAt');
+  return contacts.reverse();
 }
 
 export async function getContact(id: string): Promise<Contact | undefined> {
@@ -78,11 +79,11 @@ export async function getJournalEntries(limit = 50): Promise<JournalEntry[]> {
 }
 
 export async function getJournalForContact(contactId: string): Promise<JournalEntry[]> {
-  return db.journal
+  const entries = await db.journal
     .where('[userId+contactId]')
     .equals([DEFAULT_USER_ID, contactId])
-    .reverse()
     .sortBy('loggedAt');
+  return entries.reverse();
 }
 
 export async function getJournalCount(): Promise<number> {
