@@ -5,8 +5,9 @@ import type { AssessmentQuestion } from '../engine/types.ts';
  * Each question pits two DISC dimensions against each other.
  * Questions describe observable behaviors in everyday situations.
  *
- * Pairings (4 questions each):
+ * Pairings (4 questions each, 6 pairings = 24 total):
  *   D vs I, D vs S, D vs C, I vs S, I vs C, S vs C
+ * Each dimension appears in 12 questions (3 pairings x 4 questions).
  */
 export const questions: AssessmentQuestion[] = [
   // --- D vs I ---
@@ -137,7 +138,7 @@ export const questions: AssessmentQuestion[] = [
   },
   {
     id: 'q24',
-    optionA: { text: 'I say yes to requests more often than I should', dimension: 'S', weight: 1 },
+    optionA: { text: 'I find it hard to turn down requests, even when my plate is full', dimension: 'S', weight: 1 },
     optionB: { text: 'I say no to requests unless I see a clear reason to say yes', dimension: 'C', weight: 1 },
   },
 ];

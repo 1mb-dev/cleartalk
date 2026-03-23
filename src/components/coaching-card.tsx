@@ -33,7 +33,7 @@ export function CoachingCardView({ card, hasAssessment }: CoachingCardProps) {
       ) : (
         <LockedSection
           title="Open with"
-          hint="Take the 3-min assessment to unlock personalized openers for your style"
+          hint="These openers are tailored to your style. A 3-minute assessment unlocks them."
         />
       )}
 
@@ -42,7 +42,7 @@ export function CoachingCardView({ card, hasAssessment }: CoachingCardProps) {
       ) : (
         <LockedSection
           title="Avoid"
-          hint="Assessment unlocks pitfalls specific to your communication style"
+          hint="Your specific pitfalls depend on how you communicate. The assessment reveals them."
         />
       )}
 

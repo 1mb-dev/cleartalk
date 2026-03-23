@@ -75,16 +75,18 @@ export function DiscWheel({ profile, size = 200 }: DiscWheelProps) {
               >
                 {DISC_LABELS[q.type]}
               </text>
-              <text
-                x={q.cx}
-                y={q.cy + 2}
-                text-anchor="middle"
-                font-size="7"
-                font-weight="700"
-                fill="var(--color-bg)"
-              >
-                {score}
-              </text>
+              {score >= 15 && (
+                <text
+                  x={q.cx}
+                  y={q.cy + 2}
+                  text-anchor="middle"
+                  font-size="7"
+                  font-weight="700"
+                  fill="var(--color-bg)"
+                >
+                  {score}
+                </text>
+              )}
             </g>
           );
         })}

@@ -12,24 +12,15 @@ async function loadSituation(situation: SituationType): Promise<CardMap> {
   const cached = cache.get(situation);
   if (cached) return cached;
 
-  let cards: CoachingCard[];
-  switch (situation) {
-    case 'feedback':
-      cards = (await import('../data/coaching-cards/feedback.ts')).default;
-      break;
-    case 'request':
-      cards = (await import('../data/coaching-cards/request.ts')).default;
-      break;
-    case 'conflict':
-      cards = (await import('../data/coaching-cards/conflict.ts')).default;
-      break;
-    case 'pitch':
-      cards = (await import('../data/coaching-cards/pitch.ts')).default;
-      break;
-    case 'difficult_news':
-      cards = (await import('../data/coaching-cards/difficult-news.ts')).default;
-      break;
-  }
+  const loaders: Record<SituationType, () => Promise<{ default: CoachingCard[] }>> = {
+    feedback: () => import('../data/coaching-cards/feedback.ts'),
+    request: () => import('../data/coaching-cards/request.ts'),
+    conflict: () => import('../data/coaching-cards/conflict.ts'),
+    pitch: () => import('../data/coaching-cards/pitch.ts'),
+    difficult_news: () => import('../data/coaching-cards/difficult-news.ts'),
+  };
+
+  const cards = (await loaders[situation]()).default;
 
   const map: CardMap = {};
   for (const card of cards) {
