@@ -1046,9 +1046,12 @@
   gap: var(--space-3);
 }
 
-/* Insight page (public shareable) */
+/* Insight page (public shareable, no Layout wrapper) */
 .insight-page {
   gap: var(--space-6);
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--padding-page);
 }
 
 .insight-header {

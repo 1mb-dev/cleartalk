@@ -98,14 +98,16 @@ export function calculateInsights(
 function calculateTrend(outcomes: number[]): 'improving' | 'stable' | 'declining' {
   if (outcomes.length < 4) return 'stable';
 
-  // Compare last half to first half
-  const mid = Math.floor(outcomes.length / 2);
-  const firstHalf = outcomes.slice(0, mid);
-  const secondHalf = outcomes.slice(mid);
+  // Outcomes are newest-first (from getJournalEntries descending order).
+  // Reverse so older entries come first for chronological comparison.
+  const chronological = [...outcomes].reverse();
+  const mid = Math.floor(chronological.length / 2);
+  const olderHalf = chronological.slice(0, mid);
+  const newerHalf = chronological.slice(mid);
 
-  const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
-  const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
-  const delta = secondAvg - firstAvg;
+  const olderAvg = olderHalf.reduce((a, b) => a + b, 0) / olderHalf.length;
+  const newerAvg = newerHalf.reduce((a, b) => a + b, 0) / newerHalf.length;
+  const delta = newerAvg - olderAvg;
 
   if (delta > 0.4) return 'improving';
   if (delta < -0.4) return 'declining';

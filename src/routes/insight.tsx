@@ -68,7 +68,7 @@ export function Insight() {
   return (
     <div class="route-shell insight-page">
       <div class="insight-header">
-        <h1>Communication insight</h1>
+        <h1>How to {SITUATION_LABELS[card.situation].toLowerCase()} with a {DISC_LABELS[card.theirType]} communicator</h1>
         <div class="coaching-card-header">
           <span class={`type-badge disc-${card.yourType.toLowerCase()}`}>
             {DISC_LABELS[card.yourType]}
@@ -78,7 +78,6 @@ export function Insight() {
             {DISC_LABELS[card.theirType]}
           </span>
         </div>
-        <p class="coach-subtitle">{SITUATION_LABELS[card.situation]}</p>
       </div>
 
       <div class="coaching-section">

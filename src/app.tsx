@@ -9,23 +9,30 @@ import { Insight } from './routes/insight.tsx';
 
 export function App() {
   return (
-    <Layout>
-      <Switch>
-        <Route path="/" component={Coach} />
-        <Route path="/coach/:contactId" component={Coach} />
-        <Route path="/coach/:contactId/:situation" component={Coach} />
-        <Route path="/people" component={People} />
-        <Route path="/people/:id" component={PersonDetail} />
-        <Route path="/log" component={Log} />
-        <Route path="/profile" component={Profile} />
-        <Route path="/insight/:pair/:situation" component={Insight} />
-        <Route>
-          <div class="route-shell">
-            <h1>Not found</h1>
-            <p>This page doesn't exist.</p>
-          </div>
-        </Route>
-      </Switch>
-    </Layout>
+    <Switch>
+      {/* Public route -- no tab bar */}
+      <Route path="/insight/:pair/:situation" component={Insight} />
+
+      {/* App routes -- with tab bar */}
+      <Route>
+        <Layout>
+          <Switch>
+            <Route path="/" component={Coach} />
+            <Route path="/coach/:contactId" component={Coach} />
+            <Route path="/coach/:contactId/:situation" component={Coach} />
+            <Route path="/people" component={People} />
+            <Route path="/people/:id" component={PersonDetail} />
+            <Route path="/log" component={Log} />
+            <Route path="/profile" component={Profile} />
+            <Route>
+              <div class="route-shell">
+                <h1>Not found</h1>
+                <p>This page doesn't exist.</p>
+              </div>
+            </Route>
+          </Switch>
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
