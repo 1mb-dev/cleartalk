@@ -132,6 +132,204 @@
   border-color: var(--color-accent);
 }
 
+/* Assessment / Quick-tag wizard */
+.assessment-wizard,
+.quicktag-wizard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding-top: var(--space-2);
+}
+
+.assessment-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.assessment-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  font-size: var(--font-size-xl);
+  color: var(--color-text-muted);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.assessment-back:hover {
+  background: var(--color-accent-subtle);
+}
+
+.assessment-progress {
+  flex: 1;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.assessment-progress-bar {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 2px;
+  transition: width var(--transition-normal);
+}
+
+.assessment-count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.assessment-question {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+
+.assessment-prompt {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-muted);
+}
+
+.observation-question {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  line-height: var(--line-height-tight);
+}
+
+.assessment-option {
+  display: flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: var(--space-4);
+  text-align: left;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-body);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.assessment-option:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+.assessment-option.selected {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+/* Quick-tag name form */
+.quicktag-name-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6) 0;
+}
+
+.quicktag-name-input {
+  min-height: var(--touch-min);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: var(--font-size-lg);
+}
+
+.quicktag-name-input:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+/* Assessment result */
+.assessment-result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-4) 0;
+}
+
+.assessment-result h2 {
+  text-align: center;
+}
+
+.disc-wheel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.disc-wheel-summary {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.type-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.type-summary h3 {
+  color: var(--color-text);
+}
+
+.type-summary h4 {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: var(--space-2);
+}
+
+.type-summary ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.type-summary li {
+  padding-left: var(--space-4);
+  position: relative;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-body);
+  color: var(--color-text);
+}
+
+.type-summary li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border);
+}
+
+.type-default {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-body);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* View Transitions */
 ::view-transition-old(root) {
   animation: fade-out var(--transition-route) ease;
