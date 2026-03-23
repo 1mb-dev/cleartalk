@@ -1,0 +1,25 @@
+import { Route, Switch } from 'wouter';
+import { Layout } from './components/layout.tsx';
+import { Coach } from './routes/coach.tsx';
+import { People } from './routes/people.tsx';
+import { Log } from './routes/log.tsx';
+import { Profile } from './routes/profile.tsx';
+
+export function App() {
+  return (
+    <Layout>
+      <Switch>
+        <Route path="/" component={Coach} />
+        <Route path="/people" component={People} />
+        <Route path="/log" component={Log} />
+        <Route path="/profile" component={Profile} />
+        <Route>
+          <div class="route-shell">
+            <h1>Not found</h1>
+            <p>This page doesn't exist.</p>
+          </div>
+        </Route>
+      </Switch>
+    </Layout>
+  );
+}
