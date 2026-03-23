@@ -2,6 +2,7 @@ import { Route, Switch } from 'wouter';
 import { Layout } from './components/layout.tsx';
 import { Coach } from './routes/coach.tsx';
 import { People } from './routes/people.tsx';
+import { PersonDetail } from './routes/person.tsx';
 import { Log } from './routes/log.tsx';
 import { Profile } from './routes/profile.tsx';
 
@@ -10,7 +11,10 @@ export function App() {
     <Layout>
       <Switch>
         <Route path="/" component={Coach} />
+        <Route path="/coach/:contactId" component={Coach} />
+        <Route path="/coach/:contactId/:situation" component={Coach} />
         <Route path="/people" component={People} />
+        <Route path="/people/:id" component={PersonDetail} />
         <Route path="/log" component={Log} />
         <Route path="/profile" component={Profile} />
         <Route>

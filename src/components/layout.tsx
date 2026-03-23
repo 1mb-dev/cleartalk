@@ -16,8 +16,13 @@ const tabs = [
 export function Layout({ children }: LayoutProps) {
   const [location, setLocation] = useLocation();
 
+  function isActive(path: string): boolean {
+    if (path === '/') return location === '/' || location.startsWith('/coach');
+    return location.startsWith(path);
+  }
+
   function handleTabClick(path: string) {
-    if (location === path) return;
+    if (isActive(path) && location === path) return;
     navigate(() => setLocation(path));
   }
 
@@ -47,7 +52,7 @@ export function Layout({ children }: LayoutProps) {
       </main>
       <nav class="tab-bar" role="tablist" aria-label="Navigation">
         {tabs.map((tab, i) => {
-          const active = location === tab.path;
+          const active = isActive(tab.path);
           return (
             <button
               key={tab.path}
