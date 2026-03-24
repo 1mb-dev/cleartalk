@@ -34,6 +34,24 @@ function iconSvg(size) {
 </svg>`;
 }
 
+// ---- Maskable Icon: Same motif, inset to 80% safe zone ----
+function maskableIconSvg(size) {
+  const s = size;
+  const pad = s * 0.1; // 10% padding on each side = 80% safe zone
+  const inner = s - pad * 2;
+  const r = inner * 0.15;
+  const gap = inner * 0.10;
+  const cx = s / 2, cy = s / 2;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">
+  <rect width="${s}" height="${s}" fill="${BG}"/>
+  <circle cx="${cx - gap}" cy="${cy - gap}" r="${r}" fill="${D}" opacity="0.7"/>
+  <circle cx="${cx + gap}" cy="${cy - gap}" r="${r}" fill="${I}" opacity="0.7"/>
+  <circle cx="${cx + gap}" cy="${cy + gap}" r="${r}" fill="${S}" opacity="0.7"/>
+  <circle cx="${cx - gap}" cy="${cy + gap}" r="${r}" fill="${C}" opacity="0.7"/>
+</svg>`;
+}
+
 // ---- OG Image: Magazine layout (motif left, text right) ----
 function ogSvg() {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
@@ -69,6 +87,10 @@ async function main() {
   await sharp(Buffer.from(iconSvg(512))).png().toFile(`${OUT}/icon-512.png`);
   await sharp(Buffer.from(iconSvg(192))).png().toFile(`${OUT}/icon-192.png`);
   console.log('  icon-512.png, icon-192.png');
+
+  // Maskable icon (safe zone padded for Android adaptive icons)
+  await sharp(Buffer.from(maskableIconSvg(512))).png().toFile(`${OUT}/icon-maskable-512.png`);
+  console.log('  icon-maskable-512.png');
 
   // Apple touch icon (180x180 -- iOS adds its own rounded corners)
   await sharp(Buffer.from(iconSvg(180))).png().toFile(`${OUT}/apple-touch-icon.png`);
