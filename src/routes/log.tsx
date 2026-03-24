@@ -78,15 +78,18 @@ export function Log() {
   const canSubmit = contactId && situation && outcome && !saving;
 
   if (loading) {
-    return <div class="route-shell"><div class="page-header"><h1>Log</h1></div><p class="loading-text" aria-live="polite">Loading...</p></div>;
+    return <div class="route-page"><div class="page-header"><h1>Log</h1></div><p class="loading-text" aria-live="polite">Loading...</p></div>;
   }
 
   if (error && contacts.length === 0) {
     return (
-      <div class="route-shell centered">
-        <div class="welcome-block">
-          <p class="welcome-text">{error}</p>
-          <button class="btn-primary" type="button" onClick={() => loadData()}>Try again</button>
+      <div class="route-page">
+        <div class="page-header"><h1>Log</h1></div>
+        <div class="route-page-body">
+          <div class="welcome-block">
+            <p class="welcome-text">{error}</p>
+            <button class="btn-primary" type="button" onClick={() => loadData()}>Try again</button>
+          </div>
         </div>
       </div>
     );
@@ -94,8 +97,9 @@ export function Log() {
 
   if (contacts.length === 0) {
     return (
-      <div class="route-shell centered">
+      <div class="route-page">
         <div class="page-header"><h1>Log</h1></div>
+        <div class="route-page-body">
         <div class="welcome-block">
           <p class="welcome-text">
             After a conversation, take ten seconds to note how it went.
@@ -117,12 +121,13 @@ export function Log() {
           </div>
           <p class="preview-caption">Each entry tracks who, what situation, and how it went</p>
         </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div class="route-shell">
+    <div class="route-page">
       <div class="page-header"><h1>Log</h1></div>
 
       <form class="log-form" onSubmit={handleSubmit}>

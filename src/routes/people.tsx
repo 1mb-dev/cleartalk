@@ -45,15 +45,18 @@ export function People() {
   }
 
   if (loading) {
-    return <div class="route-shell"><div class="page-header"><h1>People</h1></div><p class="loading-text" aria-live="polite">Loading...</p></div>;
+    return <div class="route-page"><div class="page-header"><h1>People</h1></div><p class="loading-text" aria-live="polite">Loading...</p></div>;
   }
 
   if (error) {
     return (
-      <div class="route-shell centered">
-        <div class="welcome-block">
-          <p class="welcome-text">Something went wrong loading your contacts. Your data is safe - try again.</p>
-          <button class="btn-primary" type="button" onClick={() => loadContacts()}>Try again</button>
+      <div class="route-page">
+        <div class="page-header"><h1>People</h1></div>
+        <div class="route-page-body">
+          <div class="welcome-block">
+            <p class="welcome-text">Something went wrong loading your contacts. Your data is safe - try again.</p>
+            <button class="btn-primary" type="button" onClick={() => loadContacts()}>Try again</button>
+          </div>
         </div>
       </div>
     );
@@ -61,8 +64,9 @@ export function People() {
 
   if (contacts.length === 0) {
     return (
-      <div class="route-shell centered">
+      <div class="route-page">
         <div class="page-header"><h1>People</h1></div>
+        <div class="route-page-body">
         <div class="welcome-block">
           <p class="welcome-text">
             Start with one person - the one you wish
@@ -80,12 +84,13 @@ export function People() {
           </div>
           <p class="preview-caption">Each person shows their communication style so you know how to approach them</p>
         </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div class="route-shell">
+    <div class="route-page">
       <div class="people-header page-header">
         <h1>People</h1>
         <button class="btn-secondary btn-sm" type="button" onClick={() => setShowQuickTag(true)}>

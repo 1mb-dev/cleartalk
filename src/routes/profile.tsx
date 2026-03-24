@@ -85,15 +85,18 @@ export function Profile() {
   }
 
   if (loading) {
-    return <div class="route-shell"><div class="page-header"><h1>Your profile</h1></div><p class="loading-text" aria-live="polite">Loading...</p></div>;
+    return <div class="route-page"><div class="page-header"><h1>Profile</h1></div><p class="loading-text" aria-live="polite">Loading...</p></div>;
   }
 
   if (error) {
     return (
-      <div class="route-shell centered">
-        <div class="welcome-block">
-          <p class="welcome-text">Something went wrong loading your profile. Your data is safe - try again.</p>
-          <button class="btn-primary" type="button" onClick={() => loadProfile()}>Try again</button>
+      <div class="route-page">
+        <div class="page-header"><h1>Profile</h1></div>
+        <div class="route-page-body">
+          <div class="welcome-block">
+            <p class="welcome-text">Something went wrong loading your profile. Your data is safe - try again.</p>
+            <button class="btn-primary" type="button" onClick={() => loadProfile()}>Try again</button>
+          </div>
         </div>
       </div>
     );
@@ -103,8 +106,8 @@ export function Profile() {
   const primary = profile ? typeProfiles[profile.primary] : null;
 
   return (
-    <div class="route-shell">
-      <div class="page-header"><h1>Your profile</h1></div>
+    <div class="route-page">
+      <div class="page-header"><h1>Profile</h1></div>
 
       {profile && primary ? (
         <>
