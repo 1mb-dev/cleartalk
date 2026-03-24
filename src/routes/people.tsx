@@ -76,10 +76,10 @@ export function People() {
         <div class="preview-hint">
           <div class="preview-card" aria-hidden="true">
             <span class="type-dot disc-s" />
-            <span class="preview-name">e.g. Alex</span>
+            <span class="preview-name">Your manager</span>
             <span class="preview-type">Steady</span>
           </div>
-          <p class="preview-caption">Your contacts will appear here with their communication style</p>
+          <p class="preview-caption">Each person shows their communication style so you know how to approach them</p>
         </div>
       </div>
     );

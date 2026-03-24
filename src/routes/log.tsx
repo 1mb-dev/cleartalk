@@ -111,12 +111,12 @@ export function Log() {
           <div class="preview-entry" aria-hidden="true">
             <span class="outcome-dot outcome-4" />
             <div>
-              <span class="preview-name">Alex</span>
+              <span class="preview-name">Your teammate</span>
               <span class="preview-type">Give Feedback</span>
             </div>
             <span class="preview-date">Today</span>
           </div>
-          <p class="preview-caption">Your conversation history will build up here</p>
+          <p class="preview-caption">Each entry tracks who, what situation, and how it went</p>
         </div>
       </div>
     );
