@@ -49,6 +49,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  padding-bottom: var(--space-6);
 }
 
 .route-page-body {
@@ -161,7 +162,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-6) var(--space-4);
+  padding: var(--space-4) var(--space-4) 0;
 }
 
 .preview-card {
@@ -221,8 +222,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  padding: var(--space-4) var(--space-4) 0;
-  border-top: 1px solid var(--color-border);
+  padding: var(--space-5) var(--space-4) 0;
+  margin-top: var(--space-2);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .onboard-feature {
@@ -1280,6 +1282,11 @@
 }
 
 /* Profile */
+.retake-section {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-2);
+}
+
 .patterns-section {
   display: flex;
   flex-direction: column;
@@ -1407,6 +1414,11 @@
   gap: var(--space-4);
 }
 
+.setting-row-danger {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
 .setting-label {
   font-size: var(--font-size-sm);
 }
@@ -1493,6 +1505,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  padding-bottom: var(--space-2);
 }
 
 .insight-brand-name {

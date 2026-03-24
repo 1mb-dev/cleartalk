@@ -107,7 +107,7 @@ export function Insight() {
         <button class="btn-primary" type="button" onClick={() => navigate(() => setLocation('/'))}>
           Try ClearTalk - free, no sign-up
         </button>
-        <button class="btn-secondary btn-sm" type="button" onClick={() => navigate(() => setLocation('/'))}>
+        <button class="link-btn" type="button" onClick={() => navigate(() => setLocation('/'))}>
           Open in ClearTalk
         </button>
       </div>

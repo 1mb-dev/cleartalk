@@ -164,9 +164,11 @@ export function Profile() {
             </ul>
           </div>
 
-          <button class="btn-secondary" type="button" onClick={() => setShowAssessment(true)}>
-            Retake assessment
-          </button>
+          <div class="retake-section">
+            <button class="btn-secondary" type="button" onClick={() => setShowAssessment(true)}>
+              Retake assessment
+            </button>
+          </div>
         </>
       ) : (
         <div class="welcome-block">
@@ -278,7 +280,7 @@ export function Profile() {
         {importStatus && (
           <p class="setting-status" aria-live="polite">{importStatus}</p>
         )}
-        <div class="setting-row">
+        <div class="setting-row setting-row-danger">
           <div>
             <span class="setting-label">Clear all data</span>
             <p class="setting-hint">Permanently remove all contacts, entries, and assessments</p>
