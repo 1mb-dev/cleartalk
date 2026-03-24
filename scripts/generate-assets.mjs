@@ -71,13 +71,60 @@ function ogSvg() {
   <text x="520" y="295" font-family="Georgia, serif" font-size="72" font-weight="400" fill="${TEXT}">ClearTalk</text>
 
   <!-- Tagline -->
-  <text x="520" y="355" font-family="-apple-system, sans-serif" font-size="26" fill="${MUTED}">A tool that helps you talk to people better</text>
+  <text x="520" y="345" font-family="-apple-system, sans-serif" font-size="26" fill="${MUTED}">Know what to say before you say it.</text>
+  <text x="520" y="380" font-family="-apple-system, sans-serif" font-size="22" fill="${MUTED}">Coaching for the person and the moment.</text>
 
   <!-- Bottom accent bar -->
   <rect x="0" y="600" width="300" height="30" fill="${D}" opacity="0.5"/>
   <rect x="300" y="600" width="300" height="30" fill="${I}" opacity="0.5"/>
   <rect x="600" y="600" width="300" height="30" fill="${S}" opacity="0.5"/>
   <rect x="900" y="600" width="300" height="30" fill="${C}" opacity="0.5"/>
+</svg>`;
+}
+
+// ---- Per-pair OG images for insight routes (16 combinations) ----
+const DISC_LABELS = { D: 'Drive', I: 'Influence', S: 'Steady', C: 'Clarity' };
+const DISC_COLORS = { D, I, S, C };
+const TYPES = ['D', 'I', 'S', 'C'];
+
+function pairOgSvg(yourType, theirType) {
+  const yourColor = DISC_COLORS[yourType];
+  const theirColor = DISC_COLORS[theirType];
+  const yourLabel = DISC_LABELS[yourType];
+  const theirLabel = DISC_LABELS[theirType];
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="${BG}"/>
+
+  <!-- Your type circle -->
+  <circle cx="280" cy="280" r="90" fill="${yourColor}" opacity="0.15"/>
+  <circle cx="280" cy="280" r="40" fill="${yourColor}" opacity="0.85"/>
+
+  <!-- Their type circle -->
+  <circle cx="420" cy="340" r="90" fill="${theirColor}" opacity="0.15"/>
+  <circle cx="420" cy="340" r="40" fill="${theirColor}" opacity="0.85"/>
+
+  <!-- Connection line -->
+  <line x1="310" y1="296" x2="390" y2="324" stroke="${MUTED}" stroke-width="2" opacity="0.3"/>
+
+  <!-- Arrow label -->
+  <text x="350" y="260" font-family="-apple-system, sans-serif" font-size="18" fill="${MUTED}" text-anchor="middle">${yourLabel}</text>
+  <text x="350" y="410" font-family="-apple-system, sans-serif" font-size="18" fill="${MUTED}" text-anchor="middle">to ${theirLabel}</text>
+
+  <!-- Wordmark -->
+  <text x="560" y="280" font-family="Georgia, serif" font-size="64" font-weight="400" fill="${TEXT}">ClearTalk</text>
+
+  <!-- Tagline -->
+  <text x="560" y="330" font-family="-apple-system, sans-serif" font-size="24" fill="${MUTED}">Coaching for the person and the moment.</text>
+
+  <!-- Type pair badge -->
+  <rect x="560" y="360" width="12" height="36" rx="2" fill="${yourColor}"/>
+  <rect x="578" y="360" width="12" height="36" rx="2" fill="${theirColor}"/>
+  <text x="602" y="388" font-family="-apple-system, sans-serif" font-size="22" fill="${MUTED}">${yourLabel} communicating with ${theirLabel}</text>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="600" width="600" height="30" fill="${yourColor}" opacity="0.5"/>
+  <rect x="600" y="600" width="600" height="30" fill="${theirColor}" opacity="0.5"/>
 </svg>`;
 }
 
@@ -99,6 +146,18 @@ async function main() {
   // OG image (magazine layout)
   await sharp(Buffer.from(ogSvg())).png().toFile(`${OUT}/og-image.png`);
   console.log('  og-image.png');
+
+  // Per-pair OG images (16 combinations)
+  mkdirSync(`${OUT}/og`, { recursive: true });
+  for (const yours of TYPES) {
+    for (const theirs of TYPES) {
+      const pair = `${yours.toLowerCase()}-to-${theirs.toLowerCase()}`;
+      await sharp(Buffer.from(pairOgSvg(yours, theirs)))
+        .png()
+        .toFile(`${OUT}/og/${pair}.png`);
+    }
+  }
+  console.log('  og/*.png (16 pair images)');
 
   // Favicon PNG (32x32 for browsers that don't support SVG favicons)
   const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">

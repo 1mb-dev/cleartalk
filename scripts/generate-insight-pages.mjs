@@ -69,13 +69,13 @@ for (const yourType of TYPES) {
     <meta property="og:description" content="${description}" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="${url}" />
-    <meta property="og:image" content="${BASE_URL}/assets/og-image.png" />
+    <meta property="og:image" content="${BASE_URL}/assets/og/${pair}.png" />
     <meta property="og:site_name" content="ClearTalk" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${title}" />
     <meta name="twitter:description" content="${description}" />
-    <meta name="twitter:image" content="${BASE_URL}/assets/og-image.png" />
+    <meta name="twitter:image" content="${BASE_URL}/assets/og/${pair}.png" />
 
     <link rel="canonical" href="${url}" />
 

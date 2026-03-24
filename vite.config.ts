@@ -9,8 +9,34 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globIgnores: [
+          '**/assets/og/*.png',
+          '**/feedback-*.js',
+          '**/request-*.js',
+          '**/conflict-*.js',
+          '**/pitch-*.js',
+          '**/difficult-news-*.js',
+        ],
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//],
+        runtimeCaching: [
+          {
+            urlPattern: /\/(feedback|request|conflict|pitch|difficult-news)-[a-zA-Z0-9_-]+\.js$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'coaching-cards',
+              expiration: { maxEntries: 10, maxAgeSeconds: 30 * 24 * 60 * 60 },
+            },
+          },
+          {
+            urlPattern: /\/assets\/og\/.+\.png$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'og-images',
+              expiration: { maxEntries: 20, maxAgeSeconds: 90 * 24 * 60 * 60 },
+            },
+          },
+        ],
       },
       manifest: {
         name: 'ClearTalk',
