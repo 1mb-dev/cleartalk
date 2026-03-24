@@ -1,4 +1,4 @@
-.PHONY: dev build preview lint test check review clean install size audit
+.PHONY: dev build preview lint test check review clean install size audit e2e assets
 
 # Development
 dev:                ## Start dev server
@@ -29,6 +29,13 @@ audit:              ## Dependency audit (production only)
 
 size:               ## Show bundle sizes
 	npm run size
+
+# E2E & Ship Gate
+e2e:                ## Run Playwright e2e tests (builds first)
+	npm run e2e
+
+assets:             ## Regenerate image assets (icons, OG image)
+	npm run generate:assets
 
 # Build & Deploy
 build:              ## Production build

@@ -13,9 +13,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "npm run lint && npm run test && npm run build",
+    "e2e": "npm run build && npx playwright test",
+    "e2e:headed": "npm run build && npx playwright test --headed",
     "review": "npm run check && npm run audit:deps && npm run size",
     "audit:deps": "npm audit --omit=dev || true",
-    "size": "du -sh dist/ && echo '---' && ls -lhS dist/assets/"
+    "size": "du -sh dist/ && echo '---' && ls -lhS dist/assets/",
+    "generate:assets": "node scripts/generate-assets.mjs"
   },
   "dependencies": {
     "dexie": "^4.3.0",
@@ -23,6 +26,7 @@
     "wouter": "^3.9.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@preact/preset-vite": "^2.10.4",
     "@types/node": "^24.12.0",
     "sharp": "^0.34.5",
