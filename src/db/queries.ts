@@ -2,6 +2,7 @@ import Dexie from 'dexie';
 import { db } from './schema.ts';
 import type { User, Assessment, Contact, JournalEntry } from '../engine/types.ts';
 import { generateId } from '../lib/id.ts';
+import { sanitizeName, sanitizeNote } from '../lib/sanitize.ts';
 
 const DEFAULT_USER_ID = 'default';
 
@@ -47,6 +48,8 @@ export async function addContact(contact: Omit<Contact, 'id' | 'userId' | 'creat
   const now = Date.now();
   await db.contacts.add({
     ...contact,
+    name: sanitizeName(contact.name),
+    notes: sanitizeNote(contact.notes),
     id,
     userId: DEFAULT_USER_ID,
     createdAt: now,
@@ -56,7 +59,10 @@ export async function addContact(contact: Omit<Contact, 'id' | 'userId' | 'creat
 }
 
 export async function updateContact(id: string, updates: Partial<Contact>): Promise<void> {
-  await db.contacts.update(id, { ...updates, updatedAt: Date.now() });
+  const sanitized = { ...updates };
+  if (sanitized.name !== undefined) sanitized.name = sanitizeName(sanitized.name);
+  if (sanitized.notes !== undefined) sanitized.notes = sanitizeNote(sanitized.notes);
+  await db.contacts.update(id, { ...sanitized, updatedAt: Date.now() });
 }
 
 export async function deleteContact(id: string): Promise<void> {
@@ -68,7 +74,12 @@ export async function deleteContact(id: string): Promise<void> {
 
 export async function addJournalEntry(entry: Omit<JournalEntry, 'id' | 'userId'>): Promise<string> {
   const id = generateId();
-  await db.journal.add({ ...entry, id, userId: DEFAULT_USER_ID });
+  await db.journal.add({
+    ...entry,
+    note: sanitizeNote(entry.note),
+    id,
+    userId: DEFAULT_USER_ID,
+  });
   return id;
 }
 
@@ -81,12 +92,12 @@ export async function getJournalEntries(limit = 50): Promise<JournalEntry[]> {
     .toArray();
 }
 
-export async function getJournalForContact(contactId: string): Promise<JournalEntry[]> {
+export async function getJournalForContact(contactId: string, limit = 50): Promise<JournalEntry[]> {
   const entries = await db.journal
     .where('[userId+contactId]')
     .equals([DEFAULT_USER_ID, contactId])
     .sortBy('loggedAt');
-  return entries.reverse();
+  return entries.reverse().slice(0, limit);
 }
 
 export async function getJournalCount(): Promise<number> {

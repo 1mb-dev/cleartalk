@@ -407,7 +407,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 36px;
+  min-height: var(--touch-min);
   padding: var(--space-2) var(--space-4);
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
@@ -600,6 +600,7 @@
 }
 
 .situation-btn-sm {
+  min-height: var(--touch-min);
   padding: var(--space-2) var(--space-4);
   font-size: var(--font-size-sm);
   font-weight: 600;
@@ -666,8 +667,8 @@
 }
 
 .btn-sm {
-  min-height: 32px;
-  padding: var(--space-1) var(--space-3);
+  min-height: var(--touch-min);
+  padding: var(--space-2) var(--space-3);
   font-size: var(--font-size-sm);
 }
 
@@ -681,7 +682,7 @@
 .btn-ghost {
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
-  min-height: 32px;
+  min-height: var(--touch-min);
 }
 
 .btn-ghost:hover {
@@ -828,8 +829,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: var(--touch-min);
+  height: var(--touch-min);
   border-radius: 50%;
   font-weight: 700;
   font-size: var(--font-size-sm);
@@ -1049,9 +1050,15 @@
   font-size: var(--font-size-sm);
 }
 
+.setting-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-subtle);
+  margin-top: 2px;
+}
+
 .setting-toggle {
-  min-height: 32px;
-  padding: var(--space-1) var(--space-4);
+  min-height: var(--touch-min);
+  padding: var(--space-2) var(--space-4);
   font-size: var(--font-size-sm);
   font-weight: 600;
   background: var(--color-accent-subtle);

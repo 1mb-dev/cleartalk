@@ -83,8 +83,8 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
           </ul>
         </div>
 
-        <button class="btn-primary" type="button" onClick={handleSave} disabled={saving}>
-          {saving ? 'Saving...' : 'Save and continue'}
+        <button class="btn-primary" type="button" onClick={handleSave} disabled={saving} aria-busy={saving}>
+          <span aria-live="polite">{saving ? 'Saving...' : 'Save and continue'}</span>
         </button>
       </div>
     );

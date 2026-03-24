@@ -92,7 +92,7 @@ export function Coach() {
   }
 
   if (loading) {
-    return <div class="route-shell"><p class="loading-text">Loading...</p></div>;
+    return <div class="route-shell"><h1>Coach</h1><p class="loading-text">Loading...</p></div>;
   }
 
   // Step 3: Show coaching card

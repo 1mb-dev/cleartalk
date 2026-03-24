@@ -142,8 +142,8 @@ export function Log() {
           )}
         </div>
 
-        <button class="btn-primary" type="submit" disabled={!canSubmit}>
-          {saving ? 'Saving...' : saved ? 'Saved!' : 'Log it'}
+        <button class="btn-primary" type="submit" disabled={!canSubmit} aria-busy={saving}>
+          <span aria-live="polite">{saving ? 'Saving...' : saved ? 'Saved!' : 'Log it'}</span>
         </button>
       </form>
 

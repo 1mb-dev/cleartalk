@@ -77,20 +77,28 @@ function PhraseList({ title, items, variant }: { title: string; items: string[];
 }
 
 function ShareButton({ card }: { card: CoachingCardType }) {
-  const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
   const url = `${window.location.origin}/insight/${card.yourType.toLowerCase()}-to-${card.theirType.toLowerCase()}/${card.situation}`;
 
   async function handleShare() {
     try {
       await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch { /* clipboard not available */ }
+      setStatus('copied');
+      setTimeout(() => setStatus('idle'), 2000);
+    } catch {
+      setStatus('failed');
+      setTimeout(() => setStatus('idle'), 2000);
+    }
   }
 
+  const label =
+    status === 'copied' ? 'Link copied!' :
+    status === 'failed' ? 'Could not copy link' :
+    'Share this insight';
+
   return (
-    <button class="share-btn" type="button" onClick={handleShare}>
-      {copied ? 'Link copied!' : 'Share this insight'}
+    <button class="share-btn" type="button" onClick={handleShare} aria-live="polite">
+      {label}
     </button>
   );
 }

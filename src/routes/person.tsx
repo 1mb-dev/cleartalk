@@ -40,7 +40,7 @@ export function PersonDetail() {
   }
 
   if (loading) {
-    return <div class="route-shell"><p class="loading-text">Loading...</p></div>;
+    return <div class="route-shell"><h1>Person</h1><p class="loading-text">Loading...</p></div>;
   }
 
   if (!contact) {
@@ -94,7 +94,7 @@ export function PersonDetail() {
       )}
       <p class="coach-subtitle">
         {profile.label} type
-        {contact.confidence !== 'high' && ` -- ${contact.confidence} confidence`}
+        {contact.confidence !== 'high' && ` (${contact.confidence} confidence)`}
       </p>
 
       <DiscWheel profile={contact.discProfile} size={160} />

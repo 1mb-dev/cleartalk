@@ -181,7 +181,10 @@ export function Profile() {
           </button>
         </div>
         <div class="setting-row">
-          <span class="setting-label">Export your data</span>
+          <div>
+            <span class="setting-label">Export your data</span>
+            <p class="setting-hint">Includes contact names and conversation notes</p>
+          </div>
           <button class="btn-secondary btn-sm" type="button" onClick={handleExport}>
             Download JSON
           </button>
