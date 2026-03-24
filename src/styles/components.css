@@ -1329,3 +1329,83 @@
   transform: translateY(-4px);
   transition: opacity var(--transition-route), transform var(--transition-route);
 }
+
+/* ---- Responsive breakpoints ---- */
+
+/* Landscape phone / small tablet */
+@media (min-width: 600px) {
+  :root {
+    --max-width: 600px;
+    --padding-page: var(--space-6);
+  }
+
+  .contact-pick-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .coaching-card {
+    gap: var(--space-6);
+  }
+
+  .welcome-block {
+    padding: var(--space-12) var(--space-8) var(--space-12);
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  :root {
+    --max-width: 680px;
+    --padding-page: var(--space-8);
+  }
+
+  .situation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .insights-overview {
+    gap: var(--space-8);
+  }
+
+  .log-history .journal-list {
+    max-width: 560px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  :root {
+    --max-width: 720px;
+  }
+
+  .coaching-card-header {
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .coaching-section-body {
+    font-size: var(--font-size-lg);
+    line-height: 1.6;
+  }
+
+  .welcome-text {
+    font-size: var(--font-size-2xl);
+    max-width: 380px;
+  }
+}
+
+/* Landscape phone: tighten vertical spacing when height is short */
+@media (max-height: 500px) and (orientation: landscape) {
+  .welcome-block {
+    padding: var(--space-6) var(--space-6) var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .route-shell {
+    gap: var(--space-3);
+  }
+
+  .tab-bar {
+    padding-bottom: 0;
+  }
+}
