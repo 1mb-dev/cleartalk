@@ -6,11 +6,13 @@ interface DiscWheelProps {
   size?: number;
 }
 
-const QUADRANTS: { type: DiscType; cx: number; cy: number; labelX: number; labelY: number }[] = [
-  { type: 'D', cx: 30, cy: 30, labelX: 18, labelY: 22 },
-  { type: 'I', cx: 70, cy: 30, labelX: 72, labelY: 22 },
-  { type: 'S', cx: 70, cy: 70, labelX: 72, labelY: 82 },
-  { type: 'C', cx: 30, cy: 70, labelX: 18, labelY: 82 },
+// Wheel quadrants in center; labels on left (D, C) and right (I, S)
+// ViewBox: -45..165 wide to fit labels; 0..120 tall for circles
+const QUADRANTS: { type: DiscType; cx: number; cy: number; labelX: number; labelY: number; anchor: string }[] = [
+  { type: 'D', cx: 38, cy: 38, labelX: 6, labelY: 40, anchor: 'end' },
+  { type: 'I', cx: 82, cy: 38, labelX: 114, labelY: 40, anchor: 'start' },
+  { type: 'S', cx: 82, cy: 82, labelX: 114, labelY: 84, anchor: 'start' },
+  { type: 'C', cx: 38, cy: 82, labelX: 6, labelY: 84, anchor: 'end' },
 ];
 
 const COLOR_VARS: Record<DiscType, string> = {
@@ -18,6 +20,13 @@ const COLOR_VARS: Record<DiscType, string> = {
   I: 'var(--color-disc-i)',
   S: 'var(--color-disc-s)',
   C: 'var(--color-disc-c)',
+};
+
+const TEXT_VARS: Record<DiscType, string> = {
+  D: 'var(--color-disc-d-text)',
+  I: 'var(--color-disc-i-text)',
+  S: 'var(--color-disc-s-text)',
+  C: 'var(--color-disc-c-text)',
 };
 
 const SUBTLE_VARS: Record<DiscType, string> = {
@@ -34,19 +43,18 @@ function scoreForType(profile: DiscProfile, type: DiscType): number {
 
 /**
  * DISC wheel visualization.
- * Four quadrants with the user's scores shown as filled circles.
- * Larger circle = higher score for that dimension.
+ * Four quadrants with scores inside circles; type labels on left/right sides.
  */
-export function DiscWheel({ profile, size = 200 }: DiscWheelProps) {
+export function DiscWheel({ profile, size = 360 }: DiscWheelProps) {
   const summary = `${DISC_LABELS[profile.primary]} (${scoreForType(profile, profile.primary)}%), ` +
     `${DISC_LABELS[profile.secondary]} (${scoreForType(profile, profile.secondary)}%)`;
 
   return (
     <div class="disc-wheel-container">
       <svg
-        viewBox="0 0 100 100"
+        viewBox="-45 0 210 120"
         width={size}
-        height={size}
+        height={Math.round(size * 120 / 210)}
         role="img"
         aria-label={`Your communication style: primarily ${DISC_LABELS[profile.primary]}, secondarily ${DISC_LABELS[profile.secondary]}`}
       >
@@ -54,39 +62,41 @@ export function DiscWheel({ profile, size = 200 }: DiscWheelProps) {
         <desc>{summary}</desc>
 
         {/* Grid lines */}
-        <line x1="50" y1="8" x2="50" y2="92" stroke="var(--color-border)" stroke-width="0.5" />
-        <line x1="8" y1="50" x2="92" y2="50" stroke="var(--color-border)" stroke-width="0.5" />
+        <line x1="60" y1="10" x2="60" y2="110" stroke="var(--color-border)" stroke-width="0.4" />
+        <line x1="10" y1="60" x2="110" y2="60" stroke="var(--color-border)" stroke-width="0.4" />
 
-        {/* Quadrant backgrounds */}
         {QUADRANTS.map(q => {
           const score = scoreForType(profile, q.type);
-          const radius = 4 + (score / 100) * 18;
+          const radius = 5 + (score / 100) * 20;
+
           return (
             <g key={q.type}>
-              <circle cx={q.cx} cy={q.cy} r="22" fill={SUBTLE_VARS[q.type]} />
+              <circle cx={q.cx} cy={q.cy} r="25" fill={SUBTLE_VARS[q.type]} />
               <circle cx={q.cx} cy={q.cy} r={radius} fill={COLOR_VARS[q.type]} opacity="0.85" />
+              {/* Score number */}
+              <text
+                x={q.cx}
+                y={q.cy + 3.5}
+                text-anchor="middle"
+                font-size="10"
+                font-weight="700"
+                font-family="var(--font-ui)"
+                fill="var(--color-bg)"
+              >
+                {score}
+              </text>
+              {/* Type label on side */}
               <text
                 x={q.labelX}
                 y={q.labelY}
-                text-anchor={q.cx < 50 ? 'start' : 'end'}
-                font-size="5.5"
+                text-anchor={q.anchor}
+                font-size="8.5"
                 font-weight="600"
-                fill={COLOR_VARS[q.type]}
+                font-family="var(--font-ui)"
+                fill={TEXT_VARS[q.type]}
               >
                 {DISC_LABELS[q.type]}
               </text>
-              {score >= 15 && (
-                <text
-                  x={q.cx}
-                  y={q.cy + 2}
-                  text-anchor="middle"
-                  font-size="7"
-                  font-weight="700"
-                  fill="var(--color-bg)"
-                >
-                  {score}
-                </text>
-              )}
             </g>
           );
         })}

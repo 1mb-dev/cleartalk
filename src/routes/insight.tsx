@@ -5,6 +5,7 @@ import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
 import type { CoachingCard, SituationType } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
 import { parsePair } from '../lib/parse-pair.ts';
+import { Logo } from '../components/logo.tsx';
 
 type InsightParams = { pair: string; situation: string };
 
@@ -62,6 +63,11 @@ export function Insight() {
 
   return (
     <main id="main" class="route-shell insight-page">
+      <div class="insight-brand">
+        <Logo size={24} />
+        <span class="insight-brand-name">ClearTalk</span>
+      </div>
+
       <div class="insight-header">
         <h1>How to {SITUATION_LABELS[card.situation].toLowerCase()} with a {DISC_LABELS[card.theirType]} communicator</h1>
         <div class="coaching-card-header">
@@ -100,6 +106,9 @@ export function Insight() {
         </p>
         <button class="btn-primary" type="button" onClick={() => navigate(() => setLocation('/'))}>
           Try ClearTalk - free, no sign-up
+        </button>
+        <button class="btn-secondary btn-sm" type="button" onClick={() => navigate(() => setLocation('/'))}>
+          Open in ClearTalk
         </button>
       </div>
     </main>

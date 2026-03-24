@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { observations } from '../data/observations.ts';
 import { typeFromObservations } from '../engine/typing.ts';
 import { addContact } from '../db/queries.ts';
+import { DISC_LABELS } from '../engine/types.ts';
 import type { DiscProfile, Contact } from '../engine/types.ts';
 
 interface QuickTagProps {
@@ -23,6 +24,8 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
     if (name.trim()) setStep(0);
   }
 
+  const [pendingResult, setPendingResult] = useState<{ profile: DiscProfile; confidence: Contact['confidence'] } | null>(null);
+
   function selectAnswer(choice: 'a' | 'b') {
     const obs = observations[step];
     const updated = { ...answers, [obs.id]: choice };
@@ -31,7 +34,8 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
     if (step < total - 1) {
       setStep(step + 1);
     } else {
-      finalize(updated);
+      // Show confirmation instead of saving immediately
+      setPendingResult(typeFromObservations(updated));
     }
   }
 
@@ -83,6 +87,33 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
             Next
           </button>
         </form>
+      </div>
+    );
+  }
+
+  if (pendingResult && !saving && !saveError) {
+    return (
+      <div class="quicktag-wizard">
+        <div class="assessment-header">
+          <button class="assessment-back" type="button" onClick={() => { setPendingResult(null); setStep(total - 1); }} aria-label="Go back">
+            {'\u2190'}
+          </button>
+          <span class="assessment-prompt">Does this look right?</span>
+        </div>
+        <div class="quicktag-confirm">
+          <p class="quicktag-confirm-name">{name}</p>
+          <p class="quicktag-confirm-type">
+            Communicates like a <strong>{DISC_LABELS[pendingResult.profile.primary]}</strong> type
+          </p>
+          <div class="quicktag-confirm-actions">
+            <button class="btn-primary" type="button" onClick={() => finalize(answers)}>
+              Save
+            </button>
+            <button class="btn-secondary" type="button" onClick={() => { setPendingResult(null); setAnswers({}); setStep(0); }}>
+              Redo
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

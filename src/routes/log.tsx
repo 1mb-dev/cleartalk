@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
-import { useLocation } from 'wouter';
+import { useLocation, useSearch } from 'wouter';
 import { OutcomeInput } from '../components/outcome-input.tsx';
 import { getContacts, addJournalEntry, getJournalEntries } from '../db/queries.ts';
 import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
@@ -15,7 +15,8 @@ export function Log() {
   const [error, setError] = useState<string | null>(null);
 
   // Pre-fill from URL params (coach-to-log bridge)
-  const urlParams = new URLSearchParams(window.location.search);
+  const search = useSearch();
+  const urlParams = new URLSearchParams(search);
   const prefillContact = urlParams.get('contact') ?? '';
   const prefillSituation = urlParams.get('situation') ?? '';
 
@@ -186,12 +187,14 @@ export function Log() {
         </button>
       </form>
 
-      {entries.length > 0 && (
+      {entries.length > 0 && (() => {
+        const contactMap = new Map(contacts.map(c => [c.id, c]));
+        return (
         <div class="log-history">
           <h2>History</h2>
           <div class="journal-list">
             {entries.map(e => {
-              const contact = contacts.find(c => c.id === e.contactId);
+              const contact = contactMap.get(e.contactId);
               return (
                 <div key={e.id} class="journal-entry">
                   <span class={`outcome-dot outcome-${e.outcome}`} aria-hidden="true" />
@@ -213,7 +216,8 @@ export function Log() {
             })}
           </div>
         </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

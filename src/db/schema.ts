@@ -14,7 +14,7 @@ export class ClearTalkDB extends Dexie {
       users: 'id, createdAt',
       assessments: 'id, userId, takenAt',
       contacts: 'id, userId, name, updatedAt',
-      journal: 'id, userId, contactId, situationType, loggedAt, [userId+contactId], [userId+loggedAt]',
+      journal: 'id, userId, contactId, situationType, loggedAt, [userId+contactId], [userId+loggedAt], [userId+contactId+loggedAt]',
     });
   }
 }

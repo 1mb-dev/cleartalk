@@ -1,4 +1,4 @@
-import { Route, Switch } from 'wouter';
+import { Route, Switch, useLocation } from 'wouter';
 import { Layout } from './components/layout.tsx';
 import { Coach } from './routes/coach.tsx';
 import { People } from './routes/people.tsx';
@@ -6,6 +6,7 @@ import { PersonDetail } from './routes/person.tsx';
 import { Log } from './routes/log.tsx';
 import { Profile } from './routes/profile.tsx';
 import { Insight } from './routes/insight.tsx';
+import { navigate } from './lib/transitions.ts';
 
 export function App() {
   return (
@@ -25,14 +26,24 @@ export function App() {
             <Route path="/log" component={Log} />
             <Route path="/profile" component={Profile} />
             <Route>
-              <div class="route-shell">
-                <h1>Not found</h1>
-                <p>This page doesn't exist.</p>
-              </div>
+              <NotFound />
             </Route>
           </Switch>
         </Layout>
       </Route>
     </Switch>
+  );
+}
+
+function NotFound() {
+  const [, setLocation] = useLocation();
+  return (
+    <div class="route-shell">
+      <h1>Not found</h1>
+      <p>This page doesn't exist.</p>
+      <button class="btn-primary" type="button" onClick={() => navigate(() => setLocation('/'))}>
+        Go to Coach
+      </button>
+    </div>
   );
 }

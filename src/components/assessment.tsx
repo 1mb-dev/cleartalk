@@ -2,7 +2,7 @@ import { useState } from 'preact/hooks';
 import { questions } from '../data/questions.ts';
 import { scoreAssessment } from '../engine/assessment.ts';
 import { DiscWheel } from './disc-wheel.tsx';
-import { typeProfiles } from '../data/blind-spots.ts';
+import { typeProfiles } from '../data/type-profiles.ts';
 import { saveAssessment, updateUserProfile, getOrCreateUser } from '../db/queries.ts';
 import type { DiscProfile } from '../engine/types.ts';
 

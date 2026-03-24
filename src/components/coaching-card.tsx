@@ -82,10 +82,19 @@ function ShareButton({ card }: { card: CoachingCardType }) {
 
   async function handleShare() {
     try {
+      if (typeof navigator.share === 'function') {
+        await navigator.share({
+          title: `How to ${card.situation.replace('_', ' ')} with a ${DISC_LABELS[card.theirType]} communicator`,
+          url,
+        });
+        return;
+      }
       await navigator.clipboard.writeText(url);
       setStatus('copied');
       setTimeout(() => setStatus('idle'), 2000);
-    } catch {
+    } catch (e) {
+      // User cancelled native share -- not an error
+      if (e instanceof Error && e.name === 'AbortError') return;
       setStatus('failed');
       setTimeout(() => setStatus('idle'), 2000);
     }

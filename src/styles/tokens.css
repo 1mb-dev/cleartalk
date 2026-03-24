@@ -84,7 +84,7 @@
   --transition-route: 180ms ease-out;
 }
 
-/* Dark mode: system preference */
+/* Dark mode tokens -- shared by system preference and explicit toggle */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --color-bg: #121210;
@@ -113,7 +113,7 @@
   }
 }
 
-/* Dark mode: explicit toggle */
+/* Explicit toggle reuses same values (CSS has no mixin; duplication is intentional) */
 [data-theme="dark"] {
   --color-bg: #121210;
   --color-surface: #1c1b19;

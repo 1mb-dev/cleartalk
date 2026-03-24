@@ -15,11 +15,14 @@ export default defineConfig({
       manifest: {
         name: 'ClearTalk',
         short_name: 'ClearTalk',
-        description: 'A tool that helps you talk to people better',
+        description: 'Prepare for conversations with DISC communication style coaching',
+        id: '/',
+        scope: '/',
         start_url: '/',
         display: 'standalone',
         background_color: '#faf8f5',
         theme_color: '#2c2926',
+        categories: ['lifestyle', 'productivity'],
         icons: [
           { src: '/assets/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/assets/icon-512.png', sizes: '512x512', type: 'image/png' },

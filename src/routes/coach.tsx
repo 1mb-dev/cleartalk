@@ -8,6 +8,7 @@ import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
 import type { Contact, CoachingCard, SituationType, User } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
 import { Logo } from '../components/logo.tsx';
+import { canInstall, isInstalled, wasDismissed, triggerInstall, dismissPrompt, onInstallAvailable } from '../lib/install-prompt.ts';
 
 function isValidSituation(s: string | undefined): s is SituationType {
   return !!s && s in SITUATION_LABELS;
@@ -25,6 +26,13 @@ export function Coach() {
   const [showQuickTag, setShowQuickTag] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [installAvailable, setInstallAvailable] = useState(canInstall() && !isInstalled() && !wasDismissed());
+
+  useEffect(() => {
+    return onInstallAvailable((available) => {
+      setInstallAvailable(available && !isInstalled() && !wasDismissed());
+    });
+  }, []);
 
   useEffect(() => {
     loadState();
@@ -203,15 +211,23 @@ export function Coach() {
         </div>
         <div class="onboard-features">
           <div class="onboard-feature">
-            <span class="onboard-icon" aria-hidden="true">{'\u{1F4AC}'}</span>
+            <svg class="onboard-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
             <p>Coaching cards tailored to how they communicate</p>
           </div>
           <div class="onboard-feature">
-            <span class="onboard-icon" aria-hidden="true">{'\u{1F4A1}'}</span>
+            <svg class="onboard-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
             <p>Phrases to open with and pitfalls to avoid</p>
           </div>
           <div class="onboard-feature">
-            <span class="onboard-icon" aria-hidden="true">{'\u{1F4C8}'}</span>
+            <svg class="onboard-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
             <p>Track your patterns and see what works</p>
           </div>
         </div>
@@ -264,6 +280,23 @@ export function Coach() {
               Take the 3-minute assessment
             </button>
           </p>
+        </div>
+      )}
+
+      {installAvailable && (
+        <div class="install-banner">
+          <p>Install ClearTalk for quick access and offline use</p>
+          <div class="install-banner-actions">
+            <button class="btn-primary btn-sm" type="button" onClick={async () => {
+              const accepted = await triggerInstall();
+              if (!accepted) setInstallAvailable(false);
+            }}>
+              Install
+            </button>
+            <button class="btn-ghost btn-sm" type="button" onClick={() => { dismissPrompt(); setInstallAvailable(false); }}>
+              Not now
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -2,9 +2,10 @@ import { useState, useEffect } from 'preact/hooks';
 import { Assessment } from '../components/assessment.tsx';
 import { DiscWheel } from '../components/disc-wheel.tsx';
 import { getOrCreateUser, getJournalEntries, getContacts } from '../db/queries.ts';
-import { typeProfiles } from '../data/blind-spots.ts';
+import { typeProfiles } from '../data/type-profiles.ts';
 import { calculateInsights } from '../engine/insights.ts';
-import { exportData, downloadJson } from '../lib/storage.ts';
+import { exportData, downloadJson, importData, clearAllData } from '../lib/storage.ts';
+import { canInstall, isInstalled, triggerInstall, onInstallAvailable } from '../lib/install-prompt.ts';
 import { DISC_LABELS } from '../engine/types.ts';
 import type { User, DiscProfile, JournalEntry } from '../engine/types.ts';
 import type { InsightsSummary } from '../engine/insights.ts';
@@ -16,6 +17,9 @@ export function Profile() {
   const [showAssessment, setShowAssessment] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [importStatus, setImportStatus] = useState<string | null>(null);
+  const [confirmClear, setConfirmClear] = useState(false);
+  const [showInstall, setShowInstall] = useState(canInstall() && !isInstalled());
   const [theme, setTheme] = useState<'auto' | 'light' | 'dark'>(() => {
     try {
       return (localStorage.getItem('cleartalk-theme') as 'light' | 'dark') ?? 'auto';
@@ -25,6 +29,7 @@ export function Profile() {
   });
 
   useEffect(() => { loadProfile(); }, []);
+  useEffect(() => onInstallAvailable((a) => setShowInstall(a && !isInstalled())), []);
 
   async function loadProfile() {
     setLoading(true);
@@ -68,6 +73,39 @@ export function Profile() {
     try {
       const data = await exportData();
       downloadJson(data, `cleartalk-export-${new Date().toISOString().slice(0, 10)}.json`);
+    } catch {
+      setError(true);
+    }
+  }
+
+  function handleImport() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const result = await importData(text);
+        setImportStatus(`Imported ${result.contacts} contacts and ${result.entries} journal entries.`);
+        setTimeout(() => setImportStatus(null), 4000);
+        await loadProfile();
+      } catch {
+        setImportStatus('Could not import file. Make sure it is a ClearTalk export.');
+        setTimeout(() => setImportStatus(null), 4000);
+      }
+    };
+    input.click();
+  }
+
+  async function handleClearAll() {
+    try {
+      await clearAllData();
+      setConfirmClear(false);
+      setUser(null);
+      setEntries([]);
+      setInsights(null);
     } catch {
       setError(true);
     }
@@ -199,6 +237,20 @@ export function Profile() {
       {/* Settings */}
       <div class="profile-settings">
         <h2>Settings</h2>
+        {showInstall && (
+          <div class="setting-row">
+            <div>
+              <span class="setting-label">Install app</span>
+              <p class="setting-hint">Quick access from your home screen, works offline</p>
+            </div>
+            <button class="btn-primary btn-sm" type="button" onClick={async () => {
+              await triggerInstall();
+              setShowInstall(false);
+            }}>
+              Install
+            </button>
+          </div>
+        )}
         <div class="setting-row">
           <span class="setting-label">Appearance</span>
           <button class="setting-toggle" type="button" onClick={toggleTheme}>
@@ -213,6 +265,34 @@ export function Profile() {
           <button class="btn-secondary btn-sm" type="button" onClick={handleExport}>
             Download JSON
           </button>
+        </div>
+        <div class="setting-row">
+          <div>
+            <span class="setting-label">Import data</span>
+            <p class="setting-hint">Restore from a ClearTalk export file</p>
+          </div>
+          <button class="btn-secondary btn-sm" type="button" onClick={handleImport}>
+            Choose file
+          </button>
+        </div>
+        {importStatus && (
+          <p class="setting-status" aria-live="polite">{importStatus}</p>
+        )}
+        <div class="setting-row">
+          <div>
+            <span class="setting-label">Clear all data</span>
+            <p class="setting-hint">Permanently remove all contacts, entries, and assessments</p>
+          </div>
+          {confirmClear ? (
+            <div class="confirm-delete-actions">
+              <button class="btn-danger btn-sm" type="button" onClick={handleClearAll}>Confirm</button>
+              <button class="btn-secondary btn-sm" type="button" onClick={() => setConfirmClear(false)}>Cancel</button>
+            </div>
+          ) : (
+            <button class="btn-ghost-danger btn-sm" type="button" onClick={() => setConfirmClear(true)}>
+              Clear
+            </button>
+          )}
         </div>
       </div>
 
@@ -253,19 +333,30 @@ export function Profile() {
         </p>
         <div class="usp-grid">
           <div class="usp-item">
-            <span class="usp-icon" aria-hidden="true">{'\u{1F3AF}'}</span>
+            <svg class="usp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
             <p>80 coaching cards across 5 situations</p>
           </div>
           <div class="usp-item">
-            <span class="usp-icon" aria-hidden="true">{'\u{1F512}'}</span>
+            <svg class="usp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
             <p>Your data never leaves your device</p>
           </div>
           <div class="usp-item">
-            <span class="usp-icon" aria-hidden="true">{'\u{1F9E0}'}</span>
+            <svg class="usp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
             <p>Built on communication science, not AI</p>
           </div>
           <div class="usp-item">
-            <span class="usp-icon" aria-hidden="true">{'\u{26A1}'}</span>
+            <svg class="usp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
             <p>No accounts, no sign-up, works offline</p>
           </div>
         </div>

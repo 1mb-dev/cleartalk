@@ -4,7 +4,7 @@ import { getContact, deleteContact, updateContact, getJournalForContact } from '
 import { sanitizeName } from '../lib/sanitize.ts';
 import { SITUATION_LABELS } from '../engine/types.ts';
 import { DiscWheel } from '../components/disc-wheel.tsx';
-import { typeProfiles } from '../data/blind-spots.ts';
+import { typeProfiles } from '../data/type-profiles.ts';
 import type { Contact, JournalEntry, SituationType } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
 import { formatRelativeDate } from '../lib/format.ts';
@@ -178,10 +178,10 @@ export function PersonDetail() {
 
       <div class="danger-zone">
         {confirmDelete ? (
-          <div class="confirm-delete" role="alertdialog" aria-label="Confirm removal">
+          <div class="confirm-delete" role="region" aria-live="polite" aria-label="Confirm removal">
             <p>Remove {contact.name}? Their profile and all your conversation notes will be gone.</p>
             <div class="confirm-delete-actions">
-              <button class="btn-danger" type="button" onClick={handleDelete}>Remove</button>
+              <button class="btn-danger" type="button" onClick={handleDelete} autoFocus>Remove</button>
               <button class="btn-secondary btn-sm" type="button" onClick={() => setConfirmDelete(false)}>Cancel</button>
             </div>
           </div>

@@ -10,14 +10,16 @@ export async function getOrCreateUser(): Promise<User> {
   const existing = await db.users.get(DEFAULT_USER_ID);
   if (existing) return existing;
 
+  const now = Date.now();
   const user: User = {
     id: DEFAULT_USER_ID,
     displayName: '',
     discProfile: null,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
+    createdAt: now,
+    updatedAt: now,
   };
-  await db.users.add(user);
+  // put is idempotent -- safe if two tabs race on first visit
+  await db.users.put(user);
   return user;
 }
 
@@ -93,11 +95,15 @@ export async function getJournalEntries(limit = 50): Promise<JournalEntry[]> {
 }
 
 export async function getJournalForContact(contactId: string, limit = 50): Promise<JournalEntry[]> {
-  const entries = await db.journal
-    .where('[userId+contactId]')
-    .equals([DEFAULT_USER_ID, contactId])
-    .sortBy('loggedAt');
-  return entries.reverse().slice(0, limit);
+  return db.journal
+    .where('[userId+contactId+loggedAt]')
+    .between(
+      [DEFAULT_USER_ID, contactId, Dexie.minKey],
+      [DEFAULT_USER_ID, contactId, Dexie.maxKey],
+    )
+    .reverse()
+    .limit(limit)
+    .toArray();
 }
 
 export async function getJournalCount(): Promise<number> {
