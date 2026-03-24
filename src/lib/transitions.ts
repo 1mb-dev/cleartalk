@@ -23,12 +23,12 @@ export function navigate(callback: () => void): void {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         document.documentElement.classList.remove('route-transition');
+        restoreFocus();
       });
     });
-    restoreFocus();
     return;
   }
 
   const transition = (document as unknown as { startViewTransition: (cb: () => void) => { finished: Promise<void> } }).startViewTransition(callback);
-  transition.finished.then(restoreFocus);
+  transition.finished.then(restoreFocus).catch(restoreFocus);
 }

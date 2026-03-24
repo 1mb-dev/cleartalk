@@ -97,8 +97,8 @@ function ShareButton({ card }: { card: CoachingCardType }) {
     'Share this insight';
 
   return (
-    <button class="share-btn" type="button" onClick={handleShare} aria-live="polite">
-      {label}
+    <button class="share-btn" type="button" onClick={handleShare}>
+      <span aria-live="polite">{label}</span>
     </button>
   );
 }

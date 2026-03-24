@@ -8,7 +8,8 @@ export function sanitizeName(input: string): string {
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202F\uFEFF]/g, '')
     // Collapse multiple spaces into one
     .replace(/\s+/g, ' ')
-    .trim();
+    .trim()
+    .slice(0, 60);
 }
 
 /**
@@ -18,5 +19,6 @@ export function sanitizeName(input: string): string {
 export function sanitizeNote(input: string): string {
   return input
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202F\uFEFF]/g, '')
-    .trim();
+    .trim()
+    .slice(0, 280);
 }

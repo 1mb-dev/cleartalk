@@ -32,6 +32,11 @@ describe('sanitizeName', () => {
   it('handles empty string', () => {
     expect(sanitizeName('')).toBe('');
   });
+
+  it('enforces max length of 60 characters', () => {
+    const long = 'A'.repeat(100);
+    expect(sanitizeName(long)).toHaveLength(60);
+  });
 });
 
 describe('sanitizeNote', () => {
@@ -50,5 +55,14 @@ describe('sanitizeNote', () => {
 
   it('handles empty string', () => {
     expect(sanitizeNote('')).toBe('');
+  });
+
+  it('preserves tabs', () => {
+    expect(sanitizeNote('col1\tcol2')).toBe('col1\tcol2');
+  });
+
+  it('enforces max length of 280 characters', () => {
+    const long = 'A'.repeat(500);
+    expect(sanitizeNote(long)).toHaveLength(280);
   });
 });

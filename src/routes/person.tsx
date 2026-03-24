@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
 import { getContact, deleteContact, updateContact, getJournalForContact } from '../db/queries.ts';
+import { sanitizeName } from '../lib/sanitize.ts';
 import { SITUATION_LABELS } from '../engine/types.ts';
 import { DiscWheel } from '../components/disc-wheel.tsx';
 import { typeProfiles } from '../data/blind-spots.ts';
@@ -65,9 +66,10 @@ export function PersonDetail() {
       {editingName ? (
         <form class="inline-edit" onSubmit={async (e) => {
           e.preventDefault();
-          if (nameInput.trim() && id) {
-            await updateContact(id, { name: nameInput.trim() });
-            setContact(prev => prev ? { ...prev, name: nameInput.trim() } : prev);
+          const clean = sanitizeName(nameInput);
+          if (clean && id) {
+            await updateContact(id, { name: clean });
+            setContact(prev => prev ? { ...prev, name: clean } : prev);
             setEditingName(false);
           }
         }}>
