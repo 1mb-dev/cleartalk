@@ -1,17 +1,17 @@
-/* App layout */
+/* App layout: fixed shell, content scrolls */
 .app-layout {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
+  height: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
-  position: relative;
 }
 
 .app-content {
   flex: 1;
+  min-height: 0; /* allow flex child to shrink below content size */
   padding: var(--padding-page);
-  padding-bottom: calc(var(--nav-height) + var(--safe-area-bottom) + var(--space-4));
+  padding-bottom: var(--space-4);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -1386,6 +1386,8 @@
   max-width: var(--max-width);
   margin: 0 auto;
   padding: var(--padding-page);
+  height: 100%;
+  overflow-y: auto;
 }
 
 .insight-header {

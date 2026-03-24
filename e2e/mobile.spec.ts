@@ -119,4 +119,39 @@ test.describe('Mobile & Responsive', () => {
     expect(box!.y + box!.height).toBeGreaterThan(viewport!.height - 10);
     await context.close();
   });
+
+  test('page body does not scroll (only content area scrolls)', async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width: 1024, height: 768 } });
+    const page = await context.newPage();
+    await page.goto('/profile');
+    await page.waitForSelector('h1');
+
+    // The body/html should not be scrollable - only .app-content scrolls
+    const bodyScrollable = await page.evaluate(() => {
+      return document.documentElement.scrollHeight > document.documentElement.clientHeight;
+    });
+    expect(bodyScrollable, 'Body should not scroll - content should scroll inside .app-content').toBe(false);
+    await context.close();
+  });
+
+  test('tab bar visible after scrolling long content', async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width: 1024, height: 768 } });
+    const page = await context.newPage();
+    await page.goto('/profile');
+    await page.waitForSelector('.tab-bar');
+
+    // Scroll content area to bottom
+    await page.evaluate(() => {
+      const content = document.querySelector('.app-content');
+      if (content) content.scrollTop = content.scrollHeight;
+    });
+
+    // Tab bar should still be visible
+    const tabBar = page.locator('.tab-bar');
+    await expect(tabBar).toBeVisible();
+    const box = await tabBar.boundingBox();
+    const viewport = page.viewportSize();
+    expect(box!.y + box!.height, 'Tab bar should be at viewport bottom').toBeGreaterThan(viewport!.height - 10);
+    await context.close();
+  });
 });

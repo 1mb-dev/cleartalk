@@ -30,6 +30,11 @@
   padding: 0;
 }
 
+html, body, #app {
+  height: 100%;
+  overflow: hidden;
+}
+
 html {
   font-family: var(--font-ui);
   font-size: var(--font-size-base);
@@ -42,7 +47,6 @@ html {
 }
 
 body {
-  min-height: 100dvh;
   overscroll-behavior: none;
 }
 
