@@ -53,7 +53,7 @@ export function People() {
       <div class="route-shell">
         <h1>People</h1>
         <div class="welcome-block">
-          <p class="welcome-text">Could not load your contacts. Try refreshing the page.</p>
+          <p class="welcome-text">Something went wrong loading your contacts. Your data is safe -- try again.</p>
           <button class="btn-primary" type="button" onClick={() => loadContacts()}>Try again</button>
         </div>
       </div>

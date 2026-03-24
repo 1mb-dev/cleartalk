@@ -93,7 +93,7 @@ export function Profile() {
       <div class="route-shell">
         <h1>Your profile</h1>
         <div class="welcome-block">
-          <p class="welcome-text">Could not load your profile. Try refreshing the page.</p>
+          <p class="welcome-text">Something went wrong loading your profile. Your data is safe -- try again.</p>
           <button class="btn-primary" type="button" onClick={() => loadProfile()}>Try again</button>
         </div>
       </div>
@@ -216,8 +216,8 @@ export function Profile() {
 
       <p class="about-section">
         ClearTalk helps you prepare for conversations with the people who matter.
-        Built on DISC behavioral science. No AI, no accounts, no tracking.
-        Your data never leaves your device.
+        Built on communication science. No AI, no accounts, no tracking.
+        Your data stays on your device -- always.
       </p>
     </div>
   );

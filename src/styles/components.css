@@ -224,6 +224,10 @@
   background: var(--color-accent-subtle);
 }
 
+.assessment-option:active {
+  transform: scale(0.98);
+}
+
 .assessment-option.selected {
   border-color: var(--color-accent);
   background: var(--color-accent-subtle);
@@ -844,15 +848,15 @@
 }
 
 .outcome-option.selected .outcome-circle {
-  color: #fff;
   border-color: transparent;
+  transform: scale(1.08);
 }
 
-.outcome-option.selected .outcome-circle.outcome-1 { background: var(--color-outcome-1); }
-.outcome-option.selected .outcome-circle.outcome-2 { background: var(--color-outcome-2); }
-.outcome-option.selected .outcome-circle.outcome-3 { background: var(--color-outcome-3); }
-.outcome-option.selected .outcome-circle.outcome-4 { background: var(--color-outcome-4); }
-.outcome-option.selected .outcome-circle.outcome-5 { background: var(--color-outcome-5); }
+.outcome-option.selected .outcome-circle.outcome-1 { background: var(--color-outcome-1); color: #fff; }
+.outcome-option.selected .outcome-circle.outcome-2 { background: var(--color-outcome-2); color: #fff; }
+.outcome-option.selected .outcome-circle.outcome-3 { background: var(--color-outcome-3); color: #1a1a1a; }
+.outcome-option.selected .outcome-circle.outcome-4 { background: var(--color-outcome-4); color: #fff; }
+.outcome-option.selected .outcome-circle.outcome-5 { background: var(--color-outcome-5); color: #fff; }
 
 .outcome-label {
   font-size: var(--font-size-xs);
@@ -912,6 +916,7 @@
 .log-textarea {
   resize: vertical;
   min-height: 80px;
+  padding-bottom: var(--space-6);
 }
 
 .log-char-count {

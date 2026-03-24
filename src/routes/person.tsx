@@ -63,7 +63,7 @@ export function PersonDetail() {
           {'\u2190'} People
         </button>
         <div class="welcome-block">
-          <p class="welcome-text">Something went wrong. Try refreshing the page.</p>
+          <p class="welcome-text">Something went wrong. Your data is safe -- try again.</p>
           <button class="btn-primary" type="button" onClick={() => id && loadPerson(id)}>Try again</button>
         </div>
       </div>

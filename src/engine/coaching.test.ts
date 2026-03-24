@@ -45,8 +45,7 @@ describe('getCoachingCard', () => {
     expect(first).toBe(second); // same object reference = cache hit
   });
 
-  it('returns null for invalid type pair', async () => {
-    // This shouldn't happen in practice, but test defensive behavior
+  it('returns a card for a valid type pair', async () => {
     const card = await getCoachingCard('D', 'I', 'feedback');
     expect(card).not.toBeNull();
   });

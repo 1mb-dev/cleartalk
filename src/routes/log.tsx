@@ -39,7 +39,7 @@ export function Log() {
       setContacts(c);
       setEntries(e);
     } catch {
-      setError('Could not load your data. Try refreshing the page.');
+      setError('Something went wrong. Your data is safe -- try again.');
     } finally {
       setLoading(false);
     }

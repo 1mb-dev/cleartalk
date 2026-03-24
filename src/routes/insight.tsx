@@ -2,21 +2,11 @@ import { useState, useEffect } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
 import { getCoachingCard } from '../engine/coaching.ts';
 import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
-import type { CoachingCard, DiscType, SituationType } from '../engine/types.ts';
+import type { CoachingCard, SituationType } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
+import { parsePair } from '../lib/parse-pair.ts';
 
 type InsightParams = { pair: string; situation: string };
-
-const VALID_TYPES = new Set(['d', 'i', 's', 'c']);
-
-function parsePair(pair: string): { yourType: DiscType; theirType: DiscType } | null {
-  const match = pair.match(/^([disc])-to-([disc])$/i);
-  if (!match) return null;
-  const y = match[1].toUpperCase();
-  const t = match[2].toUpperCase();
-  if (!VALID_TYPES.has(y.toLowerCase()) || !VALID_TYPES.has(t.toLowerCase())) return null;
-  return { yourType: y as DiscType, theirType: t as DiscType };
-}
 
 export function Insight() {
   const { pair, situation } = useParams<InsightParams>();
