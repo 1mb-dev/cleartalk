@@ -26,7 +26,7 @@ function iconSvg(size) {
   const cx = s / 2, cy = s / 2;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">
-  <rect width="${s}" height="${s}" rx="${s * 0.18}" fill="${BG}"/>
+  <rect width="${s}" height="${s}" fill="${BG}"/>
   <circle cx="${cx - gap}" cy="${cy - gap}" r="${r}" fill="${D}" opacity="0.7"/>
   <circle cx="${cx + gap}" cy="${cy - gap}" r="${r}" fill="${I}" opacity="0.7"/>
   <circle cx="${cx + gap}" cy="${cy + gap}" r="${r}" fill="${S}" opacity="0.7"/>
