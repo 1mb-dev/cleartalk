@@ -21,6 +21,8 @@ Thumbs.db
 
 # Test artifacts
 test-results/
+.playwright-mcp/
+lighthouse-report.json
 
 # Dev notes
 todos/

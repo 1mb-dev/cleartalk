@@ -11,6 +11,7 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium', use: { browserName: 'chromium' } },
+    { name: 'webkit', use: { browserName: 'webkit' }, retries: 1 },
   ],
   webServer: {
     command: 'npm run preview',

@@ -57,6 +57,10 @@ test.describe('Performance', () => {
       await page.locator('.assessment-option').first().click();
     }
 
+    // Confirm QuickTag result
+    await page.waitForSelector('.quicktag-confirm');
+    await page.click('.quicktag-confirm button:has-text("Save")');
+
     // Pick situation -- triggers lazy chunk load
     await page.waitForSelector('.situation-btn');
     await page.click('.situation-btn:first-child');
