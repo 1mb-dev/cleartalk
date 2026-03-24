@@ -99,7 +99,7 @@ export function Insight() {
           Get personalized advice for your communication style.
         </p>
         <button class="btn-primary" type="button" onClick={() => navigate(() => setLocation('/'))}>
-          Try ClearTalk -- free, no sign-up
+          Try ClearTalk - free, no sign-up
         </button>
       </div>
     </main>

@@ -28,7 +28,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <h1>{isStorage ? 'Storage unavailable' : 'Something went wrong'}</h1>
           <p class="welcome-text">
             {isStorage
-              ? 'Your browser is blocking local storage. This usually happens in private browsing mode. ClearTalk needs storage to save your data -- try opening it in a regular browser window.'
+              ? 'Your browser is blocking local storage. This usually happens in private browsing mode. ClearTalk needs storage to save your data - try opening it in a regular browser window.'
               : 'ClearTalk hit an unexpected error. Try refreshing the page.'}
           </p>
           <button

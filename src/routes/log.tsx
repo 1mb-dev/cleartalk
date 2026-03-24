@@ -39,7 +39,7 @@ export function Log() {
       setContacts(c);
       setEntries(e);
     } catch {
-      setError('Something went wrong. Your data is safe -- try again.');
+      setError('Something went wrong. Your data is safe - try again.');
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ export function Log() {
         <div class="welcome-block">
           <p class="welcome-text">
             After a conversation, take ten seconds to note how it went.
-            Small observations add up -- you'll see your own patterns
+            Small observations add up - you'll see your own patterns
             within a week.
           </p>
           <button class="btn-secondary" type="button" onClick={() => navigate(() => setLocation('/'))}>

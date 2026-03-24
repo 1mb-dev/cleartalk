@@ -9,19 +9,19 @@ export const observations: ObservationQuestion[] = [
   {
     id: 'obs01',
     question: 'How quickly do they make decisions?',
-    optionA: { text: 'Fast -- they decide and move on', signals: { D: 2, I: 1 } },
-    optionB: { text: 'Deliberate -- they take their time', signals: { S: 1, C: 2 } },
+    optionA: { text: 'Fast - they decide and move on', signals: { D: 2, I: 1 } },
+    optionB: { text: 'Deliberate - they take their time', signals: { S: 1, C: 2 } },
   },
   {
     id: 'obs02',
     question: 'Where do they get their energy?',
-    optionA: { text: 'Groups -- they light up around people', signals: { I: 2, D: 1 } },
-    optionB: { text: 'One-on-one or alone -- they recharge quietly', signals: { S: 1, C: 1 } },
+    optionA: { text: 'Groups - they light up around people', signals: { I: 2, D: 1 } },
+    optionB: { text: 'One-on-one or alone - they recharge quietly', signals: { S: 1, C: 1 } },
   },
   {
     id: 'obs03',
     question: 'How do they respond to change?',
-    optionA: { text: 'They embrace it -- even seek it out', signals: { D: 1, I: 1 } },
+    optionA: { text: 'They embrace it - even seek it out', signals: { D: 1, I: 1 } },
     optionB: { text: 'They resist or need time to adjust', signals: { S: 2, C: 1 } },
   },
   {
@@ -51,7 +51,7 @@ export const observations: ObservationQuestion[] = [
   {
     id: 'obs08',
     question: 'How do they prefer to receive feedback?',
-    optionA: { text: 'Straight -- no sugarcoating', signals: { D: 2, C: 1 } },
-    optionB: { text: 'Gently -- with encouragement around it', signals: { S: 2, I: 1 } },
+    optionA: { text: 'Straight - no sugarcoating', signals: { D: 2, C: 1 } },
+    optionB: { text: 'Gently - with encouragement around it', signals: { S: 2, I: 1 } },
   },
 ];

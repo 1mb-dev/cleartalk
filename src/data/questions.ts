@@ -29,7 +29,7 @@ export const questions: AssessmentQuestion[] = [
   {
     id: 'q04',
     optionA: { text: 'I get impatient when small talk delays the real conversation', dimension: 'D', weight: 1 },
-    optionB: { text: 'I enjoy the small talk -- it is how real relationships start', dimension: 'I', weight: 1 },
+    optionB: { text: 'I enjoy the small talk - it is how real relationships start', dimension: 'I', weight: 1 },
   },
 
   // --- D vs S ---

@@ -63,7 +63,7 @@ export function PersonDetail() {
           {'\u2190'} People
         </button>
         <div class="welcome-block">
-          <p class="welcome-text">Something went wrong. Your data is safe -- try again.</p>
+          <p class="welcome-text">Something went wrong. Your data is safe - try again.</p>
           <button class="btn-primary" type="button" onClick={() => id && loadPerson(id)}>Try again</button>
         </div>
       </div>
@@ -137,8 +137,8 @@ export function PersonDetail() {
 
         <h4>When talking to a {profile.label}</h4>
         <ul>
-          <li>{profile.strengths[0]} -- lean into this</li>
-          <li>{profile.blindSpots[0]} -- watch for this</li>
+          <li>{profile.strengths[0]} - lean into this</li>
+          <li>{profile.blindSpots[0]} - watch for this</li>
         </ul>
       </div>
 

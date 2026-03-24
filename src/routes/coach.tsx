@@ -195,7 +195,7 @@ export function Coach() {
           <h1>Before your next conversation</h1>
           <p class="welcome-text">
             Pick a person. Pick the moment. Get clear on what to say
-            and how to say it -- for the way they actually hear it.
+            and how to say it - for the way they actually hear it.
           </p>
           <button class="btn-primary" type="button" onClick={() => setShowQuickTag(true)}>
             Start with someone

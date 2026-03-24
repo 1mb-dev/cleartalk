@@ -53,7 +53,7 @@ export function People() {
       <div class="route-shell">
         <h1>People</h1>
         <div class="welcome-block">
-          <p class="welcome-text">Something went wrong loading your contacts. Your data is safe -- try again.</p>
+          <p class="welcome-text">Something went wrong loading your contacts. Your data is safe - try again.</p>
           <button class="btn-primary" type="button" onClick={() => loadContacts()}>Try again</button>
         </div>
       </div>
@@ -66,7 +66,7 @@ export function People() {
         <h1>People</h1>
         <div class="welcome-block">
           <p class="welcome-text">
-            Start with one person -- the one you wish
+            Start with one person - the one you wish
             you understood a little better.
           </p>
           <button class="btn-secondary" type="button" onClick={() => setShowQuickTag(true)}>

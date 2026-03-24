@@ -93,7 +93,7 @@ export function Profile() {
       <div class="route-shell">
         <h1>Your profile</h1>
         <div class="welcome-block">
-          <p class="welcome-text">Something went wrong loading your profile. Your data is safe -- try again.</p>
+          <p class="welcome-text">Something went wrong loading your profile. Your data is safe - try again.</p>
           <button class="btn-primary" type="button" onClick={() => loadProfile()}>Try again</button>
         </div>
       </div>
@@ -131,7 +131,7 @@ export function Profile() {
       ) : (
         <div class="welcome-block">
           <p class="welcome-text">
-            Everyone has a default way of communicating -- patterns
+            Everyone has a default way of communicating - patterns
             you don't notice until someone points them out.
             A short assessment helps you see yours.
           </p>
@@ -217,7 +217,7 @@ export function Profile() {
       <p class="about-section">
         ClearTalk helps you prepare for conversations with the people who matter.
         Built on communication science. No AI, no accounts, no tracking.
-        Your data stays on your device -- always.
+        Your data stays on your device - always.
       </p>
     </div>
   );
