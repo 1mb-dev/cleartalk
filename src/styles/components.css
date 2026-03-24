@@ -151,6 +151,35 @@
   margin-bottom: var(--space-2);
 }
 
+.welcome-features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-2);
+  text-align: left;
+  align-self: center;
+}
+
+.welcome-feature {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.welcome-feature-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--color-text-subtle);
+}
+
+.welcome-feature p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-body);
+}
+
 .welcome-hint {
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
@@ -218,33 +247,7 @@
 }
 
 /* Onboarding feature list */
-.onboard-features {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-5) var(--space-4) 0;
-  margin-top: var(--space-2);
-  border-top: 1px solid var(--color-border-subtle);
-}
-
-.onboard-feature {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.onboard-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-  color: var(--color-text-muted);
-}
-
-.onboard-feature p {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-body);
-  color: var(--color-text-muted);
-}
+/* Removed: .onboard-features (folded into .welcome-features) */
 
 /* Buttons */
 .btn-primary {

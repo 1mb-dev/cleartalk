@@ -204,32 +204,32 @@ export function Coach() {
             Pick a person. Pick the moment. Get clear on what to say
             and how to say it - for the way they actually hear it.
           </p>
+          <div class="welcome-features">
+            <div class="welcome-feature">
+              <svg class="welcome-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              <p>Coaching tailored to how they communicate</p>
+            </div>
+            <div class="welcome-feature">
+              <svg class="welcome-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <p>Phrases to open with and pitfalls to avoid</p>
+            </div>
+            <div class="welcome-feature">
+              <svg class="welcome-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+              <p>Track what works over time</p>
+            </div>
+          </div>
           <button class="btn-primary" type="button" onClick={() => setShowQuickTag(true)}>
             Start with someone
           </button>
           <p class="welcome-hint">Takes about 60 seconds. No sign-up needed.</p>
-        </div>
-        <div class="onboard-features">
-          <div class="onboard-feature">
-            <svg class="onboard-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </svg>
-            <p>Coaching cards tailored to how they communicate</p>
-          </div>
-          <div class="onboard-feature">
-            <svg class="onboard-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
-            </svg>
-            <p>Phrases to open with and pitfalls to avoid</p>
-          </div>
-          <div class="onboard-feature">
-            <svg class="onboard-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-            </svg>
-            <p>Track your patterns and see what works</p>
-          </div>
         </div>
       </div>
     );
