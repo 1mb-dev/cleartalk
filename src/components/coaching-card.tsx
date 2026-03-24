@@ -19,11 +19,11 @@ export function CoachingCardView({ card, hasAssessment }: CoachingCardProps) {
     <div class="coaching-card">
       <div class="coaching-card-header">
         <span class={`type-badge ${TYPE_CLASS[card.yourType]}`}>
-          You ({DISC_LABELS[card.yourType]})
+          You: {DISC_LABELS[card.yourType]}
         </span>
         <span class="coaching-arrow" aria-hidden="true">{'\u2192'}</span>
         <span class={`type-badge ${TYPE_CLASS[card.theirType]}`}>
-          Them ({DISC_LABELS[card.theirType]})
+          Them: {DISC_LABELS[card.theirType]}
         </span>
       </div>
 

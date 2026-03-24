@@ -51,7 +51,7 @@ for (const yourType of TYPES) {
       const theirArticle = theirLabel[0] === 'I' ? 'an' : 'a';
       const yourArticle = yourLabel[0] === 'I' ? 'an' : 'a';
       const title = `How to ${situationLabel} with ${theirArticle} ${theirLabel} communicator - ClearTalk`;
-      const description = `Communication coaching: how ${yourArticle} ${yourLabel} type can ${situationLabel} effectively with ${theirArticle} ${theirLabel} communicator. Specific phrases, body language, and recovery moves.`;
+      const description = `Coaching for ${yourArticle} ${yourLabel} communicator: how to ${situationLabel} effectively with someone who communicates like ${theirArticle} ${theirLabel}. What to say, what to avoid, and how to read the room.`;
       const url = `${BASE_URL}/insight/${pair}/${situation}`;
 
       const dir = join(distDir, 'insight', pair, situation);

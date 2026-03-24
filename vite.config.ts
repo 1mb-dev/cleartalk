@@ -15,7 +15,7 @@ export default defineConfig({
       manifest: {
         name: 'ClearTalk',
         short_name: 'ClearTalk',
-        description: 'Prepare for conversations with DISC communication style coaching',
+        description: 'Coaching for the person and the moment',
         id: '/',
         scope: '/',
         start_url: '/',

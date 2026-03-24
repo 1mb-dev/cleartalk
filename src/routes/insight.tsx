@@ -102,7 +102,7 @@ export function Insight() {
 
       <div class="insight-cta">
         <p class="insight-cta-text">
-          Get personalized advice for your communication style.
+          This coaching adapts to how you communicate too.
         </p>
         <button class="btn-primary" type="button" onClick={() => navigate(() => setLocation('/'))}>
           Try ClearTalk - free, no sign-up

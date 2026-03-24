@@ -328,15 +328,15 @@ export function Profile() {
       <div class="about-section">
         <h2>About ClearTalk</h2>
         <p class="about-text">
-          A tool that helps you talk to people better. Prepare for conversations
-          with specific coaching for how the other person communicates.
+          Know what to say before you say it. ClearTalk coaches you
+          for the person and the moment - so you say the right thing, the right way.
         </p>
         <div class="usp-grid">
           <div class="usp-item">
             <svg class="usp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
-            <p>80 coaching cards across 5 situations</p>
+            <p>Coaching for feedback, requests, conflict, pitches, and difficult news</p>
           </div>
           <div class="usp-item">
             <svg class="usp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -351,7 +351,7 @@ export function Profile() {
               <line x1="12" y1="16" x2="12" y2="12" />
               <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
-            <p>Built on communication science, not AI</p>
+            <p>Grounded in how people actually communicate</p>
           </div>
           <div class="usp-item">
             <svg class="usp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

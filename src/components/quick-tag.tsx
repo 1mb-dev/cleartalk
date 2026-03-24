@@ -103,7 +103,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
         <div class="quicktag-confirm">
           <p class="quicktag-confirm-name">{name}</p>
           <p class="quicktag-confirm-type">
-            Communicates like a <strong>{DISC_LABELS[pendingResult.profile.primary]}</strong> type
+            Their style: <strong>{DISC_LABELS[pendingResult.profile.primary]}</strong>
           </p>
           <div class="quicktag-confirm-actions">
             <button class="btn-primary" type="button" onClick={() => finalize(answers)}>
