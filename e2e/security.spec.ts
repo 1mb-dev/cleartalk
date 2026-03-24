@@ -20,9 +20,9 @@ test.describe('Security Headers & CSP', () => {
     expect(res.ok()).toBe(true);
   });
 
-  test('has apple-mobile-web-app meta tags', async ({ page }) => {
+  test('has mobile web app meta tags', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('meta[name="apple-mobile-web-app-capable"]')).toHaveAttribute('content', 'yes');
+    await expect(page.locator('meta[name="mobile-web-app-capable"]')).toHaveAttribute('content', 'yes');
     await expect(page.locator('meta[name="apple-mobile-web-app-status-bar-style"]')).toHaveAttribute('content', 'black-translucent');
   });
 
