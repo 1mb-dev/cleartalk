@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0 (2026-03-25)
+
+### Features
+
+- 16 per-pair OG images for insight routes - shared links now show the specific type pair
+- Runtime caching for coaching card chunks via Workbox StaleWhileRevalidate (saves ~40KB gzip on initial load)
+
+### Changed
+
+- OG image tagline aligned with ClearTalk voice ("Know what to say before you say it")
+- Pinned wrangler-action to v3.14.1 with Wrangler CLI v4
+
 ## 0.1.0 (2026-03-24)
 
 Know what to say before you say it. First release.
