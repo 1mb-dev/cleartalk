@@ -19,6 +19,9 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
+# Test artifacts
+test-results/
+
 # Dev notes
 todos/
 
