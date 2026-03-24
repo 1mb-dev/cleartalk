@@ -50,6 +50,51 @@ body {
   overscroll-behavior: none;
 }
 
+/* Scrollbar: thin, transparent track, fades with content */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(0 0 0 / 15%) transparent;
+}
+
+[data-theme="dark"] *,
+:root:not([data-theme="light"]) * {
+  scrollbar-color: rgb(255 255 255 / 12%) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(0 0 0 / 15%);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(0 0 0 / 25%);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 12%);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 20%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) ::-webkit-scrollbar-thumb {
+    background: rgb(255 255 255 / 12%);
+  }
+  :root:not([data-theme="light"]) ::-webkit-scrollbar-thumb:hover {
+    background: rgb(255 255 255 / 20%);
+  }
+}
+
 h1, h2, h3 {
   font-family: var(--font-display);
   line-height: var(--line-height-tight);
