@@ -183,14 +183,14 @@ export function Coach() {
       <div class="route-shell">
         <div class="welcome-block">
           <svg class="welcome-motif" viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
-            <circle cx="42" cy="42" r="28" fill="var(--color-disc-d-subtle)" />
-            <circle cx="78" cy="42" r="28" fill="var(--color-disc-i-subtle)" />
-            <circle cx="78" cy="78" r="28" fill="var(--color-disc-s-subtle)" />
-            <circle cx="42" cy="78" r="28" fill="var(--color-disc-c-subtle)" />
-            <circle cx="42" cy="42" r="10" fill="var(--color-disc-d)" opacity="0.7" />
-            <circle cx="78" cy="42" r="8" fill="var(--color-disc-i)" opacity="0.7" />
-            <circle cx="78" cy="78" r="12" fill="var(--color-disc-s)" opacity="0.7" />
-            <circle cx="42" cy="78" r="9" fill="var(--color-disc-c)" opacity="0.7" />
+            <circle cx="46" cy="46" r="32" fill="var(--color-disc-d)" opacity="0.15" />
+            <circle cx="74" cy="46" r="32" fill="var(--color-disc-i)" opacity="0.15" />
+            <circle cx="74" cy="74" r="32" fill="var(--color-disc-s)" opacity="0.15" />
+            <circle cx="46" cy="74" r="32" fill="var(--color-disc-c)" opacity="0.15" />
+            <circle cx="46" cy="46" r="13" fill="var(--color-disc-d)" opacity="0.7" />
+            <circle cx="74" cy="46" r="10" fill="var(--color-disc-i)" opacity="0.7" />
+            <circle cx="74" cy="74" r="15" fill="var(--color-disc-s)" opacity="0.7" />
+            <circle cx="46" cy="74" r="11" fill="var(--color-disc-c)" opacity="0.7" />
           </svg>
           <h1>Before your next conversation</h1>
           <p class="welcome-text">

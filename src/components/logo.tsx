@@ -15,10 +15,10 @@ export function Logo({ size = 32 }: LogoProps) {
       aria-hidden="true"
       class="logo"
     >
-      <circle cx="10" cy="10" r="7" fill="var(--color-disc-d)" opacity="0.85" />
-      <circle cx="22" cy="10" r="7" fill="var(--color-disc-i)" opacity="0.85" />
-      <circle cx="22" cy="22" r="7" fill="var(--color-disc-s)" opacity="0.85" />
-      <circle cx="10" cy="22" r="7" fill="var(--color-disc-c)" opacity="0.85" />
+      <circle cx="12" cy="12" r="8" fill="var(--color-disc-d)" opacity="0.7" />
+      <circle cx="20" cy="12" r="8" fill="var(--color-disc-i)" opacity="0.7" />
+      <circle cx="20" cy="20" r="8" fill="var(--color-disc-s)" opacity="0.7" />
+      <circle cx="12" cy="20" r="8" fill="var(--color-disc-c)" opacity="0.7" />
     </svg>
   );
 }
