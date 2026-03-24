@@ -100,12 +100,23 @@ export function Log() {
         <div class="welcome-block">
           <p class="welcome-text">
             After a conversation, take ten seconds to note how it went.
-            Small observations add up - you'll see your own patterns
+            Small observations add up - you will see your own patterns
             within a week.
           </p>
           <button class="btn-secondary" type="button" onClick={() => navigate(() => setLocation('/'))}>
             Add someone to get started
           </button>
+        </div>
+        <div class="preview-hint">
+          <div class="preview-entry" aria-hidden="true">
+            <span class="outcome-dot outcome-4" />
+            <div>
+              <span class="preview-name">Alex</span>
+              <span class="preview-type">Give Feedback</span>
+            </div>
+            <span class="preview-date">Today</span>
+          </div>
+          <p class="preview-caption">Your conversation history will build up here</p>
         </div>
       </div>
     );

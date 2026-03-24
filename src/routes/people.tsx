@@ -73,6 +73,14 @@ export function People() {
             Add someone
           </button>
         </div>
+        <div class="preview-hint">
+          <div class="preview-card" aria-hidden="true">
+            <span class="type-dot disc-s" />
+            <span class="preview-name">e.g. Alex</span>
+            <span class="preview-type">Steady</span>
+          </div>
+          <p class="preview-caption">Your contacts will appear here with their communication style</p>
+        </div>
       </div>
     );
   }

@@ -214,11 +214,60 @@ export function Profile() {
         </div>
       </div>
 
-      <p class="about-section">
-        ClearTalk helps you prepare for conversations with the people who matter.
-        Built on communication science. No AI, no accounts, no tracking.
-        Your data stays on your device - always.
-      </p>
+      {/* How it works */}
+      <div class="how-it-works">
+        <h2>How ClearTalk works</h2>
+        <div class="how-steps">
+          <div class="how-step">
+            <span class="how-step-num">1</span>
+            <div>
+              <h4>Add a person</h4>
+              <p>Answer 8 quick questions about how they communicate. Takes about 60 seconds.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <span class="how-step-num">2</span>
+            <div>
+              <h4>Get coaching</h4>
+              <p>Pick a situation - feedback, request, conflict, pitch, or difficult news. Get specific advice for that person.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <span class="how-step-num">3</span>
+            <div>
+              <h4>Track your growth</h4>
+              <p>Log how conversations go. Over time, you will see which styles you handle well and where to improve.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* About */}
+      <div class="about-section">
+        <h2>About ClearTalk</h2>
+        <p class="about-text">
+          A tool that helps you talk to people better. Prepare for conversations
+          with specific coaching for how the other person communicates.
+        </p>
+        <div class="usp-grid">
+          <div class="usp-item">
+            <span class="usp-icon" aria-hidden="true">{'\u{1F3AF}'}</span>
+            <p>80 coaching cards across 5 situations</p>
+          </div>
+          <div class="usp-item">
+            <span class="usp-icon" aria-hidden="true">{'\u{1F512}'}</span>
+            <p>Your data never leaves your device</p>
+          </div>
+          <div class="usp-item">
+            <span class="usp-icon" aria-hidden="true">{'\u{1F9E0}'}</span>
+            <p>Built on communication science, not AI</p>
+          </div>
+          <div class="usp-item">
+            <span class="usp-icon" aria-hidden="true">{'\u{26A1}'}</span>
+            <p>No accounts, no sign-up, works offline</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
