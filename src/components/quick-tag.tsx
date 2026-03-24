@@ -14,6 +14,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
   const [step, setStep] = useState(-1); // -1 = name entry, 0-7 = observations
   const [answers, setAnswers] = useState<Record<string, 'a' | 'b'>>({});
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   const total = observations.length;
 
@@ -37,6 +38,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
   async function finalize(finalAnswers: Record<string, 'a' | 'b'>) {
     if (saving) return;
     setSaving(true);
+    setSaveError(false);
     const { profile, confidence } = typeFromObservations(finalAnswers);
     try {
       const id = await addContact({
@@ -48,6 +50,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
       onComplete({ id, name: name.trim(), profile, confidence });
     } catch {
       setSaving(false);
+      setSaveError(true);
     }
   }
 
@@ -87,7 +90,20 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
   if (saving) {
     return (
       <div class="quicktag-wizard">
-        <p class="assessment-prompt">Saving...</p>
+        <p class="assessment-prompt" aria-live="polite">Saving...</p>
+      </div>
+    );
+  }
+
+  if (saveError) {
+    return (
+      <div class="quicktag-wizard">
+        <p class="assessment-prompt" role="alert">
+          Could not save. Check that your browser allows storage and try again.
+        </p>
+        <button class="btn-primary" type="button" onClick={() => finalize(answers)}>
+          Try again
+        </button>
       </div>
     );
   }

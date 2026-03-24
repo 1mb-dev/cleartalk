@@ -16,6 +16,7 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
   const [answers, setAnswers] = useState<Record<string, 'a' | 'b'>>({});
   const [result, setResult] = useState<DiscProfile | null>(null);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   const total = questions.length;
   const current = questions[step];
@@ -40,6 +41,7 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
   async function handleSave() {
     if (!result || saving) return;
     setSaving(true);
+    setSaveError(false);
     try {
       const user = await getOrCreateUser();
       await saveAssessment({
@@ -52,6 +54,7 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
       onComplete(result);
     } catch {
       setSaving(false);
+      setSaveError(true);
     }
   }
 
@@ -82,6 +85,12 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
             {primary.growthAreas.map((g, i) => <li key={i}>{g}</li>)}
           </ul>
         </div>
+
+        {saveError && (
+          <p class="error-inline" role="alert">
+            Could not save your results. Check that your browser allows storage and try again.
+          </p>
+        )}
 
         <button class="btn-primary" type="button" onClick={handleSave} disabled={saving} aria-busy={saving}>
           <span aria-live="polite">{saving ? 'Saving...' : 'Save and continue'}</span>

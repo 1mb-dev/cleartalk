@@ -23,6 +23,7 @@ export function Coach() {
   const [user, setUser] = useState<User | null>(null);
   const [showQuickTag, setShowQuickTag] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     loadState();
@@ -30,33 +31,39 @@ export function Coach() {
 
   async function loadState() {
     setLoading(true);
-    const [u, allContacts] = await Promise.all([
-      getOrCreateUser(),
-      getContacts(),
-    ]);
-    setUser(u);
-    setContacts(allContacts);
+    setError(false);
+    try {
+      const [u, allContacts] = await Promise.all([
+        getOrCreateUser(),
+        getContacts(),
+      ]);
+      setUser(u);
+      setContacts(allContacts);
 
-    if (params.contactId) {
-      const contact = await getContact(params.contactId);
-      setSelectedContact(contact ?? null);
+      if (params.contactId) {
+        const contact = await getContact(params.contactId);
+        setSelectedContact(contact ?? null);
 
-      if (contact && isValidSituation(params.situation)) {
-        const yourType = u.discProfile?.primary ?? contact.discProfile.primary;
-        const loaded = await getCoachingCard(
-          yourType,
-          contact.discProfile.primary,
-          params.situation,
-        );
-        setCard(loaded);
+        if (contact && isValidSituation(params.situation)) {
+          const yourType = u.discProfile?.primary ?? contact.discProfile.primary;
+          const loaded = await getCoachingCard(
+            yourType,
+            contact.discProfile.primary,
+            params.situation,
+          );
+          setCard(loaded);
+        } else {
+          setCard(null);
+        }
       } else {
+        setSelectedContact(null);
         setCard(null);
       }
-    } else {
-      setSelectedContact(null);
-      setCard(null);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   function handleQuickTagComplete(result: { id: string }) {
@@ -92,7 +99,24 @@ export function Coach() {
   }
 
   if (loading) {
-    return <div class="route-shell"><h1>Coach</h1><p class="loading-text">Loading...</p></div>;
+    return <div class="route-shell"><h1>Coach</h1><p class="loading-text" aria-live="polite">Loading...</p></div>;
+  }
+
+  if (error) {
+    return (
+      <div class="route-shell">
+        <h1>Coach</h1>
+        <div class="welcome-block">
+          <p class="welcome-text">
+            Could not load your data. If you are in private browsing mode,
+            try a regular browser window instead.
+          </p>
+          <button class="btn-primary" type="button" onClick={() => loadState()}>
+            Try again
+          </button>
+        </div>
+      </div>
+    );
   }
 
   // Step 3: Show coaching card
@@ -143,7 +167,7 @@ export function Coach() {
               type="button"
               onClick={() => selectSituation(key)}
             >
-              <span class="situation-icon">{situationIcon(key)}</span>
+              <span class="situation-icon" aria-hidden="true">{situationIcon(key)}</span>
               <span class="situation-label">{label}</span>
             </button>
           ))}

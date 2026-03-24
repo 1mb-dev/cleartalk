@@ -40,33 +40,38 @@ export function Insight() {
       return;
     }
 
-    const loaded = await getCoachingCard(
-      parsed.yourType,
-      parsed.theirType,
-      situation as SituationType,
-    );
-    setCard(loaded);
-    setLoading(false);
+    try {
+      const loaded = await getCoachingCard(
+        parsed.yourType,
+        parsed.theirType,
+        situation as SituationType,
+      );
+      setCard(loaded);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (loading) {
-    return <div class="route-shell insight-page"><p class="loading-text">Loading...</p></div>;
+    return <main id="main" class="route-shell insight-page"><p class="loading-text" aria-live="polite">Loading...</p></main>;
   }
 
   if (error || !card) {
     return (
-      <div class="route-shell insight-page">
+      <main id="main" class="route-shell insight-page">
         <h1>Insight not found</h1>
         <p class="welcome-text">This coaching card doesn't exist.</p>
         <button class="btn-primary" type="button" onClick={() => navigate(() => setLocation('/'))}>
           Try ClearTalk
         </button>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div class="route-shell insight-page">
+    <main id="main" class="route-shell insight-page">
       <div class="insight-header">
         <h1>How to {SITUATION_LABELS[card.situation].toLowerCase()} with a {DISC_LABELS[card.theirType]} communicator</h1>
         <div class="coaching-card-header">
@@ -107,6 +112,6 @@ export function Insight() {
           Try ClearTalk -- free, no sign-up
         </button>
       </div>
-    </div>
+    </main>
   );
 }

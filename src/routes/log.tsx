@@ -12,6 +12,7 @@ export function Log() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Pre-fill from URL params (coach-to-log bridge)
   const urlParams = new URLSearchParams(window.location.search);
@@ -32,16 +33,23 @@ export function Log() {
 
   async function loadData() {
     setLoading(true);
-    const [c, e] = await Promise.all([getContacts(), getJournalEntries()]);
-    setContacts(c);
-    setEntries(e);
-    setLoading(false);
+    setError(null);
+    try {
+      const [c, e] = await Promise.all([getContacts(), getJournalEntries()]);
+      setContacts(c);
+      setEntries(e);
+    } catch {
+      setError('Could not load your data. Try refreshing the page.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
     if (!contactId || !situation || !outcome || saving) return;
     setSaving(true);
+    setError(null);
     try {
       await addJournalEntry({
         contactId,
@@ -60,6 +68,8 @@ export function Log() {
       // Reload entries
       const updated = await getJournalEntries();
       setEntries(updated);
+    } catch {
+      setError('Could not save your entry. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -68,7 +78,19 @@ export function Log() {
   const canSubmit = contactId && situation && outcome && !saving;
 
   if (loading) {
-    return <div class="route-shell"><h1>Log</h1><p class="loading-text">Loading...</p></div>;
+    return <div class="route-shell"><h1>Log</h1><p class="loading-text" aria-live="polite">Loading...</p></div>;
+  }
+
+  if (error && contacts.length === 0) {
+    return (
+      <div class="route-shell">
+        <h1>Log</h1>
+        <div class="welcome-block">
+          <p class="welcome-text">{error}</p>
+          <button class="btn-primary" type="button" onClick={() => loadData()}>Try again</button>
+        </div>
+      </div>
+    );
   }
 
   if (contacts.length === 0) {
@@ -141,6 +163,8 @@ export function Log() {
             <span class="log-char-count">{note.length}/280</span>
           )}
         </div>
+
+        {error && <p class="error-inline" role="alert">{error}</p>}
 
         <button class="btn-primary" type="submit" disabled={!canSubmit} aria-busy={saving}>
           <span aria-live="polite">{saving ? 'Saving...' : saved ? 'Saved!' : 'Log it'}</span>

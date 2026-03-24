@@ -11,14 +11,21 @@ export function People() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [showQuickTag, setShowQuickTag] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => { loadContacts(); }, []);
 
   async function loadContacts() {
     setLoading(true);
-    const all = await getContacts();
-    setContacts(all);
-    setLoading(false);
+    setError(false);
+    try {
+      const all = await getContacts();
+      setContacts(all);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleQuickTagComplete() {
@@ -38,7 +45,19 @@ export function People() {
   }
 
   if (loading) {
-    return <div class="route-shell"><h1>People</h1><p class="loading-text">Loading...</p></div>;
+    return <div class="route-shell"><h1>People</h1><p class="loading-text" aria-live="polite">Loading...</p></div>;
+  }
+
+  if (error) {
+    return (
+      <div class="route-shell">
+        <h1>People</h1>
+        <div class="welcome-block">
+          <p class="welcome-text">Could not load your contacts. Try refreshing the page.</p>
+          <button class="btn-primary" type="button" onClick={() => loadContacts()}>Try again</button>
+        </div>
+      </div>
+    );
   }
 
   if (contacts.length === 0) {

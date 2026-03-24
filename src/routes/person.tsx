@@ -15,6 +15,7 @@ export function PersonDetail() {
   const [contact, setContact] = useState<Contact | null>(null);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
@@ -25,23 +26,48 @@ export function PersonDetail() {
 
   async function loadPerson(personId: string) {
     setLoading(true);
-    const [c, j] = await Promise.all([
-      getContact(personId),
-      getJournalForContact(personId),
-    ]);
-    setContact(c ?? null);
-    setEntries(j);
-    setLoading(false);
+    setError(false);
+    try {
+      const [c, j] = await Promise.all([
+        getContact(personId),
+        getJournalForContact(personId),
+      ]);
+      setContact(c ?? null);
+      setEntries(j);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleDelete() {
     if (!id) return;
-    await deleteContact(id);
-    navigate(() => setLocation('/people'));
+    try {
+      await deleteContact(id);
+      navigate(() => setLocation('/people'));
+    } catch {
+      setConfirmDelete(false);
+      setError(true);
+    }
   }
 
   if (loading) {
-    return <div class="route-shell"><h1>Person</h1><p class="loading-text">Loading...</p></div>;
+    return <div class="route-shell"><h1>Person</h1><p class="loading-text" aria-live="polite">Loading...</p></div>;
+  }
+
+  if (error) {
+    return (
+      <div class="route-shell">
+        <button class="back-link" type="button" onClick={() => navigate(() => setLocation('/people'))}>
+          {'\u2190'} People
+        </button>
+        <div class="welcome-block">
+          <p class="welcome-text">Something went wrong. Try refreshing the page.</p>
+          <button class="btn-primary" type="button" onClick={() => id && loadPerson(id)}>Try again</button>
+        </div>
+      </div>
+    );
   }
 
   if (!contact) {
@@ -68,9 +94,13 @@ export function PersonDetail() {
           e.preventDefault();
           const clean = sanitizeName(nameInput);
           if (clean && id) {
-            await updateContact(id, { name: clean });
-            setContact(prev => prev ? { ...prev, name: clean } : prev);
-            setEditingName(false);
+            try {
+              await updateContact(id, { name: clean });
+              setContact(prev => prev ? { ...prev, name: clean } : prev);
+              setEditingName(false);
+            } catch {
+              setError(true);
+            }
           }
         }}>
           <input
@@ -78,6 +108,7 @@ export function PersonDetail() {
             class="quicktag-name-input"
             value={nameInput}
             onInput={(e) => setNameInput((e.target as HTMLInputElement).value)}
+            aria-label="Edit person name"
             autoFocus
             maxLength={60}
           />
@@ -147,7 +178,7 @@ export function PersonDetail() {
 
       <div class="danger-zone">
         {confirmDelete ? (
-          <div class="confirm-delete">
+          <div class="confirm-delete" role="alertdialog" aria-label="Confirm removal">
             <p>Remove {contact.name}? Their profile and all your conversation notes will be gone.</p>
             <div class="confirm-delete-actions">
               <button class="btn-danger" type="button" onClick={handleDelete}>Remove</button>

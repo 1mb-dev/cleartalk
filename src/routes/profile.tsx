@@ -15,6 +15,7 @@ export function Profile() {
   const [insights, setInsights] = useState<InsightsSummary | null>(null);
   const [showAssessment, setShowAssessment] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [theme, setTheme] = useState<'auto' | 'light' | 'dark'>(() => {
     try {
       return (localStorage.getItem('cleartalk-theme') as 'light' | 'dark') ?? 'auto';
@@ -27,15 +28,21 @@ export function Profile() {
 
   async function loadProfile() {
     setLoading(true);
-    const [u, e, c] = await Promise.all([
-      getOrCreateUser(),
-      getJournalEntries(200),
-      getContacts(),
-    ]);
-    setUser(u);
-    setEntries(e);
-    setInsights(calculateInsights(e, c));
-    setLoading(false);
+    setError(false);
+    try {
+      const [u, e, c] = await Promise.all([
+        getOrCreateUser(),
+        getJournalEntries(200),
+        getContacts(),
+      ]);
+      setUser(u);
+      setEntries(e);
+      setInsights(calculateInsights(e, c));
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleAssessmentComplete(profile: DiscProfile) {
@@ -58,8 +65,12 @@ export function Profile() {
   }
 
   async function handleExport() {
-    const data = await exportData();
-    downloadJson(data, `cleartalk-export-${new Date().toISOString().slice(0, 10)}.json`);
+    try {
+      const data = await exportData();
+      downloadJson(data, `cleartalk-export-${new Date().toISOString().slice(0, 10)}.json`);
+    } catch {
+      setError(true);
+    }
   }
 
   if (showAssessment) {
@@ -74,7 +85,19 @@ export function Profile() {
   }
 
   if (loading) {
-    return <div class="route-shell"><h1>Your profile</h1><p class="loading-text">Loading...</p></div>;
+    return <div class="route-shell"><h1>Your profile</h1><p class="loading-text" aria-live="polite">Loading...</p></div>;
+  }
+
+  if (error) {
+    return (
+      <div class="route-shell">
+        <h1>Your profile</h1>
+        <div class="welcome-block">
+          <p class="welcome-text">Could not load your profile. Try refreshing the page.</p>
+          <button class="btn-primary" type="button" onClick={() => loadProfile()}>Try again</button>
+        </div>
+      </div>
+    );
   }
 
   const profile = user?.discProfile;

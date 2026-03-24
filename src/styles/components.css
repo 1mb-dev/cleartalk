@@ -851,8 +851,16 @@
 .outcome-option.selected .outcome-circle.outcome-5 { background: var(--color-outcome-5); }
 
 .outcome-label {
-  font-size: 10px;
+  font-size: var(--font-size-xs);
   color: var(--color-text-subtle);
+}
+
+.error-inline {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-disc-d-subtle);
+  border-radius: var(--radius);
 }
 
 /* Log form */

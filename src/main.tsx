@@ -14,6 +14,11 @@ try {
   }
 } catch { /* private browsing */ }
 
+// Safety net for unhandled async errors (ErrorBoundary only catches sync render errors)
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+});
+
 render(
   <ErrorBoundary>
     <App />
