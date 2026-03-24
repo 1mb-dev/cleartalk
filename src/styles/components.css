@@ -25,6 +25,18 @@
   padding-top: var(--space-4);
 }
 
+/* Brand header (logo + heading) */
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+}
+
+.brand-header h1 {
+  padding-top: 0;
+}
+
 /* Bottom tab bar */
 .tab-bar {
   position: fixed;
@@ -1294,19 +1306,26 @@
 
 /* View Transitions */
 ::view-transition-old(root) {
-  animation: fade-out var(--transition-route) ease;
+  animation: vt-slide-out var(--transition-route) ease-out;
 }
 
 ::view-transition-new(root) {
-  animation: fade-in var(--transition-route) ease;
+  animation: vt-slide-in var(--transition-route) ease-out;
 }
 
-@keyframes fade-out {
-  from { opacity: 1; }
-  to { opacity: 0.6; }
+@keyframes vt-slide-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
 }
 
-@keyframes fade-in {
-  from { opacity: 0.6; }
-  to { opacity: 1; }
+@keyframes vt-slide-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Fallback transition (non-View-Transitions browsers) */
+.route-transition .app-content {
+  opacity: 0.4;
+  transform: translateY(-4px);
+  transition: opacity var(--transition-route), transform var(--transition-route);
 }

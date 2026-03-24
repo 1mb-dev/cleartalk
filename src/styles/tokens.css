@@ -81,7 +81,7 @@
   /* Motion */
   --transition-fast: 120ms ease;
   --transition-normal: 200ms ease;
-  --transition-route: 150ms ease;
+  --transition-route: 180ms ease-out;
 }
 
 /* Dark mode: system preference */

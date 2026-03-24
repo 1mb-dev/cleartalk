@@ -7,6 +7,7 @@ import { getCoachingCard } from '../engine/coaching.ts';
 import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
 import type { Contact, CoachingCard, SituationType, User } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
+import { Logo } from '../components/logo.tsx';
 
 function isValidSituation(s: string | undefined): s is SituationType {
   return !!s && s in SITUATION_LABELS;
@@ -221,7 +222,10 @@ export function Coach() {
 
   return (
     <div class="route-shell">
-      <h1>Pick a conversation</h1>
+      <div class="brand-header">
+        <Logo size={28} />
+        <h1>Pick a conversation</h1>
+      </div>
       <div class="contact-pick-grid">
         {contacts.map(c => (
           <button

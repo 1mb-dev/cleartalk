@@ -99,12 +99,6 @@ input, textarea, select {
   top: var(--space-2);
 }
 
-/* Route transition fallback (non-View-Transitions browsers) */
-.route-transition .app-content {
-  opacity: 0.6;
-  transition: opacity var(--transition-route);
-}
-
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
