@@ -53,7 +53,7 @@ export function PersonDetail() {
   }
 
   if (loading) {
-    return <div class="route-shell"><h1>Person</h1><p class="loading-text" aria-live="polite">Loading...</p></div>;
+    return <div class="route-shell"><p class="loading-text" aria-live="polite">Loading...</p></div>;
   }
 
   if (error) {

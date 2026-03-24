@@ -10,6 +10,8 @@
 .app-content {
   flex: 1;
   min-height: 0; /* allow flex child to shrink below content size */
+  display: flex;
+  flex-direction: column;
   padding: var(--padding-page);
   padding-bottom: var(--space-4);
   overflow-y: auto;
@@ -25,6 +27,28 @@
 
 .route-shell h1 {
   padding-top: var(--space-4);
+}
+
+/* Sticky page header */
+.page-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-bg);
+  padding: var(--space-4) 0 var(--space-3);
+  margin: 0 calc(-1 * var(--padding-page));
+  padding-left: var(--padding-page);
+  padding-right: var(--padding-page);
+}
+
+.page-header h1 {
+  padding-top: 0;
+}
+
+/* Vertically centered empty state */
+.route-shell.centered {
+  flex: 1;
+  justify-content: safe center;
 }
 
 /* Brand header (logo + heading) */
@@ -792,7 +816,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: var(--space-4);
 }
 
 .people-grid {

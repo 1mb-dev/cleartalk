@@ -78,13 +78,12 @@ export function Log() {
   const canSubmit = contactId && situation && outcome && !saving;
 
   if (loading) {
-    return <div class="route-shell"><h1>Log</h1><p class="loading-text" aria-live="polite">Loading...</p></div>;
+    return <div class="route-shell"><div class="page-header"><h1>Log</h1></div><p class="loading-text" aria-live="polite">Loading...</p></div>;
   }
 
   if (error && contacts.length === 0) {
     return (
-      <div class="route-shell">
-        <h1>Log</h1>
+      <div class="route-shell centered">
         <div class="welcome-block">
           <p class="welcome-text">{error}</p>
           <button class="btn-primary" type="button" onClick={() => loadData()}>Try again</button>
@@ -95,8 +94,8 @@ export function Log() {
 
   if (contacts.length === 0) {
     return (
-      <div class="route-shell">
-        <h1>Log</h1>
+      <div class="route-shell centered">
+        <div class="page-header"><h1>Log</h1></div>
         <div class="welcome-block">
           <p class="welcome-text">
             After a conversation, take ten seconds to note how it went.
@@ -124,7 +123,7 @@ export function Log() {
 
   return (
     <div class="route-shell">
-      <h1>Log</h1>
+      <div class="page-header"><h1>Log</h1></div>
 
       <form class="log-form" onSubmit={handleSubmit}>
         <div class="log-field">

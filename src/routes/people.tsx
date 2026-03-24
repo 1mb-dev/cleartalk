@@ -45,13 +45,12 @@ export function People() {
   }
 
   if (loading) {
-    return <div class="route-shell"><h1>People</h1><p class="loading-text" aria-live="polite">Loading...</p></div>;
+    return <div class="route-shell"><div class="page-header"><h1>People</h1></div><p class="loading-text" aria-live="polite">Loading...</p></div>;
   }
 
   if (error) {
     return (
-      <div class="route-shell">
-        <h1>People</h1>
+      <div class="route-shell centered">
         <div class="welcome-block">
           <p class="welcome-text">Something went wrong loading your contacts. Your data is safe - try again.</p>
           <button class="btn-primary" type="button" onClick={() => loadContacts()}>Try again</button>
@@ -62,8 +61,8 @@ export function People() {
 
   if (contacts.length === 0) {
     return (
-      <div class="route-shell">
-        <h1>People</h1>
+      <div class="route-shell centered">
+        <div class="page-header"><h1>People</h1></div>
         <div class="welcome-block">
           <p class="welcome-text">
             Start with one person - the one you wish
@@ -87,7 +86,7 @@ export function People() {
 
   return (
     <div class="route-shell">
-      <div class="people-header">
+      <div class="people-header page-header">
         <h1>People</h1>
         <button class="btn-secondary btn-sm" type="button" onClick={() => setShowQuickTag(true)}>
           + Add

@@ -100,13 +100,12 @@ export function Coach() {
   }
 
   if (loading) {
-    return <div class="route-shell"><h1>Coach</h1><p class="loading-text" aria-live="polite">Loading...</p></div>;
+    return <div class="route-shell centered"><p class="loading-text" aria-live="polite">Loading...</p></div>;
   }
 
   if (error) {
     return (
-      <div class="route-shell">
-        <h1>Coach</h1>
+      <div class="route-shell centered">
         <div class="welcome-block">
           <p class="welcome-text">
             Could not load your data. If you are in private browsing mode,
@@ -180,7 +179,7 @@ export function Coach() {
   // Step 1: Pick person (or first-time quick-tag)
   if (contacts.length === 0) {
     return (
-      <div class="route-shell">
+      <div class="route-shell centered">
         <div class="welcome-block">
           <svg class="welcome-motif" viewBox="0 0 120 120" width="80" height="80" aria-hidden="true">
             <circle cx="46" cy="46" r="32" fill="var(--color-disc-d)" opacity="0.15" />

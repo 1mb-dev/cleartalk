@@ -85,13 +85,12 @@ export function Profile() {
   }
 
   if (loading) {
-    return <div class="route-shell"><h1>Your profile</h1><p class="loading-text" aria-live="polite">Loading...</p></div>;
+    return <div class="route-shell"><div class="page-header"><h1>Your profile</h1></div><p class="loading-text" aria-live="polite">Loading...</p></div>;
   }
 
   if (error) {
     return (
-      <div class="route-shell">
-        <h1>Your profile</h1>
+      <div class="route-shell centered">
         <div class="welcome-block">
           <p class="welcome-text">Something went wrong loading your profile. Your data is safe - try again.</p>
           <button class="btn-primary" type="button" onClick={() => loadProfile()}>Try again</button>
@@ -105,7 +104,7 @@ export function Profile() {
 
   return (
     <div class="route-shell">
-      <h1>Your profile</h1>
+      <div class="page-header"><h1>Your profile</h1></div>
 
       {profile && primary ? (
         <>
