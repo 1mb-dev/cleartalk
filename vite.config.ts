@@ -18,8 +18,8 @@ export default defineConfig({
         description: 'A tool that helps you talk to people better',
         start_url: '/',
         display: 'standalone',
-        background_color: '#faf9f7',
-        theme_color: '#1a1a1a',
+        background_color: '#faf8f5',
+        theme_color: '#2c2926',
         icons: [
           { src: '/assets/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/assets/icon-512.png', sizes: '512x512', type: 'image/png' },

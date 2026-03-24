@@ -1,3 +1,27 @@
+/* Fonts: self-hosted variable woff2 */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/assets/fonts/fraunces-variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('/assets/fonts/source-sans-3-variable.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('/assets/fonts/source-sans-3-variable-italic.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -23,13 +47,14 @@ body {
 }
 
 h1, h2, h3 {
+  font-family: var(--font-display);
   line-height: var(--line-height-tight);
-  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-h1 { font-size: var(--font-size-2xl); }
-h2 { font-size: var(--font-size-xl); }
-h3 { font-size: var(--font-size-lg); }
+h1 { font-size: var(--font-size-3xl); font-weight: 600; }
+h2 { font-size: var(--font-size-xl); font-weight: 600; }
+h3 { font-size: var(--font-size-lg); font-weight: 600; }
 
 a {
   color: var(--color-accent);

@@ -1,17 +1,17 @@
 :root {
   /* Base palette */
-  --color-bg: #faf9f7;
+  --color-bg: #faf8f5;
   --color-surface: #fff;
-  --color-text: #1a1a1a;
+  --color-text: #2c2926;
   --color-text-muted: #6b7280;
   --color-text-subtle: #9ca3af;
-  --color-border: #e5e7eb;
-  --color-border-subtle: #f3f4f6;
+  --color-border: #e5e3df;
+  --color-border-subtle: #f3f1ee;
 
   /* Accent */
-  --color-accent: #1a1a1a;
-  --color-accent-hover: #333;
-  --color-accent-subtle: rgb(26 26 26 / 6%);
+  --color-accent: #2c2926;
+  --color-accent-hover: #3d3833;
+  --color-accent-subtle: rgb(44 41 38 / 6%);
 
   /* DISC type colors */
   --color-disc-d: #e8614d;
@@ -39,7 +39,8 @@
   --color-error: #dc2626;
 
   /* Typography */
-  --font-ui: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-ui: "Source Sans 3", -apple-system, blinkmacsystemfont, "Segoe UI", sans-serif;
   --font-mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
@@ -47,6 +48,7 @@
   --font-size-lg: 1.125rem;
   --font-size-xl: 1.25rem;
   --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.75rem;
   --line-height-tight: 1.25;
   --line-height-body: 1.5;
 
@@ -85,16 +87,16 @@
 /* Dark mode: system preference */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-bg: #111113;
-    --color-surface: #1a1a1f;
-    --color-text: #e5e5e5;
+    --color-bg: #121210;
+    --color-surface: #1c1b19;
+    --color-text: #e8e4df;
     --color-text-muted: #9ca3af;
     --color-text-subtle: #6b7280;
-    --color-border: #2a2a30;
-    --color-border-subtle: #1f1f24;
-    --color-accent: #e5e5e5;
-    --color-accent-hover: #d0d0d0;
-    --color-accent-subtle: rgb(229 229 229 / 8%);
+    --color-border: #2a2a28;
+    --color-border-subtle: #1f1f1d;
+    --color-accent: #e8e4df;
+    --color-accent-hover: #d4d0cb;
+    --color-accent-subtle: rgb(232 228 223 / 8%);
 
     --color-disc-d: #f0796a;
     --color-disc-d-subtle: rgb(240 121 106 / 12%);
@@ -113,16 +115,16 @@
 
 /* Dark mode: explicit toggle */
 [data-theme="dark"] {
-  --color-bg: #111113;
-  --color-surface: #1a1a1f;
-  --color-text: #e5e5e5;
+  --color-bg: #121210;
+  --color-surface: #1c1b19;
+  --color-text: #e8e4df;
   --color-text-muted: #9ca3af;
   --color-text-subtle: #6b7280;
-  --color-border: #2a2a30;
-  --color-border-subtle: #1f1f24;
-  --color-accent: #e5e5e5;
-  --color-accent-hover: #d0d0d0;
-  --color-accent-subtle: rgb(229 229 229 / 8%);
+  --color-border: #2a2a28;
+  --color-border-subtle: #1f1f1d;
+  --color-accent: #e8e4df;
+  --color-accent-hover: #d4d0cb;
+  --color-accent-subtle: rgb(232 228 223 / 8%);
 
   --color-disc-d: #f0796a;
   --color-disc-d-subtle: rgb(240 121 106 / 12%);
