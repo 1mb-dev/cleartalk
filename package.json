@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "A tool that helps you talk to people better",
+  "description": "Know what to say before you say it",
+  "homepage": "https://cleartalk.1mb.dev",
+  "repository": "github:1mb-dev/cleartalk",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
