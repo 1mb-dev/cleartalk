@@ -43,15 +43,6 @@ Four tables: `User` (single default), `Assessment` (all attempts), `Contact` (pe
 
 Tokens in `styles/tokens.css`. Four style colors (Drive, Influence, Steady, Clarity) with base, subtle, and text variants. Dark mode via system preference + manual toggle. Fraunces (display) and Source Sans 3 (UI) fonts, self-hosted.
 
-## Voice
-
-ClearTalk has a distinct copy voice. The short version:
-
-- **Types are a lens, not a label.** Drive, Influence, Steady, Clarity are our vocabulary. Never reference the underlying behavioral framework by name.
-- **Warm, not clinical.** "How they communicate" not "personality type."
-- **Single hyphen** `-` in copy. No emoji. No em dashes.
-- **Mobile-first.** 44px touch targets, reduced motion respected, CSP locked down.
-
 ## Testing
 
 ```
