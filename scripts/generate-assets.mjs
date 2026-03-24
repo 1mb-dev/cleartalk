@@ -78,7 +78,68 @@ async function main() {
   await sharp(Buffer.from(ogSvg())).png().toFile(`${OUT}/og-image.png`);
   console.log('  og-image.png');
 
-  console.log('Done. All assets at public/assets/');
+  // Favicon PNG (32x32 for browsers that don't support SVG favicons)
+  const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <circle cx="12" cy="12" r="8" fill="${D}" opacity="0.7"/>
+    <circle cx="20" cy="12" r="8" fill="${I}" opacity="0.7"/>
+    <circle cx="20" cy="20" r="8" fill="${S}" opacity="0.7"/>
+    <circle cx="12" cy="20" r="8" fill="${C}" opacity="0.7"/>
+  </svg>`;
+
+  // Generate multiple sizes for ICO (16, 32, 48)
+  const favicon16 = await sharp(Buffer.from(faviconSvg)).resize(16, 16).png().toBuffer();
+  const favicon32 = await sharp(Buffer.from(faviconSvg)).resize(32, 32).png().toBuffer();
+  const favicon48 = await sharp(Buffer.from(faviconSvg)).resize(48, 48).png().toBuffer();
+
+  // Save 32x32 PNG favicon
+  await sharp(favicon32).toFile('public/favicon-32x32.png');
+  // Save 16x16 PNG favicon
+  await sharp(favicon16).toFile('public/favicon-16x16.png');
+  console.log('  favicon-16x16.png, favicon-32x32.png');
+
+  // Build ICO file (multi-resolution: 16, 32, 48)
+  // ICO format: header + directory entries + PNG data
+  const images = [
+    { size: 16, data: favicon16 },
+    { size: 32, data: favicon32 },
+    { size: 48, data: favicon48 },
+  ];
+
+  const headerSize = 6;
+  const dirEntrySize = 16;
+  const dirSize = dirEntrySize * images.length;
+  let dataOffset = headerSize + dirSize;
+
+  // ICO header: reserved(2) + type(2, 1=icon) + count(2)
+  const header = Buffer.alloc(headerSize);
+  header.writeUInt16LE(0, 0);     // reserved
+  header.writeUInt16LE(1, 2);     // type: icon
+  header.writeUInt16LE(images.length, 4);
+
+  const dirEntries = [];
+  const imageDataBuffers = [];
+
+  for (const img of images) {
+    const entry = Buffer.alloc(dirEntrySize);
+    entry.writeUInt8(img.size === 256 ? 0 : img.size, 0);  // width
+    entry.writeUInt8(img.size === 256 ? 0 : img.size, 1);  // height
+    entry.writeUInt8(0, 2);       // color palette
+    entry.writeUInt8(0, 3);       // reserved
+    entry.writeUInt16LE(1, 4);    // color planes
+    entry.writeUInt16LE(32, 6);   // bits per pixel
+    entry.writeUInt32LE(img.data.length, 8);  // data size
+    entry.writeUInt32LE(dataOffset, 12);       // data offset
+    dirEntries.push(entry);
+    imageDataBuffers.push(img.data);
+    dataOffset += img.data.length;
+  }
+
+  const ico = Buffer.concat([header, ...dirEntries, ...imageDataBuffers]);
+  const { writeFileSync } = await import('fs');
+  writeFileSync('public/favicon.ico', ico);
+  console.log('  favicon.ico (16+32+48)');
+
+  console.log('Done. All assets generated.');
 }
 
 main().catch(console.error);
