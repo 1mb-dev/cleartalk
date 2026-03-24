@@ -51,6 +51,7 @@
   min-width: var(--touch-min);
   color: var(--color-text-muted);
   transition: color var(--transition-fast);
+  position: relative;
 }
 
 .tab-item:hover {
@@ -59,6 +60,21 @@
 
 .tab-active {
   color: var(--color-accent);
+}
+
+.tab-active .tab-label {
+  font-weight: 700;
+}
+
+.tab-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  background: var(--color-accent);
+  border-radius: 0 0 2px 2px;
 }
 
 .tab-icon {
@@ -558,7 +574,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-5) var(--space-3);
+  padding: var(--space-6) var(--space-3);
   background: var(--color-surface);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -588,6 +604,27 @@
   font-size: var(--font-size-2xl);
   color: var(--color-text-muted);
   line-height: 1;
+}
+
+/* Coach: contextual nudge */
+.coach-nudge {
+  padding: var(--space-5) 0;
+  text-align: center;
+}
+
+.coach-nudge p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-body);
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.link-btn {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
 }
 
 /* Coach: subtitle */

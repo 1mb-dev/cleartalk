@@ -234,6 +234,23 @@ export function Coach() {
           <span class="contact-pick-name">Someone new</span>
         </button>
       </div>
+
+      {contacts.length <= 2 && (
+        <div class="coach-nudge">
+          <p>Tap a name, pick the situation, and get specific coaching for how they hear things.</p>
+        </div>
+      )}
+
+      {!user?.discProfile && contacts.length > 0 && (
+        <div class="coach-nudge">
+          <p>
+            Want advice tailored to your style too?{' '}
+            <button class="link-btn" type="button" onClick={() => navigate(() => setLocation('/profile'))}>
+              Take the 3-minute assessment
+            </button>
+          </p>
+        </div>
+      )}
     </div>
   );
 }
