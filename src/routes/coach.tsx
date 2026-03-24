@@ -159,7 +159,7 @@ export function Coach() {
           {DISC_LABELS[selectedContact.discProfile.primary]} type
           {selectedContact.confidence !== 'high' && ` (${selectedContact.confidence} confidence)`}
         </p>
-        <div class="situation-grid">
+        <div class={`situation-grid disc-accent-${selectedContact.discProfile.primary.toLowerCase()}`}>
           {(Object.entries(SITUATION_LABELS) as [SituationType, string][]).map(([key, label]) => (
             <button
               key={key}
@@ -181,6 +181,16 @@ export function Coach() {
     return (
       <div class="route-shell">
         <div class="welcome-block">
+          <svg class="welcome-motif" viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
+            <circle cx="42" cy="42" r="28" fill="var(--color-disc-d-subtle)" />
+            <circle cx="78" cy="42" r="28" fill="var(--color-disc-i-subtle)" />
+            <circle cx="78" cy="78" r="28" fill="var(--color-disc-s-subtle)" />
+            <circle cx="42" cy="78" r="28" fill="var(--color-disc-c-subtle)" />
+            <circle cx="42" cy="42" r="10" fill="var(--color-disc-d)" opacity="0.7" />
+            <circle cx="78" cy="42" r="8" fill="var(--color-disc-i)" opacity="0.7" />
+            <circle cx="78" cy="78" r="12" fill="var(--color-disc-s)" opacity="0.7" />
+            <circle cx="42" cy="78" r="9" fill="var(--color-disc-c)" opacity="0.7" />
+          </svg>
           <h1>Before your next conversation</h1>
           <p class="welcome-text">
             Pick a person. Pick the moment. Get clear on what to say
@@ -220,7 +230,9 @@ export function Coach() {
             type="button"
             onClick={() => selectContact(c.id)}
           >
-            <span class={`type-dot disc-${c.discProfile.primary.toLowerCase()}`} aria-hidden="true" />
+            <span class={`type-avatar disc-${c.discProfile.primary.toLowerCase()}`} aria-hidden="true">
+              {c.discProfile.primary}
+            </span>
             <span class="contact-pick-name">{c.name}</span>
             <span class="contact-pick-type">{DISC_LABELS[c.discProfile.primary]}</span>
           </button>

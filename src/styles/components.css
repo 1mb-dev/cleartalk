@@ -106,6 +106,10 @@
   max-width: 300px;
 }
 
+.welcome-motif {
+  margin-bottom: var(--space-2);
+}
+
 .welcome-hint {
   color: var(--color-text-subtle);
   font-size: var(--font-size-sm);
@@ -392,13 +396,18 @@
   align-items: center;
   gap: var(--space-3);
   flex-wrap: wrap;
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
 }
 
 .type-badge {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-1) var(--space-3);
-  font-size: var(--font-size-sm);
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
   font-weight: 600;
   border-radius: var(--radius-full);
 }
@@ -410,7 +419,7 @@
 
 .coaching-arrow {
   color: var(--color-text-subtle);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
 }
 
 .coaching-section {
@@ -538,6 +547,23 @@
 .type-dot.disc-s { background: var(--color-disc-s); }
 .type-dot.disc-c { background: var(--color-disc-c); }
 
+/* DISC type avatar (larger, with initial) */
+.type-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+}
+
+.type-avatar.disc-d { background: var(--color-disc-d-subtle); color: var(--color-disc-d-text); }
+.type-avatar.disc-i { background: var(--color-disc-i-subtle); color: var(--color-disc-i-text); }
+.type-avatar.disc-s { background: var(--color-disc-s-subtle); color: var(--color-disc-s-text); }
+.type-avatar.disc-c { background: var(--color-disc-c-subtle); color: var(--color-disc-c-text); }
+
 /* Small type badges */
 .type-badge-sm {
   display: inline-flex;
@@ -656,6 +682,12 @@
 .situation-btn:hover {
   border-color: var(--color-accent);
 }
+
+/* Colored accent on situation buttons per contact type */
+.disc-accent-d .situation-btn { border-left: 3px solid var(--color-disc-d); }
+.disc-accent-i .situation-btn { border-left: 3px solid var(--color-disc-i); }
+.disc-accent-s .situation-btn { border-left: 3px solid var(--color-disc-s); }
+.disc-accent-c .situation-btn { border-left: 3px solid var(--color-disc-c); }
 
 .situation-icon {
   font-size: var(--font-size-xl);
