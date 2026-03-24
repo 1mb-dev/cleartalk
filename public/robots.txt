@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://cleartalk.1mb.dev/sitemap.xml
