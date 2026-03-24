@@ -182,7 +182,7 @@ export function Coach() {
     return (
       <div class="route-shell">
         <div class="welcome-block">
-          <svg class="welcome-motif" viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
+          <svg class="welcome-motif" viewBox="0 0 120 120" width="80" height="80" aria-hidden="true">
             <circle cx="46" cy="46" r="32" fill="var(--color-disc-d)" opacity="0.15" />
             <circle cx="74" cy="46" r="32" fill="var(--color-disc-i)" opacity="0.15" />
             <circle cx="74" cy="74" r="32" fill="var(--color-disc-s)" opacity="0.15" />
