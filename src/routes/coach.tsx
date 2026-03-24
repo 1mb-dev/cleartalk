@@ -189,6 +189,21 @@ export function Coach() {
           <button class="btn-primary" type="button" onClick={() => setShowQuickTag(true)}>
             Start with someone
           </button>
+          <p class="welcome-hint">Takes about 60 seconds. No sign-up needed.</p>
+        </div>
+        <div class="onboard-features">
+          <div class="onboard-feature">
+            <span class="onboard-icon" aria-hidden="true">{'\u{1F4AC}'}</span>
+            <p>Coaching cards tailored to how they communicate</p>
+          </div>
+          <div class="onboard-feature">
+            <span class="onboard-icon" aria-hidden="true">{'\u{1F4A1}'}</span>
+            <p>Phrases to open with and pitfalls to avoid</p>
+          </div>
+          <div class="onboard-feature">
+            <span class="onboard-icon" aria-hidden="true">{'\u{1F4C8}'}</span>
+            <p>Track your patterns and see what works</p>
+          </div>
         </div>
       </div>
     );
@@ -196,7 +211,7 @@ export function Coach() {
 
   return (
     <div class="route-shell">
-      <h1>Who are you talking to?</h1>
+      <h1>Pick a conversation</h1>
       <div class="contact-pick-grid">
         {contacts.map(c => (
           <button
