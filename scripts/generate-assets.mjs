@@ -19,36 +19,37 @@ const TEXT = '#2c2926';
 const MUTED = '#5c5854';
 
 // ---- App Icon: Overlapping circles (connection motif) ----
+// Dark background, large bold circles for home screen visibility
 function iconSvg(size) {
   const s = size;
-  const r = s * 0.16;
-  const gap = s * 0.11;
+  const r = s * 0.22;
+  const gap = s * 0.12;
   const cx = s / 2, cy = s / 2;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">
-  <rect width="${s}" height="${s}" fill="${BG}"/>
-  <circle cx="${cx - gap}" cy="${cy - gap}" r="${r}" fill="${D}" opacity="0.7"/>
-  <circle cx="${cx + gap}" cy="${cy - gap}" r="${r}" fill="${I}" opacity="0.7"/>
-  <circle cx="${cx + gap}" cy="${cy + gap}" r="${r}" fill="${S}" opacity="0.7"/>
-  <circle cx="${cx - gap}" cy="${cy + gap}" r="${r}" fill="${C}" opacity="0.7"/>
+  <rect width="${s}" height="${s}" fill="${TEXT}"/>
+  <circle cx="${cx - gap}" cy="${cy - gap}" r="${r}" fill="${D}" opacity="0.85"/>
+  <circle cx="${cx + gap}" cy="${cy - gap}" r="${r}" fill="${I}" opacity="0.85"/>
+  <circle cx="${cx + gap}" cy="${cy + gap}" r="${r}" fill="${S}" opacity="0.85"/>
+  <circle cx="${cx - gap}" cy="${cy + gap}" r="${r}" fill="${C}" opacity="0.85"/>
 </svg>`;
 }
 
 // ---- Maskable Icon: Same motif, inset to 80% safe zone ----
 function maskableIconSvg(size) {
   const s = size;
-  const pad = s * 0.1; // 10% padding on each side = 80% safe zone
+  const pad = s * 0.1;
   const inner = s - pad * 2;
-  const r = inner * 0.15;
-  const gap = inner * 0.10;
+  const r = inner * 0.22;
+  const gap = inner * 0.12;
   const cx = s / 2, cy = s / 2;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">
-  <rect width="${s}" height="${s}" fill="${BG}"/>
-  <circle cx="${cx - gap}" cy="${cy - gap}" r="${r}" fill="${D}" opacity="0.7"/>
-  <circle cx="${cx + gap}" cy="${cy - gap}" r="${r}" fill="${I}" opacity="0.7"/>
-  <circle cx="${cx + gap}" cy="${cy + gap}" r="${r}" fill="${S}" opacity="0.7"/>
-  <circle cx="${cx - gap}" cy="${cy + gap}" r="${r}" fill="${C}" opacity="0.7"/>
+  <rect width="${s}" height="${s}" fill="${TEXT}"/>
+  <circle cx="${cx - gap}" cy="${cy - gap}" r="${r}" fill="${D}" opacity="0.85"/>
+  <circle cx="${cx + gap}" cy="${cy - gap}" r="${r}" fill="${I}" opacity="0.85"/>
+  <circle cx="${cx + gap}" cy="${cy + gap}" r="${r}" fill="${S}" opacity="0.85"/>
+  <circle cx="${cx - gap}" cy="${cy + gap}" r="${r}" fill="${C}" opacity="0.85"/>
 </svg>`;
 }
 
@@ -161,10 +162,11 @@ async function main() {
 
   // Favicon PNG (32x32 for browsers that don't support SVG favicons)
   const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-    <circle cx="12" cy="12" r="8" fill="${D}" opacity="0.7"/>
-    <circle cx="20" cy="12" r="8" fill="${I}" opacity="0.7"/>
-    <circle cx="20" cy="20" r="8" fill="${S}" opacity="0.7"/>
-    <circle cx="12" cy="20" r="8" fill="${C}" opacity="0.7"/>
+    <rect width="32" height="32" rx="6" fill="${TEXT}"/>
+    <circle cx="12" cy="12" r="8" fill="${D}" opacity="0.85"/>
+    <circle cx="20" cy="12" r="8" fill="${I}" opacity="0.85"/>
+    <circle cx="20" cy="20" r="8" fill="${S}" opacity="0.85"/>
+    <circle cx="12" cy="20" r="8" fill="${C}" opacity="0.85"/>
   </svg>`;
 
   // Generate multiple sizes for ICO (16, 32, 48)
