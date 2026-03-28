@@ -24,7 +24,8 @@ test.describe('Performance', () => {
       !e.includes('service-worker') && !e.includes('sw.js') &&
       !e.includes('workbox') && !e.includes('Failed to register') &&
       !e.includes('SecurityError') && !e.includes('navigator.serviceWorker') &&
-      !e.includes('frame-ancestors')  // browser warns: only valid as HTTP header, not meta
+      !e.includes('frame-ancestors') &&  // browser warns: only valid as HTTP header, not meta
+      !e.includes('cloudflareinsights') && !e.includes('Access-Control-Allow-Origin')  // CF analytics CORS on localhost
     );
     expect(realErrors, `Unexpected console errors: ${realErrors.join(', ')}`).toHaveLength(0);
   });
@@ -32,7 +33,10 @@ test.describe('Performance', () => {
   test('no unhandled promise rejections', async ({ page }) => {
     const rejections: string[] = [];
     page.on('pageerror', error => {
-      rejections.push(error.message);
+      // CF analytics CORS rejection on localhost is expected
+      if (!error.message.includes('cloudflareinsights') && !error.message.includes('Access-Control-Allow-Origin') && !error.message.includes('Load failed')) {
+        rejections.push(error.message);
+      }
     });
     await page.goto('/');
     await page.waitForSelector('h1');

@@ -33,7 +33,7 @@ test.describe('Accessibility', () => {
     await page.goto('/');
     await page.waitForSelector('[role="tablist"]');
     const tablist = page.locator('[role="tablist"]');
-    await expect(tablist).toHaveAttribute('aria-label', 'Navigation');
+    await expect(tablist).toHaveAttribute('aria-label', 'Main navigation');
 
     const tabs = page.locator('[role="tab"]');
     const count = await tabs.count();

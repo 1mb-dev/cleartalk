@@ -11,8 +11,8 @@ test.describe('UX States', () => {
 
     test('welcome shows onboarding features', async ({ page }) => {
       await page.goto('/');
-      await page.waitForSelector('.onboard-features');
-      const features = await page.locator('.onboard-feature').count();
+      await page.waitForSelector('.welcome-features');
+      const features = await page.locator('.welcome-feature').count();
       expect(features).toBe(3);
     });
 
