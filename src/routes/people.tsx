@@ -5,8 +5,10 @@ import { getContacts } from '../db/queries.ts';
 import { DISC_LABELS } from '../engine/types.ts';
 import type { Contact } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
+import { useDocumentTitle } from '../lib/use-document-title.ts';
 
 export function People() {
+  useDocumentTitle('People - ClearTalk');
   const [, setLocation] = useLocation();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [showQuickTag, setShowQuickTag] = useState(false);

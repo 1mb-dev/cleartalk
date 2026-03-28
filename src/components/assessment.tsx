@@ -109,7 +109,7 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
           onClick={step > 0 ? goBack : onCancel}
           aria-label={step > 0 ? 'Previous question' : 'Cancel assessment'}
         >
-          {step > 0 ? '\u2190' : '\u2715'}
+          <span aria-hidden="true">{step > 0 ? '\u2190' : '\u2715'}</span>
         </button>
         <div class="assessment-progress">
           <div class="assessment-progress-bar" style={{ width: `${progress * 100}%` }} />

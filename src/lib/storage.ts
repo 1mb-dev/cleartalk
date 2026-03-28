@@ -29,7 +29,7 @@ export function downloadJson(data: string, filename: string): void {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
 }
 
 export async function importData(json: string): Promise<{ contacts: number; entries: number }> {
@@ -37,6 +37,15 @@ export async function importData(json: string): Promise<{ contacts: number; entr
 
   if (!data.contacts || !Array.isArray(data.contacts)) {
     throw new Error('Invalid export file: missing contacts');
+  }
+  if (data.users && !Array.isArray(data.users)) {
+    throw new Error('Invalid export file: users must be an array');
+  }
+  if (data.assessments && !Array.isArray(data.assessments)) {
+    throw new Error('Invalid export file: assessments must be an array');
+  }
+  if (data.journal && !Array.isArray(data.journal)) {
+    throw new Error('Invalid export file: journal must be an array');
   }
 
   let contactCount = 0;

@@ -4,6 +4,7 @@ import { getCoachingCard } from '../engine/coaching.ts';
 import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
 import type { CoachingCard, SituationType } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
+import { useDocumentTitle } from '../lib/use-document-title.ts';
 import { parsePair } from '../lib/parse-pair.ts';
 import { Logo } from '../components/logo.tsx';
 
@@ -15,6 +16,11 @@ export function Insight() {
   const [card, setCard] = useState<CoachingCard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const insightTitle = card
+    ? `How to ${SITUATION_LABELS[card.situation].toLowerCase()} with ${card.theirType === 'I' ? 'an' : 'a'} ${DISC_LABELS[card.theirType]} communicator - ClearTalk`
+    : 'ClearTalk';
+  useDocumentTitle(insightTitle);
 
   useEffect(() => {
     loadCard();
@@ -69,7 +75,7 @@ export function Insight() {
       </div>
 
       <div class="insight-header">
-        <h1>How to {SITUATION_LABELS[card.situation].toLowerCase()} with a {DISC_LABELS[card.theirType]} communicator</h1>
+        <h1>How to {SITUATION_LABELS[card.situation].toLowerCase()} with {card.theirType === 'I' ? 'an' : 'a'} {DISC_LABELS[card.theirType]} communicator</h1>
         <div class="coaching-card-header">
           <span class={`type-badge disc-${card.yourType.toLowerCase()}`}>
             {DISC_LABELS[card.yourType]}
@@ -86,19 +92,23 @@ export function Insight() {
         <p class="coaching-section-body">{card.approach}</p>
       </div>
 
-      <div class="coaching-section">
-        <h4 class="coaching-section-title">Open with</h4>
-        <ul class="coaching-phrases">
-          <li>{card.openWith[0]}</li>
-        </ul>
-      </div>
+      {card.openWith.length > 0 && (
+        <div class="coaching-section">
+          <h4 class="coaching-section-title">Open with</h4>
+          <ul class="coaching-phrases">
+            <li>{card.openWith[0]}</li>
+          </ul>
+        </div>
+      )}
 
-      <div class="coaching-section coaching-warning">
-        <h4 class="coaching-section-title">Avoid</h4>
-        <ul class="coaching-phrases">
-          <li>{card.avoid[0]}</li>
-        </ul>
-      </div>
+      {card.avoid.length > 0 && (
+        <div class="coaching-section coaching-warning">
+          <h4 class="coaching-section-title">Avoid</h4>
+          <ul class="coaching-phrases">
+            <li>{card.avoid[0]}</li>
+          </ul>
+        </div>
+      )}
 
       <div class="insight-cta">
         <p class="insight-cta-text">
@@ -106,9 +116,6 @@ export function Insight() {
         </p>
         <button class="btn-primary" type="button" onClick={() => navigate(() => setLocation('/'))}>
           Try ClearTalk - free, no sign-up
-        </button>
-        <button class="link-btn" type="button" onClick={() => navigate(() => setLocation('/'))}>
-          Open in ClearTalk
         </button>
       </div>
     </main>

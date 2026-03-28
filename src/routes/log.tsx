@@ -6,8 +6,10 @@ import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
 import type { Contact, JournalEntry, SituationType } from '../engine/types.ts';
 import { formatRelativeDate } from '../lib/format.ts';
 import { navigate } from '../lib/transitions.ts';
+import { useDocumentTitle } from '../lib/use-document-title.ts';
 
 export function Log() {
+  useDocumentTitle('Log - ClearTalk');
   const [, setLocation] = useLocation();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
@@ -198,6 +200,7 @@ export function Log() {
               return (
                 <div key={e.id} class="journal-entry">
                   <span class={`outcome-dot outcome-${e.outcome}`} aria-hidden="true" />
+                  <span class="sr-only">Outcome: {e.outcome} of 5</span>
                   <div class="journal-entry-content">
                     <span class="journal-person">
                       {contact?.name ?? 'Unknown'}

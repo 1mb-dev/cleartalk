@@ -69,7 +69,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
       <div class="quicktag-wizard">
         <div class="assessment-header">
           <button class="assessment-back" type="button" onClick={onCancel} aria-label="Cancel">
-            {'\u2715'}
+            <span aria-hidden="true">{'\u2715'}</span>
           </button>
           <span class="assessment-prompt">Who are you thinking about?</span>
         </div>
@@ -78,6 +78,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
             type="text"
             class="quicktag-name-input"
             placeholder="Their name"
+            aria-label="Person's name"
             value={name}
             onInput={(e) => setName((e.target as HTMLInputElement).value)}
             autoFocus
@@ -96,7 +97,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
       <div class="quicktag-wizard">
         <div class="assessment-header">
           <button class="assessment-back" type="button" onClick={() => { setPendingResult(null); setStep(total - 1); }} aria-label="Go back">
-            {'\u2190'}
+            <span aria-hidden="true">{'\u2190'}</span>
           </button>
           <span class="assessment-prompt">Does this look right?</span>
         </div>
@@ -147,7 +148,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
     <div class="quicktag-wizard">
       <div class="assessment-header">
         <button class="assessment-back" type="button" onClick={goBack} aria-label="Previous question">
-          {'\u2190'}
+          <span aria-hidden="true">{'\u2190'}</span>
         </button>
         <div class="assessment-progress">
           <div class="assessment-progress-bar" style={{ width: `${progress * 100}%` }} />

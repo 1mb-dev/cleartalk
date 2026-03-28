@@ -9,8 +9,10 @@ import { canInstall, isInstalled, triggerInstall, onInstallAvailable } from '../
 import { DISC_LABELS } from '../engine/types.ts';
 import type { User, DiscProfile, JournalEntry } from '../engine/types.ts';
 import type { InsightsSummary } from '../engine/insights.ts';
+import { useDocumentTitle } from '../lib/use-document-title.ts';
 
 export function Profile() {
+  useDocumentTitle('Profile - ClearTalk');
   const [user, setUser] = useState<User | null>(null);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [insights, setInsights] = useState<InsightsSummary | null>(null);
@@ -210,9 +212,10 @@ export function Profile() {
                       <span class="insight-type-name">{DISC_LABELS[stat.theirType]}</span>
                       <span class="insight-type-avg">{stat.average}</span>
                       <span class="insight-type-count">{stat.count} logged</span>
-                      <span class={`insight-trend trend-${stat.trend}`}>
+                      <span class={`insight-trend trend-${stat.trend}`} aria-hidden="true">
                         {stat.trend === 'improving' ? '\u2191' : stat.trend === 'declining' ? '\u2193' : '\u2192'}
                       </span>
+                      <span class="sr-only">{stat.trend}</span>
                     </div>
                   ))}
                 </div>
@@ -361,6 +364,15 @@ export function Profile() {
             </svg>
             <p>No accounts, no sign-up, works offline</p>
           </div>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h2>Privacy</h2>
+        <div class="privacy-details">
+          <p>All your contacts, assessments, and conversation notes are stored locally on your device in your browser's storage. Nothing is sent to a server.</p>
+          <p>ClearTalk uses Cloudflare Web Analytics for anonymous page-view counts. This does not use cookies, does not collect personal data, and cannot identify you.</p>
+          <p>You can export or delete all your data at any time from the settings above.</p>
         </div>
       </div>
     </div>

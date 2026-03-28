@@ -7,6 +7,7 @@ import { getCoachingCard } from '../engine/coaching.ts';
 import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
 import type { Contact, CoachingCard, SituationType, User } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
+import { useDocumentTitle } from '../lib/use-document-title.ts';
 import { Logo } from '../components/logo.tsx';
 import { canInstall, isInstalled, wasDismissed, triggerInstall, dismissPrompt, onInstallAvailable } from '../lib/install-prompt.ts';
 
@@ -27,6 +28,13 @@ export function Coach() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [installAvailable, setInstallAvailable] = useState(canInstall() && !isInstalled() && !wasDismissed());
+
+  const pageTitle = selectedContact && isValidSituation(params.situation)
+    ? `${SITUATION_LABELS[params.situation]} for ${selectedContact.name} - ClearTalk`
+    : selectedContact
+      ? `Coaching for ${selectedContact.name} - ClearTalk`
+      : 'Coach - ClearTalk';
+  useDocumentTitle(pageTitle);
 
   useEffect(() => {
     return onInstallAvailable((available) => {
@@ -132,7 +140,7 @@ export function Coach() {
     return (
       <div class="route-shell">
         <button class="back-link" type="button" onClick={goBack}>
-          {'\u2190'} {selectedContact.name}
+          <span aria-hidden="true">{'\u2190'}</span> {selectedContact.name}
         </button>
         <h1>{SITUATION_LABELS[params.situation]}</h1>
         <CoachingCardView card={card} hasAssessment={!!user?.discProfile} />
@@ -156,7 +164,7 @@ export function Coach() {
     return (
       <div class="route-shell">
         <button class="back-link" type="button" onClick={goBack}>
-          {'\u2190'} Back
+          <span aria-hidden="true">{'\u2190'}</span> Back
         </button>
         <h1>
           Coaching for <span class={`inline-badge disc-${selectedContact.discProfile.primary.toLowerCase()}`}>
@@ -268,7 +276,7 @@ export function Coach() {
 
       {contacts.length <= 2 && (
         <div class="coach-nudge">
-          <p>Tap a name, pick the situation, and get specific coaching for how they hear things.</p>
+          <p>Pick a name, pick the situation, and get specific coaching for how they hear things.</p>
         </div>
       )}
 

@@ -84,7 +84,7 @@ function ShareButton({ card }: { card: CoachingCardType }) {
     try {
       if (typeof navigator.share === 'function') {
         await navigator.share({
-          title: `How to ${card.situation.replace('_', ' ')} with a ${DISC_LABELS[card.theirType]} communicator`,
+          title: `How to ${card.situation.replaceAll('_', ' ')} with ${card.theirType === 'I' ? 'an' : 'a'} ${DISC_LABELS[card.theirType]} communicator`,
           url,
         });
         return;

@@ -56,9 +56,9 @@ export function DiscWheel({ profile, size = 360 }: DiscWheelProps) {
         width={size}
         height={Math.round(size * 120 / 210)}
         role="img"
-        aria-label={`Your communication style: primarily ${DISC_LABELS[profile.primary]}, secondarily ${DISC_LABELS[profile.secondary]}`}
+        aria-label={`Communication style: primarily ${DISC_LABELS[profile.primary]}, secondarily ${DISC_LABELS[profile.secondary]}`}
       >
-        <title>DISC Communication Style Profile</title>
+        <title>Communication Style Profile</title>
         <desc>{summary}</desc>
 
         {/* Grid lines */}

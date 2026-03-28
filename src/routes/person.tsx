@@ -8,6 +8,7 @@ import { typeProfiles } from '../data/type-profiles.ts';
 import type { Contact, JournalEntry, SituationType } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
 import { formatRelativeDate } from '../lib/format.ts';
+import { useDocumentTitle } from '../lib/use-document-title.ts';
 
 export function PersonDetail() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +20,8 @@ export function PersonDetail() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
+
+  useDocumentTitle(contact ? `${contact.name} - ClearTalk` : 'People - ClearTalk');
 
   useEffect(() => {
     if (id) loadPerson(id);
@@ -60,7 +63,7 @@ export function PersonDetail() {
     return (
       <div class="route-shell">
         <button class="back-link" type="button" onClick={() => navigate(() => setLocation('/people'))}>
-          {'\u2190'} People
+          <span aria-hidden="true">{'\u2190'}</span> People
         </button>
         <div class="welcome-block">
           <p class="welcome-text">Something went wrong. Your data is safe - try again.</p>
@@ -74,7 +77,7 @@ export function PersonDetail() {
     return (
       <div class="route-shell">
         <button class="back-link" type="button" onClick={() => navigate(() => setLocation('/people'))}>
-          {'\u2190'} People
+          <span aria-hidden="true">{'\u2190'}</span> People
         </button>
         <p class="empty-state">Person not found.</p>
       </div>
@@ -86,7 +89,7 @@ export function PersonDetail() {
   return (
     <div class="route-shell">
       <button class="back-link" type="button" onClick={() => navigate(() => setLocation('/people'))}>
-        {'\u2190'} People
+        <span aria-hidden="true">{'\u2190'}</span> People
       </button>
 
       {editingName ? (
@@ -135,7 +138,7 @@ export function PersonDetail() {
       <div class="type-summary compact">
         <p class="type-default">{profile.communicationDefault}</p>
 
-        <h4>When talking to a {profile.label}</h4>
+        <h4>When talking to {profile.label[0] === 'I' ? 'an' : 'a'} {profile.label}</h4>
         <ul>
           <li>{profile.strengths[0]} - lean into this</li>
           <li>{profile.blindSpots[0]} - watch for this</li>
@@ -165,6 +168,7 @@ export function PersonDetail() {
             {entries.slice(0, 5).map(e => (
               <div key={e.id} class="journal-entry">
                 <span class={`outcome-dot outcome-${e.outcome}`} aria-hidden="true" />
+                <span class="sr-only">Outcome: {e.outcome} of 5</span>
                 <div class="journal-entry-content">
                   <span class="journal-situation">{SITUATION_LABELS[e.situationType]}</span>
                   {e.note && <span class="journal-note">{e.note}</span>}

@@ -50,7 +50,7 @@ export function Layout({ children }: LayoutProps) {
       <main id="main" class="app-content">
         {children}
       </main>
-      <nav class="tab-bar" role="tablist" aria-label="Navigation">
+      <nav class="tab-bar" role="tablist" aria-label="Main navigation">
         {tabs.map((tab, i) => {
           const active = isActive(tab.path);
           return (
