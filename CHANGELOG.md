@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.3.0 (2026-03-28)
+
+### Fixed
+
+- "a Influence" grammar bug on coaching cards, insight pages, and share titles
+- Screen readers no longer announce decorative Unicode arrows in back buttons
+- Outcome dots in journal entries now have screen reader text ("Outcome: 4 of 5")
+- DiscWheel aria-label no longer says "Your" when viewing someone else's profile
+- Import validation rejects malformed export files instead of silently corrupting data
+- `URL.revokeObjectURL` timing in download helper prevents empty downloads in Safari
+- `replaceAll` used for underscore replacement in share titles (was `replace`)
+- Duplicate "Open in ClearTalk" CTA removed from insight pages
+- Empty `openWith`/`avoid` arrays no longer render undefined on insight pages
+
+### Features
+
+- Per-route page titles and canonical URLs via `useDocumentTitle` hook
+- Privacy disclosure section in Profile (local data, Cloudflare Web Analytics)
+- `llms.txt` for LLM/AI agent discoverability
+- JSON-LD `HowTo` structured data on all 80 pre-rendered insight pages
+- Screenshot utility script for announcement assets
+
+### Changed
+
+- "Tap a name" copy replaced with device-neutral "Pick a name"
+- "DISC Communication Style Profile" replaced with "Communication Style Profile" in SVG
+- Quick-tag name input now has `aria-label` for screen readers
+- Nav bar `aria-label` updated to "Main navigation"
+
 ## 0.2.0 (2026-03-25)
 
 ### Features
