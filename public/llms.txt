@@ -1,0 +1,42 @@
+# ClearTalk
+
+> Know what to say before you say it.
+
+ClearTalk coaches you for the person and the moment - what to say, what to avoid, and how to read the room. Free, private, no sign-up.
+
+## What it does
+
+ClearTalk helps people prepare for conversations by understanding communication styles. Add a person, answer 8 quick questions about how they communicate, and get specific coaching for 5 situations: giving feedback, making a request, navigating conflict, pitching an idea, and delivering difficult news.
+
+## Communication styles
+
+ClearTalk uses four communication styles:
+
+- **Drive** - direct, results-oriented, decisive
+- **Influence** - expressive, enthusiastic, people-oriented
+- **Steady** - patient, reliable, harmony-seeking
+- **Clarity** - analytical, precise, quality-focused
+
+## Coaching cards
+
+80 coaching cards cover all 16 style pairings across 5 situations. Each card includes: approach, phrases to open with, pitfalls to avoid, what to expect, recovery advice, and body language tips.
+
+## Shareable insight pages
+
+Each coaching card has a public URL:
+
+https://cleartalk.1mb.dev/insight/{your-type}-to-{their-type}/{situation}
+
+Types: d, i, s, c
+Situations: feedback, request, conflict, pitch, difficult_news
+
+Example: https://cleartalk.1mb.dev/insight/d-to-i/feedback
+
+## Privacy
+
+All user data stays on-device in IndexedDB. No accounts, no server storage. Anonymous page-view analytics via Cloudflare Web Analytics (no cookies, no personal data).
+
+## Links
+
+- Site: https://cleartalk.1mb.dev
+- Sitemap: https://cleartalk.1mb.dev/sitemap.xml

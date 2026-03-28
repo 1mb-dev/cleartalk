@@ -57,6 +57,20 @@ for (const yourType of TYPES) {
       const dir = join(distDir, 'insight', pair, situation);
       mkdirSync(dir, { recursive: true });
 
+      const situationVerb = SITUATION_LABELS[situation].toLowerCase();
+      const jsonLd = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'HowTo',
+        name: `How to ${situationVerb} with ${theirArticle} ${theirLabel} communicator`,
+        description,
+        step: [
+          { '@type': 'HowToStep', name: 'Understand the approach', text: `Learn how to approach ${situationVerb} with ${theirArticle} ${theirLabel} communication style.` },
+          { '@type': 'HowToStep', name: 'Choose your opening', text: 'Use tailored phrases to start the conversation effectively.' },
+          { '@type': 'HowToStep', name: 'Know what to avoid', text: `Understand the pitfalls when communicating with ${theirArticle} ${theirLabel} style.` },
+        ],
+        tool: { '@type': 'HowToTool', name: 'ClearTalk' },
+      });
+
       const html = `<!doctype html>
 <html lang="en">
   <head>
@@ -64,6 +78,7 @@ for (const yourType of TYPES) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#2c2926" />
     <meta name="description" content="${description}" />
+    <script type="application/ld+json">${jsonLd}</script>
 
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${description}" />
