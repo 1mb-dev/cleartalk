@@ -6,6 +6,7 @@ import { typeProfiles } from '../data/type-profiles.ts';
 import { calculateInsights } from '../engine/insights.ts';
 import { exportData, downloadJson, importData, clearAllData } from '../lib/storage.ts';
 import { canInstall, isInstalled, triggerInstall, onInstallAvailable } from '../lib/install-prompt.ts';
+import { getOfflineStatus, type OfflineStatus } from '../lib/offline-ready.ts';
 import { DISC_LABELS } from '../engine/types.ts';
 import type { User, DiscProfile, JournalEntry } from '../engine/types.ts';
 import type { InsightsSummary } from '../engine/insights.ts';
@@ -22,6 +23,7 @@ export function Profile() {
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
   const [showInstall, setShowInstall] = useState(canInstall() && !isInstalled());
+  const [offlineStatus, setOfflineStatus] = useState<OfflineStatus | null>(null);
   const [theme, setTheme] = useState<'auto' | 'light' | 'dark'>(() => {
     try {
       return (localStorage.getItem('cleartalk-theme') as 'light' | 'dark') ?? 'auto';
@@ -32,6 +34,7 @@ export function Profile() {
 
   useEffect(() => { loadProfile(); }, []);
   useEffect(() => onInstallAvailable((a) => setShowInstall(a && !isInstalled())), []);
+  useEffect(() => { getOfflineStatus().then(setOfflineStatus); }, []);
 
   async function loadProfile() {
     setLoading(true);
@@ -254,6 +257,14 @@ export function Profile() {
             }}>
               Install
             </button>
+          </div>
+        )}
+        {offlineStatus === 'unreliable' && (
+          <div class="setting-row">
+            <div>
+              <span class="setting-label">Offline mode</span>
+              <p class="setting-hint">May be unreliable. Open ClearTalk once while online to refresh.</p>
+            </div>
           </div>
         )}
         <div class="setting-row">

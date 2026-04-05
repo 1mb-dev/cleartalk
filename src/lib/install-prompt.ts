@@ -1,3 +1,5 @@
+import { requestPersistentStorage } from './offline-ready.ts';
+
 let deferredPrompt: BeforeInstallPromptEvent | null = null;
 let listeners: Array<(available: boolean) => void> = [];
 
@@ -64,5 +66,7 @@ if (typeof window !== 'undefined') {
   window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
     notify(false);
+    // Lock down storage so the PWA works offline from first cold launch.
+    requestPersistentStorage().catch(() => { /* best-effort */ });
   });
 }
