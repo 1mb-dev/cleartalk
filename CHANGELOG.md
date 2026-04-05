@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1 (2026-04-05)
+
+### Fixed
+
+- Installed PWA now requests persistent storage so Chrome cannot evict Cache Storage between uses - fixes cold offline launch showing "You're offline" page after periods of inactivity
+- Profile surfaces an unobtrusive "Offline mode may be unreliable" note when persistent storage was denied
+
 ## 0.3.0 (2026-03-28)
 
 ### Fixed
