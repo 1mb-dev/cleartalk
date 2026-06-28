@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "dexie": "^4.4.4",
-    "preact": "^10.29.2",
+    "preact": "^10.29.3",
     "wouter": "^3.10.0"
   },
   "devDependencies": {
