@@ -1,0 +1,12 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Public client-side tokens that are not secrets"
+regexTarget = "line"
+regexes = [
+  # Cloudflare Web Analytics beacon token in index.html. It is embedded in the page and
+  # served to every visitor by design -- it identifies the site to the analytics endpoint
+  # and grants nothing. Rotating it would not change who can read it.
+  '''data-cf-beacon''',
+]
