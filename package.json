@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
-    "@playwright/test": "^1.62.0",
+    "@playwright/test": "^1.62.1",
     "@preact/preset-vite": "^2.10.4",
     "@types/node": "^25.9.3",
     "sharp": "^0.35.3",
