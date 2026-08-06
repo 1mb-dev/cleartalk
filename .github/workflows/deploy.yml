@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*'
+  # Keep inputs empty -- the ref comes from the branch picker, so nothing is interpolated.
+  workflow_dispatch:
 
 concurrency:
   group: deploy
