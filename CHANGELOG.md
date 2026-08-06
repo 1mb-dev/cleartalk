@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.2 (2026-08-06)
+
+### Fixed
+
+- Tagged releases now reach production. Every release from 0.1.0 through 0.3.1 was published as a Cloudflare Pages preview instead of production, so cleartalk.1mb.dev served the 2026-03-24 build for four months and the fixes in 0.3.0 and 0.3.1 reached nobody
+- Content Security Policy no longer blocks Cloudflare's bot-detection script, which was logging an error on every page load
+- Page views are no longer counted twice. The app carried its own analytics tag alongside the one Cloudflare injects into every response
+
 ## 0.3.1 (2026-04-05)
 
 ### Fixed
