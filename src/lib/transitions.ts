@@ -29,6 +29,16 @@ export function navigate(callback: () => void): void {
     return;
   }
 
-  const transition = (document as unknown as { startViewTransition: (cb: () => void) => { finished: Promise<void> } }).startViewTransition(callback);
+  const transition = (
+    document as unknown as {
+      startViewTransition: (cb: () => void) => { finished: Promise<void>; ready: Promise<void> };
+    }
+  ).startViewTransition(callback);
+
+  // `ready` rejects with InvalidStateError whenever the browser skips the transition -- a
+  // backgrounded tab, or another transition already in flight. That is benign: the callback still
+  // runs and `finished` still resolves, so the route change completes either way. But an
+  // unobserved rejection surfaces as an uncaught error on every navigation, so observe it.
+  transition.ready.catch(() => {});
   transition.finished.then(restoreFocus).catch(restoreFocus);
 }
