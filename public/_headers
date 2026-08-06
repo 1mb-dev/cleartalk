@@ -1,6 +1,11 @@
+# No `preload` on the HSTS line, deliberately. Preload means submitting to a list compiled into
+# browser binaries, which is far harder to undo than a max-age you can wait out. Add it as its own
+# decision, not as a copied header. The Content-Security-Policy lives in index.html as a meta tag,
+# not here -- check there before concluding this site has no policy.
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 
