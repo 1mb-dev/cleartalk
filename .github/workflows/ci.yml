@@ -11,4 +11,4 @@ jobs:
     uses: 1mb-dev/.github/.github/workflows/ci-node.yml@main
     with:
       node-versions: '["22"]'
-      run-audit: false
+      run-audit: true
