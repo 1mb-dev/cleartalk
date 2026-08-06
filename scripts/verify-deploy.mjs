@@ -33,25 +33,60 @@ console.log(`Expecting ${url} to serve ${built}`);
 const deadline = Date.now() + TIMEOUT_MS;
 let served = null;
 let attempts = 0;
+let lastStatus = null;
+let lastBody = '';
 
 while (Date.now() < deadline) {
   attempts += 1;
   try {
     const response = await fetch(url, {
-      headers: { 'Cache-Control': 'no-cache', Accept: 'text/html' },
+      headers: {
+        'Cache-Control': 'no-cache',
+        Accept: 'text/html',
+        // A browser User-Agent on purpose. Cloudflare bot management challenges requests from
+        // datacenter IPs, which is every CI runner, and a challenge page contains no bundle
+        // reference -- indistinguishable from a failed deploy unless we look like a browser.
+        'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+      },
       redirect: 'follow',
     });
-    served = BUNDLE_REF.exec(await response.text())?.[0] ?? null;
+    lastStatus = response.status;
+    lastBody = await response.text();
+    served = BUNDLE_REF.exec(lastBody)?.[0] ?? null;
 
     if (served === built) {
       console.log(`OK: serving ${served} (attempt ${attempts})`);
       process.exit(0);
     }
-    console.log(`  attempt ${attempts}: serving ${served ?? '<no bundle reference>'}`);
+    console.log(`  attempt ${attempts}: HTTP ${lastStatus}, serving ${served ?? '<no bundle reference>'}`);
   } catch (error) {
     console.log(`  attempt ${attempts}: ${error.message}`);
   }
   await new Promise((resolve) => setTimeout(resolve, INTERVAL_MS));
+}
+
+// Distinguish "production is serving the wrong thing" from "we never managed to read production".
+// Both are failures, but they send you to completely different places.
+const looksLikeTheApp = lastBody.includes('<title>ClearTalk') || lastBody.includes('id="app"');
+if (!looksLikeTheApp) {
+  console.error(`
+FAILED after ${attempts} attempts over ${TIMEOUT_MS / 1000}s: could not read production.
+
+  built:       ${built}
+  last status: ${lastStatus ?? '<no response>'}
+  body length: ${lastBody.length}
+  body head:   ${JSON.stringify(lastBody.slice(0, 300))}
+
+The response does not look like ClearTalk at all, so this is most likely a Cloudflare bot
+challenge served to the CI runner rather than a bad deploy. Confirm from a normal network:
+
+    curl -s ${url} | grep -oE 'assets/index-[A-Za-z0-9_-]+\\.js'
+    npx wrangler pages deployment list --project-name=cleartalk
+
+If production is correct there, this check needs fixing -- do not "fix" the deploy.
+`);
+  process.exit(1);
 }
 
 console.error(`
