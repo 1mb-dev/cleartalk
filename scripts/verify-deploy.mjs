@@ -1,108 +1,98 @@
 #!/usr/bin/env node
-// Asserts the live site is actually serving the artifact this run just built.
+// Asserts the deploy this run just made was filed as PRODUCTION, not a preview.
 //
-// A green wrangler step is not evidence of a deploy. Releases v0.1.0 through v0.3.1 all reported
-// success while Cloudflare filed each one as a preview, and the custom domain kept serving the
-// 2026-03-24 build for four months. This compares served bytes against the build output, which is
-// the only signal that would have caught it.
+// Releases v0.1.0 through v0.3.1 all exited 0 from wrangler while Cloudflare filed each one as a
+// preview, so cleartalk.1mb.dev served the 2026-03-24 build for four months. Cloudflare never lied
+// about it -- its API reported `environment: preview` the whole time. Nobody read the field. This
+// reads the field.
 //
-// Polls rather than asserting immediately: propagation took ~30s when this was written, and a
-// check that flakes gets disabled, which is worse than no check.
+// It deliberately does NOT fetch the public URL. Bot management is enabled zone-wide on 1mb.dev, so
+// every datacenter IP -- which is every CI runner -- gets a 403 "Just a moment..." challenge. That
+// is the zone policy working correctly, not something to spoof a User-Agent around. To check served
+// bytes, run this from a normal network:
+//
+//     curl -s https://cleartalk.1mb.dev | grep -oE 'assets/index-[A-Za-z0-9_-]+\.js'
+//
+// and compare against dist/index.html.
 
-import { readFileSync } from 'node:fs';
+const token = process.env.CLOUDFLARE_API_TOKEN;
+const account = process.env.CLOUDFLARE_ACCOUNT_ID;
+const project = process.env.PAGES_PROJECT ?? 'cleartalk';
+const commit = process.env.COMMIT_SHA;
 
-const BUNDLE_REF = /assets\/index-[A-Za-z0-9_-]+\.js/;
-// Overridable so the failure path can be exercised without waiting two minutes for it.
-const TIMEOUT_MS = Number(process.env.VERIFY_TIMEOUT_MS ?? 120_000);
+const TIMEOUT_MS = Number(process.env.VERIFY_TIMEOUT_MS ?? 90_000);
 const INTERVAL_MS = Number(process.env.VERIFY_INTERVAL_MS ?? 5_000);
 
-const url = process.argv[2];
-if (!url) {
-  console.error('usage: node scripts/verify-deploy.mjs <url>');
-  process.exit(2);
+for (const [name, value] of [
+  ['CLOUDFLARE_API_TOKEN', token],
+  ['CLOUDFLARE_ACCOUNT_ID', account],
+  ['COMMIT_SHA', commit],
+]) {
+  if (!value) {
+    console.error(`Missing ${name}. This check needs it to read the Pages deployment list.`);
+    process.exit(2);
+  }
 }
 
-const built = BUNDLE_REF.exec(readFileSync('dist/index.html', 'utf8'))?.[0];
-if (!built) {
-  console.error('No bundle reference in dist/index.html. Run the build before this check.');
-  process.exit(2);
-}
+const short = commit.slice(0, 7);
+// Base is overridable so this script's own branches can be exercised against a mock. A check that
+// gates releases should not itself be untested.
+const apiBase = process.env.CF_API_BASE ?? 'https://api.cloudflare.com/client/v4';
+const endpoint = `${apiBase}/accounts/${account}/pages/projects/${project}/deployments?per_page=25`;
 
-console.log(`Expecting ${url} to serve ${built}`);
+console.log(`Expecting a production deployment of ${short} in Pages project "${project}"`);
 
 const deadline = Date.now() + TIMEOUT_MS;
-let served = null;
 let attempts = 0;
-let lastStatus = null;
-let lastBody = '';
+let seen = [];
 
 while (Date.now() < deadline) {
   attempts += 1;
   try {
-    const response = await fetch(url, {
-      headers: {
-        'Cache-Control': 'no-cache',
-        Accept: 'text/html',
-        // A browser User-Agent on purpose. Cloudflare bot management challenges requests from
-        // datacenter IPs, which is every CI runner, and a challenge page contains no bundle
-        // reference -- indistinguishable from a failed deploy unless we look like a browser.
-        'User-Agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
-      },
-      redirect: 'follow',
-    });
-    lastStatus = response.status;
-    lastBody = await response.text();
-    served = BUNDLE_REF.exec(lastBody)?.[0] ?? null;
+    const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+    const payload = await response.json();
 
-    if (served === built) {
-      console.log(`OK: serving ${served} (attempt ${attempts})`);
-      process.exit(0);
+    if (!payload.success) {
+      console.log(`  attempt ${attempts}: API error ${JSON.stringify(payload.errors)}`);
+    } else {
+      seen = payload.result.map((deployment) => ({
+        commit: (deployment.deployment_trigger?.metadata?.commit_hash ?? '').slice(0, 7),
+        environment: deployment.environment,
+        created: deployment.created_on,
+      }));
+
+      const mine = seen.filter((deployment) => deployment.commit === short);
+      const promoted = mine.find((deployment) => deployment.environment === 'production');
+
+      if (promoted) {
+        console.log(`OK: ${short} is deployed as production (attempt ${attempts})`);
+        process.exit(0);
+      }
+      console.log(
+        `  attempt ${attempts}: ${mine.length} deployment(s) for ${short}: ${mine.map((d) => d.environment).join(', ') || 'none yet'}`,
+      );
     }
-    console.log(`  attempt ${attempts}: HTTP ${lastStatus}, serving ${served ?? '<no bundle reference>'}`);
   } catch (error) {
     console.log(`  attempt ${attempts}: ${error.message}`);
   }
   await new Promise((resolve) => setTimeout(resolve, INTERVAL_MS));
 }
 
-// Distinguish "production is serving the wrong thing" from "we never managed to read production".
-// Both are failures, but they send you to completely different places.
-const looksLikeTheApp = lastBody.includes('<title>ClearTalk') || lastBody.includes('id="app"');
-if (!looksLikeTheApp) {
-  console.error(`
-FAILED after ${attempts} attempts over ${TIMEOUT_MS / 1000}s: could not read production.
-
-  built:       ${built}
-  last status: ${lastStatus ?? '<no response>'}
-  body length: ${lastBody.length}
-  body head:   ${JSON.stringify(lastBody.slice(0, 300))}
-
-The response does not look like ClearTalk at all, so this is most likely a Cloudflare bot
-challenge served to the CI runner rather than a bad deploy. Confirm from a normal network:
-
-    curl -s ${url} | grep -oE 'assets/index-[A-Za-z0-9_-]+\\.js'
-    npx wrangler pages deployment list --project-name=cleartalk
-
-If production is correct there, this check needs fixing -- do not "fix" the deploy.
-`);
-  process.exit(1);
-}
-
+const mine = seen.filter((deployment) => deployment.commit === short);
 console.error(`
 FAILED after ${attempts} attempts over ${TIMEOUT_MS / 1000}s.
-  built:  ${built}
-  served: ${served ?? '<no bundle reference>'}
 
-The deploy reported success but production is serving something else. Check, in order:
+  commit:               ${short}
+  its deployments:      ${mine.map((d) => d.environment).join(', ') || '<none found>'}
+  most recent overall:  ${seen.slice(0, 3).map((d) => `${d.commit}:${d.environment}`).join('  ') || '<none>'}
 
-  1. Did it land as a preview instead of production?
-       npx wrangler pages deployment list --project-name=cleartalk
-     Read the Environment column. A tag checkout is a detached HEAD, so wrangler infers
-     branch "HEAD" and Cloudflare files the deploy as a preview unless the deploy command
-     passes --branch=main explicitly.
-
-  2. Is the custom domain still attached to this Pages project?
-       npx wrangler pages project list
+${
+  mine.some((d) => d.environment === 'preview')
+    ? `This commit deployed as a PREVIEW, so production did not move. The deploy command must pass
+--branch=main explicitly: a tag checkout is a detached HEAD, where wrangler infers branch "HEAD",
+which does not match the project's production_branch and makes Cloudflare file it as a preview.`
+    : `No deployment for this commit was found at all. Check the wrangler step actually ran, and that
+CLOUDFLARE_ACCOUNT_ID points at the account owning "${project}".`
+}
 `);
 process.exit(1);

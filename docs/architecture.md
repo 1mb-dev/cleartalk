@@ -60,8 +60,18 @@ Triggered by a `v*` tag push, or `workflow_dispatch` for an unreleased check.
 `pages deploy` must pass `--branch=main` explicitly. A tag checkout is a detached HEAD, where
 wrangler infers branch `HEAD`, which does not match `production_branch` -- so Cloudflare files the
 deploy as a preview and production silently does not move. Releases v0.1.0 through v0.3.1 were all
-lost this way. `scripts/verify-deploy.mjs` now fails the workflow when production is not serving
-the artifact that run built; a green wrangler step is not evidence on its own.
+lost this way. `scripts/verify-deploy.mjs` now fails the workflow unless the Pages API reports a
+**production** deployment for the commit being released; a green wrangler step is not evidence on
+its own. Cloudflare reported `environment: preview` throughout those four months -- the data was
+never wrong, nothing read it.
+
+The check reads the API rather than fetching the site because bot management is enabled zone-wide on
+`1mb.dev`, so every CI runner gets a `403` challenge. To verify served bytes, run this from a normal
+network and compare against `dist/index.html`:
+
+```
+curl -s https://cleartalk.1mb.dev | grep -oE 'assets/index-[A-Za-z0-9_-]+\.js'
+```
 
 ### Rollback
 

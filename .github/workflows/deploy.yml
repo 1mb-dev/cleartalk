@@ -35,6 +35,10 @@ jobs:
           # infers branch "HEAD". Requires the project's production branch to be `main`.
           command: pages deploy dist --project-name=cleartalk --branch=main
 
-      # A deploy is not verified until production serves the artifact, and wrangler exiting 0 is
-      # not that: five releases exited 0 while landing as previews. Do not remove this step.
-      - run: node scripts/verify-deploy.mjs https://cleartalk.1mb.dev
+      # wrangler exiting 0 is not evidence of a deploy: five releases exited 0 while Cloudflare
+      # filed them as previews. Do not remove this step.
+      - run: node scripts/verify-deploy.mjs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          COMMIT_SHA: ${{ github.sha }}
