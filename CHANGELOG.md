@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.3 (2026-08-06)
+
+### Fixed
+
+- Route changes no longer log an uncaught error. The View Transitions `ready` promise rejects whenever the browser skips a transition and nothing was observing it, so every navigation reported an InvalidStateError even though the navigation itself worked
+
+### Features
+
+- Deploys verify that production is serving the artifact the run built, and fail if it is not. A green deploy step was never evidence on its own
+- HTTP Strict Transport Security, one year, without preload
+
+### Changed
+
+- CI runs the dependency audit again
+
 ## 0.3.2 (2026-08-06)
 
 ### Fixed
