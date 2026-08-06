@@ -34,3 +34,7 @@ jobs:
           # instead of landing as a preview: tag checkout is a detached HEAD, where wrangler
           # infers branch "HEAD". Requires the project's production branch to be `main`.
           command: pages deploy dist --project-name=cleartalk --branch=main
+
+      # A deploy is not verified until production serves the artifact, and wrangler exiting 0 is
+      # not that: five releases exited 0 while landing as previews. Do not remove this step.
+      - run: node scripts/verify-deploy.mjs https://cleartalk.1mb.dev
