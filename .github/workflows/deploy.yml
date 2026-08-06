@@ -25,9 +25,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
-      - uses: cloudflare/wrangler-action@v3.15.0
+      - uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          wranglerVersion: '4'
-          command: pages deploy dist --project-name=cleartalk
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.99.0'
+          # --branch=main is a literal so a tag-triggered run still promotes to production
+          # instead of landing as a preview: tag checkout is a detached HEAD, where wrangler
+          # infers branch "HEAD". Requires the project's production branch to be `main`.
+          command: pages deploy dist --project-name=cleartalk --branch=main
