@@ -23,7 +23,7 @@
     "generate:assets": "node scripts/generate-assets.mjs"
   },
   "dependencies": {
-    "dexie": "^4.4.4",
+    "dexie": "^4.4.5",
     "preact": "^10.29.8",
     "wouter": "^3.10.0"
   },
