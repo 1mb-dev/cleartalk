@@ -25,7 +25,7 @@
   "dependencies": {
     "dexie": "^4.4.6",
     "preact": "^10.29.8",
-    "wouter": "^3.10.0"
+    "wouter": "^3.11.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
