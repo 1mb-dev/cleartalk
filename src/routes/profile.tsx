@@ -96,9 +96,13 @@ export function Profile() {
       try {
         const text = await file.text();
         const result = await importData(text);
+        const added = `Added or updated ${result.contacts} ${result.contacts === 1 ? 'person' : 'people'} and ${result.entries} ${result.entries === 1 ? 'conversation' : 'conversations'}.`;
         setImportStatus(
-          `Added or updated ${result.contacts} ${result.contacts === 1 ? 'person' : 'people'} and ${result.entries} ${result.entries === 1 ? 'conversation' : 'conversations'}.`
-          + (result.skipped ? ` Skipped ${result.skipped} that couldn't be used. Your data is safe.` : ''),
+          [
+            result.style ? 'Restored your style.' : '',
+            result.contacts || result.entries || !result.style ? added : '',
+            result.skipped ? `Skipped ${result.skipped} that couldn't be used. Your data is safe.` : '',
+          ].filter(Boolean).join(' '),
         );
         setTimeout(() => setImportStatus(null), 4000);
         await loadProfile();

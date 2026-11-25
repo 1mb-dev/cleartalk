@@ -146,7 +146,7 @@ test.describe('Critical User Flows', () => {
     const profile = { d: 30, i: 40, s: 80, c: 50, primary: 'S', secondary: 'C' };
     const file = {
       users: [{ id: 'default', displayName: '', discProfile: profile, createdAt: 1, updatedAt: 2 }],
-      assessments: [],
+      assessments: [{ id: 'as-1', userId: 'default', answers: {}, result: profile, takenAt: 2 }],
       contacts: [],
       journal: [],
       exportedAt: '2026-11-25T00:00:00.000Z',
@@ -154,6 +154,7 @@ test.describe('Critical User Flows', () => {
     const chooser = page.waitForEvent('filechooser');
     await page.click('button:has-text("Choose file")');
     await (await chooser).setFiles({ name: 'export.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(file)) });
+    await expect(page.locator('.setting-status')).toHaveText('Restored your style.');
     await expect(page.locator('.disc-wheel-container')).toBeVisible();
   });
 

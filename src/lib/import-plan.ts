@@ -5,6 +5,8 @@ import { sanitizeName, sanitizeNote } from './sanitize.ts';
 export interface Existing {
   user: User | undefined;
   assessmentIds: Set<string>;
+  /** The stored assessment with the highest takenAt. */
+  latestAssessment?: Assessment;
   contacts: Map<string, Contact>;
   journalIds: Set<string>;
 }
@@ -69,6 +71,11 @@ function toEntry(v: unknown): JournalEntry | null {
   };
 }
 
+function sameProfile(a: DiscProfile | null, b: DiscProfile | null): boolean {
+  if (!a || !b) return a === b;
+  return a.primary === b.primary && a.secondary === b.secondary && a.d === b.d && a.i === b.i && a.s === b.s && a.c === b.c;
+}
+
 /**
  * The newer record's value wins per field. Nothing clears a user field once set, so an empty field
  * means never set: every route creates a blank user on first visit, newer than any export.
@@ -95,38 +102,44 @@ export function planImport(data: unknown, existing: Existing): ImportPlan {
   const list = (k: string): unknown[] => (Array.isArray(data[k]) ? (data[k] as unknown[]) : []);
   let skipped = 0;
 
-  let user: User | null = null;
-  for (const raw of list('users')) {
-    const u = toUser(raw);
-    if (!u) { skipped++; continue; }
-    user = user ? mergeUser(user, u) : u;
-  }
-  const stored = existing.user;
-  if (user && stored) {
-    const merged = mergeUser(stored, user);
-    const same = merged.discProfile === stored.discProfile && merged.selfPick === (stored.selfPick ?? null)
-      && merged.displayName === stored.displayName;
-    user = same ? null : merged;
-  }
-
   // Both are written with bulkAdd, which aborts the whole import on a repeated id.
   const assessmentIds = new Set(existing.assessmentIds);
   const assessments: Assessment[] = [];
+  let latest = existing.latestAssessment;
   for (const raw of list('assessments')) {
     const a = toAssessment(raw);
     if (!a) { skipped++; continue; }
     if (!assessmentIds.has(a.id)) { assessments.push(a); assessmentIds.add(a.id); }
+    if (!latest || a.takenAt > latest.takenAt) latest = a;
   }
 
-  const contacts: Contact[] = [];
+  let incoming: User | null = null;
+  for (const raw of list('users')) {
+    const u = toUser(raw);
+    if (!u) { skipped++; continue; }
+    incoming = incoming ? mergeUser(incoming, u) : u;
+  }
+  const stored = existing.user;
+  let user = incoming && stored ? mergeUser(stored, incoming) : incoming ?? stored ?? null;
+  // A merged user's updatedAt can be newer than its profile, so the profile comes from the latest
+  // assessment, not from whichever user record is newer.
+  if (user && latest) user = { ...user, discProfile: latest.result };
+  if (user && stored && sameProfile(user.discProfile, stored.discProfile)
+    && (user.selfPick ?? null) === (stored.selfPick ?? null) && user.displayName === stored.displayName) {
+    user = null;
+  }
+
+  // Keyed by id: bulkPut keeps the last copy of a repeated id, which may be the older one.
+  const planned = new Map<string, Contact>();
   const known = new Set(existing.contacts.keys());
   for (const raw of data.contacts) {
     const c = toContact(raw);
     if (!c) { skipped++; continue; }
     known.add(c.id);
-    const current = existing.contacts.get(c.id);
-    if (!current || c.updatedAt > current.updatedAt) contacts.push(c);
+    const current = planned.get(c.id) ?? existing.contacts.get(c.id);
+    if (!current || c.updatedAt > current.updatedAt) planned.set(c.id, c);
   }
+  const contacts = [...planned.values()];
 
   const journalIds = new Set(existing.journalIds);
   const journal: JournalEntry[] = [];

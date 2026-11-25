@@ -29,21 +29,25 @@ export interface ImportResult {
   contacts: number;
   entries: number;
   skipped: number;
+  /** The reader's own style or pick was written. */
+  style: boolean;
 }
 
 /** Merge an export into local data. Never deletes, never replaces a newer record. */
 export async function importData(json: string): Promise<ImportResult> {
   const data: unknown = JSON.parse(json);
   return db.transaction('rw', [db.users, db.assessments, db.contacts, db.journal], async () => {
-    const [user, assessmentIds, contacts, journalIds] = await Promise.all([
+    const [user, assessmentIds, latestAssessment, contacts, journalIds] = await Promise.all([
       db.users.get(DEFAULT_USER_ID),
       db.assessments.toCollection().primaryKeys(),
+      db.assessments.orderBy('takenAt').last(),
       db.contacts.toArray(),
       db.journal.toCollection().primaryKeys(),
     ]);
     const plan = planImport(data, {
       user,
       assessmentIds: new Set(assessmentIds),
+      latestAssessment,
       contacts: new Map(contacts.map(c => [c.id, c])),
       journalIds: new Set(journalIds),
     });
@@ -51,7 +55,7 @@ export async function importData(json: string): Promise<ImportResult> {
     await db.assessments.bulkAdd(plan.assessments);
     await db.contacts.bulkPut(plan.contacts);
     await db.journal.bulkAdd(plan.journal);
-    return { contacts: plan.contacts.length, entries: plan.journal.length, skipped: plan.skipped };
+    return { contacts: plan.contacts.length, entries: plan.journal.length, skipped: plan.skipped, style: plan.user !== null };
   });
 }
 

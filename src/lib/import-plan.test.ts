@@ -12,6 +12,9 @@ const user = (updatedAt: number, primary: DiscProfile['primary'] = 'S'): User =>
 const entry = (id: string, contactId: string) => ({
   id, userId: 'default', contactId, situationType: 'feedback', outcome: 4, note: 'ok', loggedAt: 10,
 });
+const assessment = (id: string, takenAt: number, primary: DiscProfile['primary']) => ({
+  id, userId: 'default', answers: {}, result: { ...profile, primary }, takenAt,
+});
 const empty = (): Existing => ({ user: undefined, assessmentIds: new Set(), contacts: new Map(), journalIds: new Set() });
 
 describe('planImport', () => {
@@ -54,15 +57,39 @@ describe('planImport', () => {
   });
 
   it('adds a record repeated inside the file once', () => {
-    const assessment = { id: 'a1', userId: 'default', answers: {}, result: profile, takenAt: 5 };
     const plan = planImport({
-      assessments: [assessment, assessment],
+      assessments: [assessment('a1', 5, 'D'), assessment('a1', 5, 'D')],
       contacts: [contact('a', 5)],
       journal: [entry('j', 'a'), entry('j', 'a')],
     }, empty());
     expect(plan.assessments.map(a => a.id)).toEqual(['a1']);
     expect(plan.journal.map(e => e.id)).toEqual(['j']);
     expect(plan.skipped).toBe(0);
+  });
+
+  it('keeps the latest assessment when a newer user record carries an older one', () => {
+    // A device that imported an old export stores the old profile under its own, newer updatedAt.
+    const existing = { ...empty(), user: user(3, 'C'), assessmentIds: new Set(['a2']), latestAssessment: assessment('a2', 3, 'C') };
+    const plan = planImport({ users: [user(5, 'S')], assessments: [assessment('a1', 1, 'S')], contacts: [] }, existing);
+    expect(plan.user).toBeNull();
+    expect(plan.assessments.map(a => a.id)).toEqual(['a1']);
+  });
+
+  it('takes a newer imported assessment even when the stored user record is newer', () => {
+    const existing = { ...empty(), user: user(9, 'C'), assessmentIds: new Set(['a1']), latestAssessment: assessment('a1', 1, 'C') };
+    const plan = planImport({ users: [user(5, 'S')], assessments: [assessment('a2', 5, 'S')], contacts: [] }, existing);
+    expect(plan.user?.discProfile?.primary).toBe('S');
+  });
+
+  it('writes no user when the file has none and nothing changes', () => {
+    // getOrCreateUser stores a user with no selfPick field at all.
+    const stored: User = { id: 'default', displayName: '', discProfile: null, createdAt: 1, updatedAt: 1 };
+    expect(planImport({ users: [], contacts: [] }, { ...empty(), user: stored }).user).toBeNull();
+  });
+
+  it('keeps the newest copy of a person repeated inside the file', () => {
+    const plan = planImport({ contacts: [contact('a', 9, 'Newer'), contact('a', 5, 'Older')] }, empty());
+    expect(plan.contacts.map(c => c.name)).toEqual(['Newer']);
   });
 
   it('replaces a contact only with a newer version and never drops stored ones', () => {
