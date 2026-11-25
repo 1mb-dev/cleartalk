@@ -20,3 +20,7 @@ updates:
       timezone: Asia/Kolkata
     commit-message:
       prefix: "chore(deps)"
+    ignore:
+      # @types/node tracks the runtime major in .nvmrc; move both together.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
