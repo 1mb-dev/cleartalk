@@ -5,6 +5,10 @@ import conflict from './coaching-cards/conflict.ts';
 import pitch from './coaching-cards/pitch.ts';
 import difficultNews from './coaching-cards/difficult-news.ts';
 import { openerLine, type CoachingCard } from '../engine/types.ts';
+import { questions } from './questions.ts';
+import { observations } from './observations.ts';
+import { typeProfiles } from './type-profiles.ts';
+import { STYLE_LINES } from './style-lines.ts';
 
 const cards: CoachingCard[] = [...feedback, ...request, ...conflict, ...pitch, ...difficultNews];
 
@@ -26,6 +30,28 @@ const BANNED: [string, RegExp][] = [
   ['percentage', /\d\s?%/],
   ['X/Y/Z placeholder', /\b[XYZ]\b/],
 ];
+
+/** Every reader-facing string in a data module; ids and style keys are not copy. */
+function strings(v: unknown, key = ''): string[] {
+  if (typeof v === 'string') return ['id', 'dimension', 'type'].includes(key) ? [] : [v];
+  if (Array.isArray(v)) return v.flatMap(x => strings(x));
+  if (v && typeof v === 'object') return Object.entries(v).flatMap(([k, x]) => strings(x, k));
+  return [];
+}
+
+describe('profile and question copy', () => {
+  const all = strings([questions, observations, typeProfiles, STYLE_LINES]);
+
+  it('finds the copy', () => {
+    expect(all.length).toBeGreaterThan(100);
+  });
+
+  for (const [name, re] of BANNED) {
+    it(`has no ${name}`, () => {
+      expect(all.filter(t => re.test(t))).toEqual([]);
+    });
+  }
+});
 
 describe('coaching card copy', () => {
   it('covers all 80 cards', () => {
