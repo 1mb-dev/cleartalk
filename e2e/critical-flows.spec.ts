@@ -301,7 +301,7 @@ test.describe('Critical User Flows', () => {
     await expect(page.locator('.people-card-name')).toContainText('PeopleCheck');
   });
 
-  test('contact detail page shows DISC wheel and profile', async ({ page }) => {
+  test('contact detail page names the style in words, with no wheel', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('h1');
     await addContact(page, 'DetailTest');
@@ -311,9 +311,10 @@ test.describe('Critical User Flows', () => {
     await page.waitForSelector('.people-card');
     await page.click('.people-card');
 
-    await page.waitForSelector('.disc-wheel-container');
     await expect(page.locator('h1')).toContainText('DetailTest');
+    await expect(page.locator('.coach-subtitle')).toContainText('Mostly');
     await expect(page.locator('.type-summary')).toBeAttached();
+    await expect(page.locator('.disc-wheel-container')).toHaveCount(0);
   });
 
   test('contact can be renamed', async ({ page }) => {

@@ -3,8 +3,9 @@ import { DISC_LABELS } from '../engine/types.ts';
 
 interface DiscWheelProps {
   profile: DiscProfile;
-  size?: number;
 }
+
+const SIZE = 360;
 
 // Wheel quadrants in center; labels on left (D, C) and right (I, S)
 // ViewBox: -45..165 wide to fit labels; 0..120 tall for circles
@@ -45,15 +46,15 @@ function scoreForType(profile: DiscProfile, type: DiscType): number {
  * DISC wheel visualization.
  * Four quadrants; circle size shows weight, with no numbers (this is not a test score).
  */
-export function DiscWheel({ profile, size = 360 }: DiscWheelProps) {
+export function DiscWheel({ profile }: DiscWheelProps) {
   const summary = `Mostly ${DISC_LABELS[profile.primary]}, then ${DISC_LABELS[profile.secondary]}`;
 
   return (
     <div class="disc-wheel-container">
       <svg
         viewBox="-45 0 210 120"
-        width={size}
-        height={Math.round(size * 120 / 210)}
+        width={SIZE}
+        height={Math.round(SIZE * 120 / 210)}
         role="img"
         aria-label={`Communication style: primarily ${DISC_LABELS[profile.primary]}, secondarily ${DISC_LABELS[profile.secondary]}`}
       >

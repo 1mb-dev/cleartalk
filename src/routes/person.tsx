@@ -5,7 +5,6 @@ import { OUTCOME_LABELS } from '../components/outcome-input.tsx';
 import { getContact, deleteContact, updateContact, getJournalForContact } from '../db/queries.ts';
 import { sanitizeName } from '../lib/sanitize.ts';
 import { SITUATION_LABELS } from '../engine/types.ts';
-import { DiscWheel } from '../components/disc-wheel.tsx';
 import { typeProfiles } from '../data/type-profiles.ts';
 import type { Contact, JournalEntry, SituationType } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
@@ -131,8 +130,6 @@ export function PersonDetail() {
         </div>
       )}
       <StyleLine contact={contact} />
-
-      <DiscWheel profile={contact.discProfile} size={160} />
 
       <div class="type-summary compact">
         <p class="type-default">{profile.communicationDefault}</p>

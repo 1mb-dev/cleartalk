@@ -184,7 +184,7 @@ test.describe.parallel('Multi-user simulation', () => {
     await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
     await page.locator('.people-card').first().click();
-    await page.waitForSelector('.disc-wheel-container');
+    await page.waitForSelector('.type-summary');
     await expect(page.locator('.type-summary')).toBeAttached();
 
     // Quick coach from person detail
