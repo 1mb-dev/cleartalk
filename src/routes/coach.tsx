@@ -7,6 +7,7 @@ import { getCoachingCard } from '../engine/coaching.ts';
 import { DISC_LABELS, SITUATION_LABELS, isSituation, resolveYourType } from '../engine/types.ts';
 import type { Contact, CoachingCard, DiscType, JournalEntry, SituationType, User } from '../engine/types.ts';
 import { SelfPick } from '../components/self-pick.tsx';
+import { StyleLine } from '../components/style-line.tsx';
 import { navigate } from '../lib/transitions.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 import { Logo } from '../components/logo.tsx';
@@ -191,10 +192,7 @@ export function Coach() {
             {selectedContact.name}
           </span>
         </h1>
-        <p class="coach-subtitle">
-          {DISC_LABELS[selectedContact.discProfile.primary]} type
-          {selectedContact.confidence !== 'high' && ` (${selectedContact.confidence} confidence)`}
-        </p>
+        <StyleLine contact={selectedContact} />
         <div class={`situation-grid disc-accent-${selectedContact.discProfile.primary.toLowerCase()}`}>
           {(Object.entries(SITUATION_LABELS) as [SituationType, string][]).map(([key, label]) => (
             <button

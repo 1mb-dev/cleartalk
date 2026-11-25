@@ -1,12 +1,8 @@
 import type { DiscType } from '../engine/types.ts';
 import { DISC_LABELS } from '../engine/types.ts';
+import { STYLE_LINES } from '../data/style-lines.ts';
 
-const OPTIONS: { type: DiscType; line: string }[] = [
-  { type: 'D', line: 'I get to the point and decide fast.' },
-  { type: 'I', line: 'I think out loud and like to bring people along.' },
-  { type: 'S', line: 'I listen first and keep things calm.' },
-  { type: 'C', line: 'I want the facts straight before I commit.' },
-];
+const ORDER: DiscType[] = ['D', 'I', 'S', 'C'];
 
 interface SelfPickProps {
   onPick: (type: DiscType) => void;
@@ -20,15 +16,15 @@ export function SelfPick({ onPick }: SelfPickProps) {
         Pick the one that fits most days. The advice changes with how you talk, not just how they do.
       </p>
       <div class="self-pick-options">
-        {OPTIONS.map(o => (
+        {ORDER.map(t => (
           <button
-            key={o.type}
+            key={t}
             class="assessment-option self-pick-option"
             type="button"
-            onClick={() => onPick(o.type)}
+            onClick={() => onPick(t)}
           >
-            <span class="self-pick-name">{DISC_LABELS[o.type]}</span>
-            <span class="self-pick-line">{o.line}</span>
+            <span class="self-pick-name">{DISC_LABELS[t]}</span>
+            <span class="self-pick-line">{STYLE_LINES[t].self}</span>
           </button>
         ))}
       </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
+import { StyleLine } from '../components/style-line.tsx';
 import { getContact, deleteContact, updateContact, getJournalForContact } from '../db/queries.ts';
 import { sanitizeName } from '../lib/sanitize.ts';
 import { SITUATION_LABELS } from '../engine/types.ts';
@@ -128,10 +129,7 @@ export function PersonDetail() {
           </button>
         </div>
       )}
-      <p class="coach-subtitle">
-        {profile.label} type
-        {contact.confidence !== 'high' && ` (${contact.confidence} confidence)`}
-      </p>
+      <StyleLine contact={contact} />
 
       <DiscWheel profile={contact.discProfile} size={160} />
 
