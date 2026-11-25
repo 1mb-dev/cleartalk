@@ -1,3 +1,6 @@
+/** All data belongs to one local user; there are no accounts. */
+export const DEFAULT_USER_ID = 'default';
+
 export type DiscType = 'D' | 'I' | 'S' | 'C';
 
 export type SituationType =

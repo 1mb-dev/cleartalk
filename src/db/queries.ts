@@ -1,10 +1,9 @@
 import Dexie from 'dexie';
 import { db } from './schema.ts';
+import { DEFAULT_USER_ID } from '../engine/types.ts';
 import type { User, Assessment, Contact, JournalEntry } from '../engine/types.ts';
 import { generateId } from '../lib/id.ts';
 import { sanitizeName, sanitizeNote } from '../lib/sanitize.ts';
-
-const DEFAULT_USER_ID = 'default';
 
 export async function getOrCreateUser(): Promise<User> {
   const existing = await db.users.get(DEFAULT_USER_ID);

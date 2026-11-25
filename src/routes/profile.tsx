@@ -96,7 +96,10 @@ export function Profile() {
       try {
         const text = await file.text();
         const result = await importData(text);
-        setImportStatus(`Imported ${result.contacts} contacts and ${result.entries} journal entries.`);
+        setImportStatus(
+          `Added or updated ${result.contacts} ${result.contacts === 1 ? 'person' : 'people'} and ${result.entries} ${result.entries === 1 ? 'note' : 'notes'}.`
+          + (result.skipped ? ` Skipped ${result.skipped} that weren't valid. Your data is safe.` : ''),
+        );
         setTimeout(() => setImportStatus(null), 4000);
         await loadProfile();
       } catch {

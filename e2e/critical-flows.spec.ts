@@ -74,6 +74,40 @@ test.describe('Critical User Flows', () => {
     await expect(page.locator('.coaching-last-note-meta')).toHaveText('Give Feedback, today');
   });
 
+  test('import merges: adds new people, keeps what is already here, reports skips', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'Kept');
+
+    const profile = { d: 70, i: 20, s: 30, c: 40, primary: 'D', secondary: 'C' };
+    const file = {
+      users: [],
+      assessments: [],
+      contacts: [
+        { id: 'imp-1', userId: 'default', name: 'Imported', discProfile: profile, confidence: 'high', notes: '', createdAt: 1, updatedAt: 2 },
+        { id: 'bad', name: 'No profile' },
+      ],
+      journal: [
+        { id: 'j-1', userId: 'default', contactId: 'imp-1', situationType: 'feedback', outcome: 4, note: 'From the file', loggedAt: 3 },
+        { id: 'j-2', userId: 'default', contactId: 'nobody', situationType: 'feedback', outcome: 4, note: '', loggedAt: 3 },
+      ],
+      exportedAt: '2026-11-25T00:00:00.000Z',
+    };
+
+    await page.click('[role="tab"]:has-text("Profile")');
+    const chooser = page.waitForEvent('filechooser');
+    await page.click('button:has-text("Choose file")');
+    await (await chooser).setFiles({ name: 'export.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(file)) });
+    await expect(page.locator('.setting-status')).toHaveText(
+      "Added or updated 1 person and 1 note. Skipped 2 that weren't valid. Your data is safe.",
+    );
+
+    await page.click('[role="tab"]:has-text("People")');
+    await expect(page.locator('.people-card')).toHaveCount(2);
+    await expect(page.locator('.people-card:has-text("Kept")')).toBeVisible();
+    await expect(page.locator('.people-card:has-text("Imported")')).toBeVisible();
+  });
+
   test('coaching card has all sections', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('h1');
