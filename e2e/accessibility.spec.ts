@@ -83,7 +83,7 @@ test.describe('Accessibility', () => {
           for (const node of m.addedNodes) {
             if (!(node instanceof Element)) continue;
             const hits = node.matches('.loading-text') ? [node] : [...node.querySelectorAll('.loading-text')];
-            for (const el of hits) seen.push(el.getAttribute('aria-live'));
+            for (const el of hits) seen.push(el.closest('[aria-live]')?.getAttribute('aria-live') ?? null);
           }
         }
       }).observe(document, { childList: true, subtree: true });

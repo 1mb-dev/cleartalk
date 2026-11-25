@@ -755,6 +755,18 @@
   text-align: center;
 }
 
+/* visibility, not opacity: a hidden button must not take focus or clicks before it shows.
+   Reduced motion zeroes durations, not delays, so the hint still appears. */
+.loading-stuck {
+  visibility: hidden;
+  text-align: center;
+  animation: loading-stuck 0s 6s forwards;
+}
+
+@keyframes loading-stuck {
+  to { visibility: visible; }
+}
+
 /* DISC type dots */
 .type-dot {
   display: inline-block;

@@ -344,3 +344,46 @@ test.describe('Critical User Flows', () => {
     await expect(page.locator('#main')).toBeAttached();
   });
 });
+
+// A load that never settles must still leave the reader a way out. The service worker is blocked
+// so page.route sees the card chunk request.
+test.describe('A load that never settles', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  test('shows the reload hint while the card script hangs, and the card when it lands', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'HangImport');
+    await page.waitForSelector('.situation-btn');
+    // Hold the card chunk; a held request can't be reloaded past here, so the reload itself is
+    // covered by the database case below.
+    let release: () => void = () => {};
+    await page.route(/\/assets\/feedback-[^/]*\.js$/, (route) => { release = () => { void route.continue(); }; });
+    await page.click('.situation-btn:first-child');
+    await page.click('.self-pick-option:has-text("Clarity")');
+
+    const hint = page.locator('.loading-stuck');
+    await expect(page.locator('.loading-text')).toBeVisible();
+    await expect(hint.getByRole('button', { name: 'Reload' })).toBeHidden();
+    await expect(hint.getByRole('button', { name: 'Reload' })).toBeVisible({ timeout: 10_000 });
+    await expect(hint).toContainText('Your data is safe');
+
+    release();
+    await expect(page.locator('.coaching-card')).toBeVisible({ timeout: 10_000 });
+  });
+
+  test('offers a reload when a database read never settles', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'HangRead');
+    await page.waitForSelector('.situation-btn');
+    // A request that never fires: the read neither resolves nor rejects.
+    await page.evaluate(() => { IDBObjectStore.prototype.get = () => ({}) as IDBRequest; });
+    await page.click('.situation-btn:first-child');
+
+    const reload = page.locator('.loading-stuck button');
+    await expect(reload).toBeVisible({ timeout: 10_000 });
+    await reload.click();
+    await expect(page.locator('.self-pick')).toBeVisible();
+  });
+});

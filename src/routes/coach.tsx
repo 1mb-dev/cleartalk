@@ -127,7 +127,17 @@ export function Coach() {
   }
 
   if (loading || (loadedKey !== routeKey && !error)) {
-    return <div class="route-shell centered"><p class="loading-text" aria-live="polite">Loading...</p></div>;
+    // A load that never settles (a hung chunk import or IndexedDB read) only a reload clears;
+    // the hint appears after a CSS delay, keyed so the delay restarts on each route.
+    return (
+      <div key={routeKey} class="route-shell centered" aria-live="polite">
+        <p class="loading-text">Loading...</p>
+        <div class="loading-stuck">
+          <p>This is taking longer than it should. Your data is safe - reload the page to try again.</p>
+          <button class="btn-secondary" type="button" onClick={() => location.reload()}>Reload</button>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
