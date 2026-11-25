@@ -14,7 +14,7 @@ export async function requestPersistentStorage(): Promise<boolean> {
   }
 }
 
-export async function isPersisted(): Promise<boolean> {
+async function isPersisted(): Promise<boolean> {
   if (!navigator.storage?.persisted) return false;
   try {
     return await navigator.storage.persisted();
