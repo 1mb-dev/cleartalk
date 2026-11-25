@@ -50,7 +50,7 @@ npm run check   - lint + test + build
 npm run e2e     - build + playwright (chromium + webkit)
 ```
 
-88 unit tests, 254 e2e tests, axe-core WCAG 2.1 AA scans, Lighthouse 99/100/100/100.
+CI runs the e2e suite on chromium; webkit runs locally. The e2e suite includes axe-core WCAG 2.1 AA scans. Lighthouse 99/100/100/100.
 
 ## Deploy
 
