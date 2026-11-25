@@ -33,6 +33,38 @@ describe('planImport', () => {
     expect(planImport({ users: [user(9, 'S')], contacts: [] }, existing).user?.discProfile?.primary).toBe('S');
   });
 
+  it('restores the imported profile over the blank user a new device creates on first visit', () => {
+    const blank: User = { id: 'default', displayName: '', discProfile: null, createdAt: 100, updatedAt: 100 };
+    const plan = planImport({ users: [user(5, 'S')], contacts: [] }, { ...empty(), user: blank });
+    expect(plan.user?.discProfile?.primary).toBe('S');
+  });
+
+  it('keeps a newer style pick and still restores an older assessment', () => {
+    const picked: User = { id: 'default', displayName: '', discProfile: null, selfPick: 'C', createdAt: 100, updatedAt: 100 };
+    const plan = planImport({ users: [user(5, 'S')], contacts: [] }, { ...empty(), user: picked });
+    expect(plan.user?.discProfile?.primary).toBe('S');
+    expect(plan.user?.selfPick).toBe('C');
+  });
+
+  it('keeps a stored assessment when the newer import only has a pick', () => {
+    const imported = { ...user(9), discProfile: null, selfPick: 'D' };
+    const plan = planImport({ users: [imported], contacts: [] }, { ...empty(), user: user(5, 'C') });
+    expect(plan.user?.discProfile?.primary).toBe('C');
+    expect(plan.user?.selfPick).toBe('D');
+  });
+
+  it('adds a record repeated inside the file once', () => {
+    const assessment = { id: 'a1', userId: 'default', answers: {}, result: profile, takenAt: 5 };
+    const plan = planImport({
+      assessments: [assessment, assessment],
+      contacts: [contact('a', 5)],
+      journal: [entry('j', 'a'), entry('j', 'a')],
+    }, empty());
+    expect(plan.assessments.map(a => a.id)).toEqual(['a1']);
+    expect(plan.journal.map(e => e.id)).toEqual(['j']);
+    expect(plan.skipped).toBe(0);
+  });
+
   it('replaces a contact only with a newer version and never drops stored ones', () => {
     const existing = { ...empty(), contacts: new Map([['a', contact('a', 9, 'Stored')], ['b', contact('b', 1)]]) };
     const plan = planImport({ contacts: [contact('a', 5, 'Older'), contact('c', 5)] }, existing);

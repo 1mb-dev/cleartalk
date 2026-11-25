@@ -70,6 +70,20 @@ function toEntry(v: unknown): JournalEntry | null {
 }
 
 /**
+ * The newer record's value wins per field. Nothing clears a user field once set, so an empty field
+ * means never set: every route creates a blank user on first visit, newer than any export.
+ */
+function mergeUser(a: User, b: User): User {
+  const [newer, older] = a.updatedAt >= b.updatedAt ? [a, b] : [b, a];
+  return {
+    ...newer,
+    displayName: newer.displayName || older.displayName,
+    discProfile: newer.discProfile ?? older.discProfile,
+    selfPick: newer.selfPick ?? older.selfPick ?? null,
+  };
+}
+
+/**
  * Merge an export into what is stored: nothing is deleted, and a stored record is only replaced
  * by a newer one. Records that fail validation, and notes about people who exist in neither
  * place, are skipped and counted.
@@ -85,15 +99,23 @@ export function planImport(data: unknown, existing: Existing): ImportPlan {
   for (const raw of list('users')) {
     const u = toUser(raw);
     if (!u) { skipped++; continue; }
-    const current = user ?? existing.user;
-    if (!current || u.updatedAt > current.updatedAt) user = u;
+    user = user ? mergeUser(user, u) : u;
+  }
+  const stored = existing.user;
+  if (user && stored) {
+    const merged = mergeUser(stored, user);
+    const same = merged.discProfile === stored.discProfile && merged.selfPick === (stored.selfPick ?? null)
+      && merged.displayName === stored.displayName;
+    user = same ? null : merged;
   }
 
+  // Both are written with bulkAdd, which aborts the whole import on a repeated id.
+  const assessmentIds = new Set(existing.assessmentIds);
   const assessments: Assessment[] = [];
   for (const raw of list('assessments')) {
     const a = toAssessment(raw);
     if (!a) { skipped++; continue; }
-    if (!existing.assessmentIds.has(a.id)) assessments.push(a);
+    if (!assessmentIds.has(a.id)) { assessments.push(a); assessmentIds.add(a.id); }
   }
 
   const contacts: Contact[] = [];
@@ -106,11 +128,12 @@ export function planImport(data: unknown, existing: Existing): ImportPlan {
     if (!current || c.updatedAt > current.updatedAt) contacts.push(c);
   }
 
+  const journalIds = new Set(existing.journalIds);
   const journal: JournalEntry[] = [];
   for (const raw of list('journal')) {
     const e = toEntry(raw);
     if (!e || !known.has(e.contactId)) { skipped++; continue; }
-    if (!existing.journalIds.has(e.id)) journal.push(e);
+    if (!journalIds.has(e.id)) { journal.push(e); journalIds.add(e.id); }
   }
 
   return { user, assessments, contacts, journal, skipped };

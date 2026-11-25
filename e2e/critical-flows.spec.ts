@@ -113,6 +113,26 @@ test.describe('Critical User Flows', () => {
     await expect(page.locator('.people-card:has-text("Imported")')).toBeVisible();
   });
 
+  test('import on a new device restores the reader\'s style', async ({ page }) => {
+    // Opening Profile first stores a blank user that is newer than any export.
+    await page.goto('/profile');
+    await expect(page.locator('button:has-text("Choose file")')).toBeVisible();
+    await expect(page.locator('.disc-wheel-container')).toHaveCount(0);
+
+    const profile = { d: 30, i: 40, s: 80, c: 50, primary: 'S', secondary: 'C' };
+    const file = {
+      users: [{ id: 'default', displayName: '', discProfile: profile, createdAt: 1, updatedAt: 2 }],
+      assessments: [],
+      contacts: [],
+      journal: [],
+      exportedAt: '2026-11-25T00:00:00.000Z',
+    };
+    const chooser = page.waitForEvent('filechooser');
+    await page.click('button:has-text("Choose file")');
+    await (await chooser).setFiles({ name: 'export.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(file)) });
+    await expect(page.locator('.disc-wheel-container')).toBeVisible();
+  });
+
   test('coaching card has all sections', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('h1');
