@@ -1576,6 +1576,16 @@ html.static-page .insight-page {
   color: var(--color-text-muted);
 }
 
+/* axe link-in-text-block: a link inside a sentence needs more than color */
+.insight-siblings {
+  list-style: none;
+  padding: 0;
+}
+
+.insight-siblings a {
+  text-decoration: underline;
+}
+
 /* Error boundary */
 .error-boundary {
   display: flex;

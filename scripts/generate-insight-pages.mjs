@@ -7,7 +7,7 @@
 
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { DISC_LABELS, SITUATION_LABELS } from '../src/engine/types.ts';
+import { DISC_LABELS } from '../src/engine/types.ts';
 import { STYLE_LINES } from '../src/data/style-lines.ts';
 import feedback from '../src/data/coaching-cards/feedback.ts';
 import request from '../src/data/coaching-cards/request.ts';
@@ -16,7 +16,9 @@ import pitch from '../src/data/coaching-cards/pitch.ts';
 import difficultNews from '../src/data/coaching-cards/difficult-news.ts';
 
 const BASE_URL = 'https://cleartalk.1mb.dev';
-const BYLINE = 'Written by one person who reads about how people talk. Not therapy, and not a personality test.';
+const BYLINE = "ClearTalk helps you prepare for hard conversations. It isn't therapy.";
+const CTA = 'Add someone, answer eight quick questions about how they talk, and get the card for the two of you. It covers feedback, requests, disagreements, pitches and bad news. What you add stays on your device.';
+const STYLES = ['D', 'I', 'S', 'C'];
 const EXPECT_CAPTION = "People don't always match their style. Go by what you see.";
 
 const root = join(import.meta.dirname, '..');
@@ -61,6 +63,11 @@ function page(card, key) {
   }).replace(/</g, '\\u003c');
   const you = card.yourType;
   const them = card.theirType;
+  const gloss = you === them
+    ? `Both ${DISC_LABELS[you]}: each of you ${STYLE_LINES[you].other}.`
+    : `${DISC_LABELS[you]}: ${STYLE_LINES[you].other}. ${DISC_LABELS[them]}: ${STYLE_LINES[them].other}.`;
+  const others = STYLES.filter((s) => s !== you).map((s) =>
+    `<li><a href="/insight/${s.toLowerCase()}-to-${them.toLowerCase()}/${card.situation}/">${DISC_LABELS[s]}</a>: ${esc(STYLE_LINES[s].self)}</li>`);
 
   return `<!doctype html>
 <html lang="en" class="static-page">
@@ -105,7 +112,7 @@ function page(card, key) {
             <span class="coaching-arrow" aria-hidden="true">&rarr;</span>
             <span class="type-badge disc-${them.toLowerCase()}">Them: ${DISC_LABELS[them]}</span>
           </div>
-          <p class="insight-gloss">${DISC_LABELS[you]}: ${STYLE_LINES[you].other}. ${DISC_LABELS[them]}: ${STYLE_LINES[them].other}.</p>
+          <p class="insight-gloss">${gloss}</p>
         </header>
         ${section('Approach', para(card.approach))}
         ${section('Open with', `<ul class="coaching-phrases">${card.openWith.map(opener).join('')}</ul>`)}
@@ -115,8 +122,10 @@ function page(card, key) {
         ${section('Body language', para(card.bodyLanguage) + (card.onCall ? `\n          <p class="coaching-section-body coaching-on-call"><span class="coaching-on-call-label">On a call</span> ${esc(card.onCall)}</p>` : ''))}
       </article>
       <footer class="insight-cta">
+        <p class="insight-cta-text">The same conversation, if one of these sounds more like you:</p>
+        <ul class="insight-siblings">${others.join('')}</ul>
         <p class="insight-byline">${BYLINE}</p>
-        <p class="insight-cta-text">Add the people you talk to and ClearTalk gives you a card like this before each hard conversation. ${esc(SITUATION_LABELS[card.situation])} is one of five moments it covers.</p>
+        <p class="insight-cta-text">${CTA}</p>
         <a class="btn-primary" href="/">Try ClearTalk - free, no sign-up</a>
       </footer>
     </main>

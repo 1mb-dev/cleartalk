@@ -286,10 +286,20 @@ test.describe('Critical User Flows', () => {
     ]);
     expect(await page.locator('.coaching-phrases').first().locator('li').count()).toBeGreaterThan(1);
     await expect(page.locator('.coaching-on-call-label')).toHaveText('On a call');
-    await expect(page.locator('.insight-byline')).toContainText('Not therapy, and not a personality test.');
+    await expect(page.locator('.insight-byline')).toContainText("It isn't therapy.");
     await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveCount(1);
     await expect(page.locator('script[src]')).toHaveCount(0);
     await context.close();
+  });
+
+  test('same-style insight page describes the style once and links the other three', async ({ page }) => {
+    await page.goto('/insight/d-to-d/feedback/');
+    await expect(page.locator('.insight-gloss')).toHaveText('Both Drive: each of you gets to the point and decides fast.');
+    const links = page.locator('.insight-cta a:not(.btn-primary)');
+    await expect(links).toHaveText(['Influence', 'Steady', 'Clarity']);
+    await links.nth(1).click();
+    await expect(page).toHaveURL(/\/insight\/s-to-d\/feedback\/$/);
+    await expect(page.locator('.type-badge').first()).toHaveText('You: Steady');
   });
 
   test('insight page shows not found for an invalid pair', async ({ page }) => {
