@@ -317,6 +317,21 @@ test.describe('Critical User Flows', () => {
     await expect(page.locator('.disc-wheel-container')).toHaveCount(0);
   });
 
+  test('small text buttons still get a full touch target', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'TargetTest');
+    await page.waitForSelector('.situation-btn');
+    await page.click('.tab-item:has-text("People")');
+    await page.click('.people-card');
+    const edit = await page.locator('button:has-text("Edit")').boundingBox();
+    expect(edit?.width).toBeGreaterThanOrEqual(44);
+
+    await page.click('.tab-item:has-text("Profile")');
+    const clear = await page.locator('button:has-text("Clear")').boundingBox();
+    expect(clear?.width).toBeGreaterThanOrEqual(44);
+  });
+
   test('contact can be renamed', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('h1');

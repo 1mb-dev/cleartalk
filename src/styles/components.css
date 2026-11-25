@@ -1062,6 +1062,7 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   min-height: var(--touch-min);
+  min-width: var(--touch-min);
 }
 
 .btn-ghost:hover {
@@ -1508,7 +1509,9 @@
 .btn-ghost-danger {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: var(--touch-min);
+  min-width: var(--touch-min);
   padding: var(--space-2) 0;
   font-size: var(--font-size-sm);
   color: var(--color-error);
