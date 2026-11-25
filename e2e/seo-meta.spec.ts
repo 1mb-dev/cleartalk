@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('SEO & Meta Tags', () => {
   test('has correct title', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/ClearTalk/);
+    await expect(page).toHaveTitle(/Cleartalk/);
   });
 
   test('has meta description', async ({ page }) => {
@@ -20,7 +20,7 @@ test.describe('SEO & Meta Tags', () => {
 
   test('has OG tags', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', 'ClearTalk - What to say before a hard conversation');
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', 'Cleartalk - What to say before a hard conversation');
     await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', /know what to say/i);
     await expect(page.locator('meta[property="og:type"]')).toHaveAttribute('content', 'website');
     await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', /cleartalk/);
@@ -30,7 +30,7 @@ test.describe('SEO & Meta Tags', () => {
   test('has Twitter card tags', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
-    await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute('content', 'ClearTalk - What to say before a hard conversation');
+    await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute('content', 'Cleartalk - What to say before a hard conversation');
     await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', /og-image\.png/);
   });
 

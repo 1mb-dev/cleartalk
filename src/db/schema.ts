@@ -1,7 +1,7 @@
 import Dexie, { type EntityTable } from 'dexie';
 import type { User, Assessment, Contact, JournalEntry } from '../engine/types.ts';
 
-export class ClearTalkDB extends Dexie {
+export class CleartalkDB extends Dexie {
   users!: EntityTable<User, 'id'>;
   assessments!: EntityTable<Assessment, 'id'>;
   contacts!: EntityTable<Contact, 'id'>;
@@ -19,4 +19,4 @@ export class ClearTalkDB extends Dexie {
   }
 }
 
-export const db = new ClearTalkDB();
+export const db = new CleartalkDB();

@@ -18,7 +18,7 @@ async function injectData(page) {
       req.onerror = reject;
     });
 
-    // Open with version 1 matching ClearTalkDB schema
+    // Open with version 1 matching CleartalkDB schema
     const db = await new Promise((resolve, reject) => {
       const req = indexedDB.open('cleartalk', 1);
       req.onupgradeneeded = (e) => {

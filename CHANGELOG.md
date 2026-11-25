@@ -41,7 +41,7 @@
 - Import validation rejects malformed export files instead of silently corrupting data
 - `URL.revokeObjectURL` timing in download helper prevents empty downloads in Safari
 - `replaceAll` used for underscore replacement in share titles (was `replace`)
-- Duplicate "Open in ClearTalk" CTA removed from insight pages
+- Duplicate "Open in Cleartalk" CTA removed from insight pages
 - Empty `openWith`/`avoid` arrays no longer render undefined on insight pages
 
 ### Features
@@ -68,7 +68,7 @@
 
 ### Changed
 
-- OG image tagline aligned with ClearTalk voice ("Know what to say before you say it")
+- OG image tagline aligned with Cleartalk voice ("Know what to say before you say it")
 - Pinned wrangler-action to v3.14.1 with Wrangler CLI v4
 
 ## 0.1.0 (2026-03-24)

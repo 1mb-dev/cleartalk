@@ -13,7 +13,7 @@ import type { User, DiscProfile, JournalEntry } from '../engine/types.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 
 export function Profile() {
-  useDocumentTitle('Profile - ClearTalk');
+  useDocumentTitle('Profile - Cleartalk');
   const [user, setUser] = useState<User | null>(null);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [entryCount, setEntryCount] = useState(0);
@@ -103,7 +103,7 @@ export function Profile() {
         setTimeout(() => setImportStatus(null), 4000);
         await loadProfile();
       } catch {
-        setImportStatus('Couldn\'t import that file. Your data is safe - make sure it\'s a ClearTalk export.');
+        setImportStatus('Couldn\'t import that file. Your data is safe - make sure it\'s a Cleartalk export.');
         setTimeout(() => setImportStatus(null), 4000);
       }
     };
@@ -242,7 +242,7 @@ export function Profile() {
           <div class="setting-row">
             <div>
               <span class="setting-label">Offline mode</span>
-              <p class="setting-hint">May be unreliable. Open ClearTalk once while online to refresh.</p>
+              <p class="setting-hint">May be unreliable. Open Cleartalk once while online to refresh.</p>
             </div>
           </div>
         )}
@@ -264,7 +264,7 @@ export function Profile() {
         <div class="setting-row">
           <div>
             <span class="setting-label">Import data</span>
-            <p class="setting-hint">Restore from a ClearTalk export file</p>
+            <p class="setting-hint">Restore from a Cleartalk export file</p>
           </div>
           <button class="btn-secondary btn-sm" type="button" onClick={handleImport}>
             Choose file
@@ -293,7 +293,7 @@ export function Profile() {
 
       {/* How it works */}
       <div class="how-it-works">
-        <h2>How ClearTalk works</h2>
+        <h2>How Cleartalk works</h2>
         <div class="how-steps">
           <div class="how-step">
             <span class="how-step-num">1</span>
@@ -321,9 +321,9 @@ export function Profile() {
 
       {/* About */}
       <div class="about-section">
-        <h2>About ClearTalk</h2>
+        <h2>About Cleartalk</h2>
         <p class="about-text">
-          Know what to say before you say it. ClearTalk gives you a short card for the
+          Know what to say before you say it. Cleartalk gives you a short card for the
           person and the conversation, with lines you can say out loud.
         </p>
         <div class="usp-grid">
@@ -361,7 +361,7 @@ export function Profile() {
         <h2>Privacy</h2>
         <div class="privacy-details">
           <p>All your contacts, assessments, and conversation notes are stored locally on your device in your browser's storage. Nothing is sent to a server.</p>
-          <p>ClearTalk uses Cloudflare Web Analytics for anonymous page-view counts. This does not use cookies, does not collect personal data, and cannot identify you.</p>
+          <p>Cleartalk uses Cloudflare Web Analytics for anonymous page-view counts. This does not use cookies, does not collect personal data, and cannot identify you.</p>
           <p>You can export or delete all your data at any time from the settings above.</p>
         </div>
       </div>

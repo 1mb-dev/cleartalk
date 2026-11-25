@@ -91,8 +91,8 @@ test.describe('Performance', () => {
     const res = await request.get('/manifest.webmanifest');
     expect(res.ok()).toBe(true);
     const manifest = await res.json();
-    expect(manifest.name).toBe('ClearTalk');
-    expect(manifest.short_name).toBe('ClearTalk');
+    expect(manifest.name).toBe('Cleartalk');
+    expect(manifest.short_name).toBe('Cleartalk');
     expect(manifest.display).toBe('standalone');
     expect(manifest.icons.length).toBeGreaterThanOrEqual(2);
   });

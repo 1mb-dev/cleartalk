@@ -9,7 +9,7 @@ import { navigate } from '../lib/transitions.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 
 export function Log() {
-  useDocumentTitle('Log - ClearTalk');
+  useDocumentTitle('Log - Cleartalk');
   const [, setLocation] = useLocation();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [entries, setEntries] = useState<JournalEntry[]>([]);

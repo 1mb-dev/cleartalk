@@ -1,10 +1,13 @@
 /**
- * Generate all static image assets for ClearTalk.
+ * Generate all static image assets for Cleartalk.
  * Design: Overlapping circles (connection motif) + Magazine OG layout.
  * Run: node scripts/generate-assets.mjs
  */
 import sharp from 'sharp';
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
+
+// Drawn into og-image.png and every page preview; og/manifest.json records it so a rename can't skip the redraw.
+const WORDMARK = 'Cleartalk';
 
 const OUT = 'public/assets';
 mkdirSync(OUT, { recursive: true });
@@ -69,7 +72,7 @@ function ogSvg() {
   <circle cx="260" cy="370" r="29" fill="${C}" opacity="0.8"/>
 
   <!-- Wordmark -->
-  <text x="520" y="295" font-family="Georgia, serif" font-size="72" font-weight="400" fill="${TEXT}">ClearTalk</text>
+  <text x="520" y="295" font-family="Georgia, serif" font-size="72" font-weight="400" fill="${TEXT}">${WORDMARK}</text>
 
   <!-- Tagline -->
   <text x="520" y="345" font-family="-apple-system, sans-serif" font-size="26" fill="${MUTED}">Know what to say before you say it.</text>
@@ -120,7 +123,7 @@ function pageOgSvg(h1, situationLabel, yourType, theirType) {
   <rect x="80" y="508" width="14" height="40" rx="2" fill="${DISC_COLORS[yourType]}"/>
   <rect x="100" y="508" width="14" height="40" rx="2" fill="${DISC_COLORS[theirType]}"/>
   <text x="130" y="538" font-family="-apple-system, sans-serif" font-size="26" fill="${MUTED}">${DISC_LABELS[yourType]} to ${DISC_LABELS[theirType]}</text>
-  <text x="1120" y="538" font-family="Georgia, serif" font-size="38" fill="${TEXT}" text-anchor="end">ClearTalk</text>
+  <text x="1120" y="538" font-family="Georgia, serif" font-size="38" fill="${TEXT}" text-anchor="end">${WORDMARK}</text>
 </svg>`;
 }
 
@@ -155,7 +158,7 @@ async function main() {
       .toFile(`${OUT}/og/${pair}_${situation}.png`);
   }
   // The headline each image was drawn from; src/data/og-manifest.test.ts fails when they drift.
-  const manifest = Object.fromEntries(Object.entries(pages).map(([key, page]) => [key, page.h1]));
+  const manifest = { _wordmark: WORDMARK, ...Object.fromEntries(Object.entries(pages).map(([key, page]) => [key, page.h1])) };
   writeFileSync(`${OUT}/og/manifest.json`, JSON.stringify(manifest, null, 2) + '\n');
   console.log(`  og/*.png (${Object.keys(pages).length} page images) + manifest.json`);
 

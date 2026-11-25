@@ -28,8 +28,8 @@ export class ErrorBoundary extends Component<Props, State> {
           <h1>{isStorage ? 'Storage unavailable' : 'Something went wrong'}</h1>
           <p class="welcome-text">
             {isStorage
-              ? 'ClearTalk can\'t use this browser\'s storage right now. Your data is safe. In a private window, open ClearTalk in a regular one instead. If your device is nearly full, free some space and refresh.'
-              : 'ClearTalk hit an unexpected error. Your data is safe - refresh the page to carry on.'}
+              ? 'Cleartalk can\'t use this browser\'s storage right now. Your data is safe. In a private window, open Cleartalk in a regular one instead. If your device is nearly full, free some space and refresh.'
+              : 'Cleartalk hit an unexpected error. Your data is safe - refresh the page to carry on.'}
           </p>
           <button
             class="btn-primary"

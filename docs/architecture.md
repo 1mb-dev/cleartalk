@@ -1,4 +1,4 @@
-# ClearTalk Architecture
+# Cleartalk Architecture
 
 How the app is built. Start with the [README](../README.md) for what it does.
 

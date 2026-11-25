@@ -90,7 +90,7 @@ function mergeUser(a: User, b: User): User {
  */
 export function planImport(data: unknown, existing: Existing): ImportPlan {
   if (!isRec(data) || !Array.isArray(data.contacts)) {
-    throw new Error('Not a ClearTalk export: no contacts list');
+    throw new Error('Not a Cleartalk export: no contacts list');
   }
   const list = (k: string): unknown[] => (Array.isArray(data[k]) ? (data[k] as unknown[]) : []);
   let skipped = 0;

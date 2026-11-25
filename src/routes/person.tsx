@@ -22,7 +22,7 @@ export function PersonDetail() {
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
 
-  useDocumentTitle(contact ? `${contact.name} - ClearTalk` : 'People - ClearTalk');
+  useDocumentTitle(contact ? `${contact.name} - Cleartalk` : 'People - Cleartalk');
 
   useEffect(() => {
     if (id) loadPerson(id);

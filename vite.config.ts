@@ -46,8 +46,8 @@ export default defineConfig({
         ],
       },
       manifest: {
-        name: 'ClearTalk',
-        short_name: 'ClearTalk',
+        name: 'Cleartalk',
+        short_name: 'Cleartalk',
         description: 'Coaching for the person and the moment',
         id: '/',
         scope: '/',

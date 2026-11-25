@@ -34,10 +34,10 @@ export function Coach() {
   const [installAvailable, setInstallAvailable] = useState(canInstall() && !isInstalled() && !wasDismissed());
 
   const pageTitle = selectedContact && isSituation(params.situation)
-    ? `${SITUATION_LABELS[params.situation]} for ${selectedContact.name} - ClearTalk`
+    ? `${SITUATION_LABELS[params.situation]} for ${selectedContact.name} - Cleartalk`
     : selectedContact
-      ? `Coaching for ${selectedContact.name} - ClearTalk`
-      : 'Coach - ClearTalk';
+      ? `Coaching for ${selectedContact.name} - Cleartalk`
+      : 'Coach - Cleartalk';
   useDocumentTitle(pageTitle);
 
   useEffect(() => {
@@ -321,7 +321,7 @@ export function Coach() {
 
       {installAvailable && (
         <div class="install-banner">
-          <p>Install ClearTalk for quick access and offline use</p>
+          <p>Install Cleartalk for quick access and offline use</p>
           <div class="install-banner-actions">
             <button class="btn-primary btn-sm" type="button" onClick={async () => {
               const accepted = await triggerInstall();

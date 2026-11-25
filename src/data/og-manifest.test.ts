@@ -7,6 +7,8 @@ import drawn from '../../public/assets/og/manifest.json';
 describe('link preview images', () => {
   it('were drawn from the current headlines', () => {
     const current = Object.fromEntries(Object.entries(pages).map(([key, page]) => [key, page.h1]));
-    expect(drawn).toEqual(current);
+    const { _wordmark, ...headlines } = drawn as Record<string, string>;
+    expect(headlines).toEqual(current);
+    expect(_wordmark).toBe('Cleartalk');
   });
 });

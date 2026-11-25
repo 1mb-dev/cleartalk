@@ -229,18 +229,18 @@ test.describe.parallel('Multi-user simulation', () => {
         await page.waitForSelector('h1', { timeout: 10000 });
 
         // Verify branding
-        await expect(page.locator('.insight-brand-name')).toContainText('ClearTalk');
+        await expect(page.locator('.insight-brand-name')).toContainText('Cleartalk');
 
         // Verify coaching content
         await expect(page.locator('.coaching-section').first()).toBeAttached();
 
         // Verify CTA
-        await expect(page.locator('a:has-text("Try ClearTalk")')).toBeAttached();
+        await expect(page.locator('a:has-text("Try Cleartalk")')).toBeAttached();
       }
     }
 
     // Navigate from insight CTA to main app
-    await page.click('a:has-text("Try ClearTalk")');
+    await page.click('a:has-text("Try Cleartalk")');
     await page.waitForSelector('h1');
     // Should be on coach welcome page
     await expect(page.locator('h1')).toContainText('Before your next conversation');

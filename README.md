@@ -1,8 +1,8 @@
-# ClearTalk
+# Cleartalk
 
 Know what to say before you say it.
 
-ClearTalk coaches you for the person and the moment - what to say, what to avoid, how to read the room. 80 coaching cards across 5 common situations.
+Cleartalk coaches you for the person and the moment - what to say, what to avoid, how to read the room. 80 coaching cards across 5 common situations.
 
 ## How it works
 

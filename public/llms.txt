@@ -1,18 +1,18 @@
-# ClearTalk
+# Cleartalk
 
 > Know what to say before you say it.
 
-ClearTalk coaches you for the person and the moment - what to say, what to avoid, and how to read the room. Free, private, no sign-up.
+Cleartalk coaches you for the person and the moment - what to say, what to avoid, and how to read the room. Free, private, no sign-up.
 
 ## What it does
 
-ClearTalk helps people prepare for conversations by understanding communication styles. Add a person, answer 8 quick questions about how they communicate, and get specific coaching for 5 situations: giving feedback, making a request, navigating conflict, pitching an idea, and delivering difficult news.
+Cleartalk helps people prepare for conversations by understanding communication styles. Add a person, answer 8 quick questions about how they communicate, and get specific coaching for 5 situations: giving feedback, making a request, navigating conflict, pitching an idea, and delivering difficult news.
 
-ClearTalk isn't therapy. Your own style comes from a one-tap pick or 24 quick choices, and other people's from those 8 questions. The scoring is simple and not validated, so treat a style as a starting point for the next conversation.
+Cleartalk isn't therapy. Your own style comes from a one-tap pick or 24 quick choices, and other people's from those 8 questions. The scoring is simple and not validated, so treat a style as a starting point for the next conversation.
 
 ## Communication styles
 
-ClearTalk uses four communication styles:
+Cleartalk uses four communication styles:
 
 - **Drive** - gets to the point and decides fast
 - **Influence** - thinks out loud and likes to bring people along

@@ -3,7 +3,7 @@ interface LogoProps {
 }
 
 /**
- * ClearTalk DISC motif logo.
+ * Cleartalk DISC motif logo.
  * Four circles representing the four communication styles.
  */
 export function Logo({ size = 32 }: LogoProps) {

@@ -95,7 +95,7 @@ describe('planImport', () => {
   });
 
   it('rejects a file that is not an export', () => {
-    expect(() => planImport({ hello: 1 }, empty())).toThrow('Not a ClearTalk export');
-    expect(() => planImport(null, empty())).toThrow('Not a ClearTalk export');
+    expect(() => planImport({ hello: 1 }, empty())).toThrow('Not a Cleartalk export');
+    expect(() => planImport(null, empty())).toThrow('Not a Cleartalk export');
   });
 });

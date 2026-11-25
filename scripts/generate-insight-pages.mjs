@@ -16,7 +16,7 @@ import pitch from '../src/data/coaching-cards/pitch.ts';
 import difficultNews from '../src/data/coaching-cards/difficult-news.ts';
 
 const BASE_URL = 'https://cleartalk.1mb.dev';
-const BYLINE = "ClearTalk helps you prepare for hard conversations. It isn't therapy.";
+const BYLINE = "Cleartalk helps you prepare for hard conversations. It isn't therapy.";
 const CTA = 'Add someone, answer eight quick questions about how they talk, and get the card for the two of you. It covers feedback, requests, disagreements, pitches and bad news. What you add stays on your device.';
 const STYLES = ['D', 'I', 'S', 'C'];
 const EXPECT_CAPTION = "People don't always match their style. Go by what you see.";
@@ -58,7 +58,7 @@ function page(card, key) {
     inLanguage: 'en',
     mainEntityOfPage: url,
     image,
-    author: { '@type': 'Organization', name: 'ClearTalk', url: `${BASE_URL}/` },
+    author: { '@type': 'Organization', name: 'Cleartalk', url: `${BASE_URL}/` },
     publisher: { '@type': 'Organization', name: '1mb-dev', url: 'https://github.com/1mb-dev' },
   }).replace(/</g, '\\u003c');
   const you = card.yourType;
@@ -84,7 +84,7 @@ function page(card, key) {
     <meta property="og:type" content="article" />
     <meta property="og:url" content="${url}" />
     <meta property="og:image" content="${image}" />
-    <meta property="og:site_name" content="ClearTalk" />
+    <meta property="og:site_name" content="Cleartalk" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${esc(m.title)}" />
     <meta name="twitter:description" content="${esc(m.description)}" />
@@ -102,7 +102,7 @@ function page(card, key) {
     <main id="main" class="route-shell insight-page">
       <a class="insight-brand" href="/">
         <img src="/favicon.svg" width="24" height="24" alt="" />
-        <span class="insight-brand-name">ClearTalk</span>
+        <span class="insight-brand-name">Cleartalk</span>
       </a>
       <article class="coaching-card">
         <header class="insight-header">
@@ -126,7 +126,7 @@ function page(card, key) {
         <ul class="insight-siblings">${others.join('')}</ul>
         <p class="insight-byline">${BYLINE}</p>
         <p class="insight-cta-text">${CTA}</p>
-        <a class="btn-primary" href="/">Try ClearTalk - free, no sign-up</a>
+        <a class="btn-primary" href="/">Try Cleartalk - free, no sign-up</a>
       </footer>
     </main>
   </body>
