@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 
 test.describe('Security Headers & CSP', () => {
@@ -12,12 +13,16 @@ test.describe('Security Headers & CSP', () => {
     // frame-ancestors is in _headers file (HTTP header only, not valid in meta)
   });
 
-  test('serves security headers', async ({ request }) => {
-    const res = await request.get('/');
-    const headers = res.headers();
-    // CF Pages serves these from _headers file
-    // In preview mode they may not be present, so check HTML-level CSP instead
-    expect(res.ok()).toBe(true);
+  test('ships security headers for Cloudflare Pages', () => {
+    // vite preview does not apply _headers, so check the built file Cloudflare reads.
+    const headers = readFileSync('dist/_headers', 'utf8');
+    for (const h of [
+      'X-Frame-Options: DENY',
+      'X-Content-Type-Options: nosniff',
+      'Strict-Transport-Security: max-age=31536000',
+      'Referrer-Policy: strict-origin-when-cross-origin',
+      'Permissions-Policy:',
+    ]) expect(headers).toContain(h);
   });
 
   test('has mobile web app meta tags', async ({ page }) => {
