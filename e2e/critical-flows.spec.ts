@@ -72,6 +72,11 @@ test.describe('Critical User Flows', () => {
     await waitForCard(page);
     await expect(page.locator('.coaching-last-note .coaching-section-body')).toHaveText('Went better when I asked first.');
     await expect(page.locator('.coaching-last-note-meta')).toHaveText('Give Feedback, today');
+
+    // Rated 4, so Profile lists it under what worked, in the reader's own words.
+    await page.click('[role="tab"]:has-text("Profile")');
+    await expect(page.locator('.patterns-notes h3')).toHaveText(['What worked']);
+    await expect(page.locator('.patterns-note')).toHaveText(['Went better when I asked first.']);
   });
 
   test('import merges: adds new people, keeps what is already here, reports skips', async ({ page }) => {

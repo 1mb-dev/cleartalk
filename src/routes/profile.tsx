@@ -3,13 +3,13 @@ import { Assessment } from '../components/assessment.tsx';
 import { DiscWheel } from '../components/disc-wheel.tsx';
 import { getOrCreateUser, getJournalEntries, getJournalCount, getContacts } from '../db/queries.ts';
 import { typeProfiles } from '../data/type-profiles.ts';
-import { calculateInsights } from '../engine/insights.ts';
+import { findPatterns, type NotedMoment, type Patterns } from '../engine/insights.ts';
 import { exportData, downloadJson, importData, clearAllData } from '../lib/storage.ts';
 import { canInstall, isInstalled, triggerInstall, onInstallAvailable } from '../lib/install-prompt.ts';
 import { getOfflineStatus, type OfflineStatus } from '../lib/offline-ready.ts';
-import { DISC_LABELS } from '../engine/types.ts';
+import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
+import { formatRelativeDate } from '../lib/format.ts';
 import type { User, DiscProfile, JournalEntry } from '../engine/types.ts';
-import type { InsightsSummary } from '../engine/insights.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 
 export function Profile() {
@@ -17,7 +17,7 @@ export function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [entryCount, setEntryCount] = useState(0);
-  const [insights, setInsights] = useState<InsightsSummary | null>(null);
+  const [patterns, setPatterns] = useState<Patterns>({ worked: [], change: [], rough: null });
   const [showAssessment, setShowAssessment] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -50,7 +50,7 @@ export function Profile() {
       setUser(u);
       setEntries(e);
       setEntryCount(n);
-      setInsights(calculateInsights(e, c));
+      setPatterns(findPatterns(e, c));
     } catch {
       setError(true);
     } finally {
@@ -117,7 +117,7 @@ export function Profile() {
       setUser(null);
       setEntries([]);
       setEntryCount(0);
-      setInsights(null);
+      setPatterns({ worked: [], change: [], rough: null });
     } catch {
       setError(true);
     }
@@ -200,50 +200,22 @@ export function Profile() {
       {entries.length > 0 && (
         <div class="patterns-section">
           <h2>Your patterns</h2>
+          <p class="patterns-count">{entryCount} {entryCount === 1 ? 'conversation' : 'conversations'} logged.</p>
 
-          {insights ? (
-            <div class="insights-content">
-              <div class="insights-overview">
-                <div class="insight-stat">
-                  <span class="insight-number">{insights.overallAverage}</span>
-                  <span class="insight-label">average outcome</span>
-                </div>
-                <div class="insight-stat">
-                  <span class="insight-number">{entryCount}</span>
-                  <span class="insight-label">conversations logged</span>
-                </div>
-              </div>
+          {patterns.worked.length > 0 && <NoteList title="What worked" moments={patterns.worked} />}
+          {patterns.change.length > 0 && <NoteList title="What you'd change" moments={patterns.change} />}
 
-              {insights.byType.length > 0 && (
-                <div class="insights-by-type">
-                  {insights.byType.map(stat => (
-                    <div key={stat.theirType} class="insight-type-row">
-                      <span class={`type-dot disc-${stat.theirType.toLowerCase()}`} aria-hidden="true" />
-                      <span class="insight-type-name">{DISC_LABELS[stat.theirType]}</span>
-                      <span class="insight-type-avg">{stat.average}</span>
-                      <span class="insight-type-count">{stat.count} logged</span>
-                      <span class={`insight-trend trend-${stat.trend}`} aria-hidden="true">
-                        {stat.trend === 'improving' ? '\u2191' : stat.trend === 'declining' ? '\u2193' : '\u2192'}
-                      </span>
-                      <span class="sr-only">{stat.trend}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+          {patterns.rough && (
+            <p class="patterns-rough">
+              {patterns.rough.count} of your rough conversations were with {DISC_LABELS[patterns.rough.type]} people.
+              Read their card again before the next one.
+            </p>
+          )}
 
-              {insights.tips.length > 0 && (
-                <div class="insights-tips">
-                  <h4>Growth</h4>
-                  <ul>
-                    {insights.tips.map((tip, i) => <li key={i}>{tip}</li>)}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ) : (
+          {patterns.worked.length === 0 && patterns.change.length === 0 && (
             <p class="patterns-empty">
-              Patterns will appear here as you log more conversations.
-              You have {entries.length} of 5 needed.
+              When you log a conversation, add a line about what happened. The ones that went well
+              and the ones you'd do differently collect here.
             </p>
           )}
         </div>
@@ -393,6 +365,22 @@ export function Profile() {
           <p>You can export or delete all your data at any time from the settings above.</p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function NoteList({ title, moments }: { title: string; moments: NotedMoment[] }) {
+  return (
+    <div class="patterns-notes">
+      <h3>{title}</h3>
+      <ul>
+        {moments.map((m, i) => (
+          <li key={i}>
+            <p class="patterns-note">{m.note}</p>
+            <p class="patterns-meta">{m.contactName}, {SITUATION_LABELS[m.situation]}, {formatRelativeDate(m.loggedAt)}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

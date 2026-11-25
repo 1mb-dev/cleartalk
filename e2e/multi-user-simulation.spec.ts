@@ -187,7 +187,7 @@ test.describe.parallel('Multi-user simulation', () => {
     await page.click('[role="tab"]:has-text("Profile")');
     await page.waitForSelector('h1');
     await page.waitForSelector('.patterns-section');
-    await expect(page.locator('.insight-stat').first()).toBeAttached();
+    await expect(page.locator('.patterns-count')).toHaveText('8 conversations logged.');
 
     // View person detail
     await page.click('[role="tab"]:has-text("People")');
