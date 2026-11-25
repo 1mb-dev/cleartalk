@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
 import { getCoachingCard } from '../engine/coaching.ts';
-import { DISC_LABELS, SITUATION_LABELS, isSituation } from '../engine/types.ts';
+import { DISC_LABELS, SITUATION_LABELS, isSituation, openerLine } from '../engine/types.ts';
 import type { CoachingCard } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
@@ -96,7 +96,7 @@ export function Insight() {
         <div class="coaching-section">
           <h2 class="coaching-section-title">Open with</h2>
           <ul class="coaching-phrases">
-            <li>{card.openWith[0]}</li>
+            <li>{openerLine(card.openWith[0])}</li>
           </ul>
         </div>
       )}

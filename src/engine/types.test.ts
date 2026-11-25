@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isSituation, resolveYourType, SITUATION_LABELS } from './types.ts';
+import { isSituation, openerLine, resolveYourType, SITUATION_LABELS } from './types.ts';
 import type { DiscProfile } from './types.ts';
 
 describe('isSituation', () => {
@@ -34,5 +34,15 @@ describe('resolveYourType', () => {
   it('returns null with neither, including records saved before picks existed', () => {
     expect(resolveYourType({ discProfile: null })).toBeNull();
     expect(resolveYourType({ discProfile: null, selfPick: null })).toBeNull();
+  });
+});
+
+describe('openerLine', () => {
+  it('returns a plain opener as is', () => {
+    expect(openerLine("Can we talk about Tuesday?")).toBe("Can we talk about Tuesday?");
+  });
+
+  it('returns only the spoken line of a conditional opener', () => {
+    expect(openerLine({ line: "Your role isn't changing.", onlyIf: "it's true" })).toBe("Your role isn't changing.");
   });
 });

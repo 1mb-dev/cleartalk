@@ -607,6 +607,43 @@
   content: "\201D";
 }
 
+/* The condition sits above the quote in the UI face; the quote marks wrap only the speech */
+.coaching-phrase-conditional {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.coaching-phrase-conditional::before,
+.coaching-phrase-conditional::after {
+  content: none;
+}
+
+.coaching-line::before {
+  content: "\201C";
+  margin-left: -0.45em;
+}
+
+.coaching-line::after {
+  content: "\201D";
+}
+
+.coaching-only-if {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.coaching-caption,
+.coaching-on-call-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.coaching-on-call-label {
+  font-weight: 600;
+}
+
 /* Avoid items are advice, not speech */
 .coaching-warning .coaching-phrases li {
   font-family: var(--font-ui);

@@ -55,16 +55,25 @@ export interface JournalEntry {
   loggedAt: number;
 }
 
+/** A line to say. With `onlyIf`, the reader says it only when that condition is true. */
+export type Opener = string | { line: string; onlyIf: string };
+
 export interface CoachingCard {
   yourType: DiscType;
   theirType: DiscType;
   situation: SituationType;
   approach: string;
-  openWith: string[];
+  openWith: Opener[];
   avoid: string[];
   theirReaction: string;
   ifGoesWrong: string;
   bodyLanguage: string;
+  /** The body-language move for a video call, shown under its own label. */
+  onCall?: string;
+}
+
+export function openerLine(o: Opener): string {
+  return typeof o === 'string' ? o : o.line;
 }
 
 export interface AssessmentQuestion {

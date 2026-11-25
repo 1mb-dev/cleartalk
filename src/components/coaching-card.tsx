@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import type { CoachingCard as CoachingCardType, DiscType, JournalEntry } from '../engine/types.ts';
+import type { CoachingCard as CoachingCardType, DiscType, JournalEntry, Opener } from '../engine/types.ts';
 import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
 import { formatRelativeDate } from '../lib/format.ts';
 
@@ -49,12 +49,24 @@ export function CoachingCardView({ card, yourSource, onCheckStyle, lastNote }: C
       )}
 
       <Section title="Approach" content={card.approach} />
-      <PhraseList title="Open with" items={card.openWith} />
+      <OpenerList items={card.openWith} />
       <PhraseList title="Avoid" items={card.avoid} variant="warning" />
 
-      <Section title="Expect this" content={card.theirReaction} />
+      <div class="coaching-section">
+        <h2 class="coaching-section-title">Expect this</h2>
+        <p class="coaching-caption">People don't always match their style. Go by what you see.</p>
+        <p class="coaching-section-body">{card.theirReaction}</p>
+      </div>
       <Section title="If it goes sideways" content={card.ifGoesWrong} />
-      <Section title="Body language" content={card.bodyLanguage} />
+      <div class="coaching-section">
+        <h2 class="coaching-section-title">Body language</h2>
+        <p class="coaching-section-body">{card.bodyLanguage}</p>
+        {card.onCall && (
+          <p class="coaching-section-body coaching-on-call">
+            <span class="coaching-on-call-label">On a call</span> {card.onCall}
+          </p>
+        )}
+      </div>
 
       <ShareButton card={card} />
     </div>
@@ -71,6 +83,24 @@ function Section({ title, content }: { title: string; content: string }) {
     <div class="coaching-section">
       <h2 class="coaching-section-title">{title}</h2>
       <p class="coaching-section-body">{content}</p>
+    </div>
+  );
+}
+
+function OpenerList({ items }: { items: Opener[] }) {
+  return (
+    <div class="coaching-section">
+      <h2 class="coaching-section-title">Open with</h2>
+      <ul class="coaching-phrases">
+        {items.map((o, i) => typeof o === 'string' ? (
+          <li key={i}>{o}</li>
+        ) : (
+          <li key={i} class="coaching-phrase-conditional">
+            <span class="coaching-only-if">Only if {o.onlyIf}</span>
+            <span class="coaching-line">{o.line}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
