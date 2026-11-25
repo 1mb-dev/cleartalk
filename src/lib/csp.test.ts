@@ -63,8 +63,8 @@ describe('content security policy', () => {
 
   // connect-src is the directive that actually protects this app: it stops a compromised
   // dependency posting IndexedDB contents (contact names, conversation notes) to any endpoint.
+  // Pinned exactly: llms.txt and the home page meta promise nothing the reader types leaves the device.
   it('keeps connect-src restricted', () => {
-    expect(directive('connect-src')).toContain("'self'");
-    expect(directive('connect-src')).not.toContain('*');
+    expect(directive('connect-src')).toBe("connect-src 'self' https://cloudflareinsights.com");
   });
 });
