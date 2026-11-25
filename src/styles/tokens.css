@@ -16,13 +16,13 @@
   /* DISC type colors */
   --color-disc-d: #e8614d;
   --color-disc-d-subtle: rgb(232 97 77 / 10%);
-  --color-disc-d-text: #c4402e;
+  --color-disc-d-text: #b83a29;
   --color-disc-i: #d4a017;
   --color-disc-i-subtle: rgb(212 160 23 / 10%);
-  --color-disc-i-text: #a57c0f;
+  --color-disc-i-text: #8a6609;
   --color-disc-s: #2d9f83;
   --color-disc-s-subtle: rgb(45 159 131 / 10%);
-  --color-disc-s-text: #1f7a63;
+  --color-disc-s-text: #1c735d;
   --color-disc-c: #5b7fa6;
   --color-disc-c-subtle: rgb(91 127 166 / 10%);
   --color-disc-c-text: #456589;
@@ -91,7 +91,7 @@
     --color-surface: #1c1b19;
     --color-text: #e8e4df;
     --color-text-muted: #a09b96;
-    --color-text-subtle: #716c67;
+    --color-text-subtle: #8a847e;
     --color-border: #2a2a28;
     --color-border-subtle: #1f1f1d;
     --color-accent: #e8e4df;
@@ -119,7 +119,7 @@
   --color-surface: #1c1b19;
   --color-text: #e8e4df;
   --color-text-muted: #a09b96;
-  --color-text-subtle: #716c67;
+  --color-text-subtle: #8a847e;
   --color-border: #2a2a28;
   --color-border-subtle: #1f1f1d;
   --color-accent: #e8e4df;

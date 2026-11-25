@@ -532,26 +532,22 @@
 .coaching-card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-8);
 }
 
 .coaching-card-header {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   flex-wrap: wrap;
-  padding: var(--space-4);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
 }
 
 .type-badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--font-size-base);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-sm);
   font-weight: 600;
   border-radius: var(--radius-full);
 }
@@ -569,12 +565,12 @@
 .coaching-section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 6px;
 }
 
 .coaching-section-title {
   font-family: var(--font-display);
-  font-size: var(--font-size-sm);
+  font-size: 1.0625rem;
   font-weight: 600;
   color: var(--color-text);
   letter-spacing: 0;
@@ -589,22 +585,38 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-4);
 }
 
+/* Openers are speech: set in the display face with hanging quotes. Fraunces ships roman only. */
 .coaching-phrases li {
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-accent-subtle);
-  border-left: 3px solid var(--color-accent);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  font-size: var(--font-size-sm);
-  font-style: italic;
+  padding: 0 0 0 var(--space-4);
+  border-left: 2px solid var(--color-border);
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.coaching-phrases li::before {
+  content: "\201C";
+  margin-left: -0.45em;
+}
+
+.coaching-phrases li::after {
+  content: "\201D";
+}
+
+/* Avoid items are advice, not speech */
+.coaching-warning .coaching-phrases li {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-base);
   line-height: var(--line-height-body);
 }
 
-.coaching-warning .coaching-phrases li {
-  background: var(--color-disc-d-subtle);
-  border-left-color: var(--color-disc-d);
+.coaching-warning .coaching-phrases li::before,
+.coaching-warning .coaching-phrases li::after {
+  content: none;
 }
 
 .share-btn {
@@ -1634,7 +1646,7 @@
   }
 
   .coaching-card {
-    gap: var(--space-6);
+    gap: var(--space-10);
   }
 
 }
@@ -1666,13 +1678,17 @@
     --max-width: 720px;
   }
 
-  .coaching-card-header {
-    padding: var(--space-5) var(--space-6);
+  .coaching-section-title {
+    font-size: 1.1875rem;
   }
 
   .coaching-section-body {
     font-size: var(--font-size-lg);
     line-height: 1.6;
+  }
+
+  .coaching-phrases li {
+    font-size: var(--font-size-lg);
   }
 
   .welcome-text {

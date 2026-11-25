@@ -88,13 +88,13 @@ export function Insight() {
       </div>
 
       <div class="coaching-section">
-        <h4 class="coaching-section-title">Approach</h4>
+        <h2 class="coaching-section-title">Approach</h2>
         <p class="coaching-section-body">{card.approach}</p>
       </div>
 
       {card.openWith.length > 0 && (
         <div class="coaching-section">
-          <h4 class="coaching-section-title">Open with</h4>
+          <h2 class="coaching-section-title">Open with</h2>
           <ul class="coaching-phrases">
             <li>{card.openWith[0]}</li>
           </ul>
@@ -103,7 +103,7 @@ export function Insight() {
 
       {card.avoid.length > 0 && (
         <div class="coaching-section coaching-warning">
-          <h4 class="coaching-section-title">Avoid</h4>
+          <h2 class="coaching-section-title">Avoid</h2>
           <ul class="coaching-phrases">
             <li>{card.avoid[0]}</li>
           </ul>

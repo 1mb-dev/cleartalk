@@ -51,7 +51,7 @@ export function CoachingCardView({ card, yourSource, onCheckStyle }: CoachingCar
 function Section({ title, content }: { title: string; content: string }) {
   return (
     <div class="coaching-section">
-      <h4 class="coaching-section-title">{title}</h4>
+      <h2 class="coaching-section-title">{title}</h2>
       <p class="coaching-section-body">{content}</p>
     </div>
   );
@@ -60,7 +60,7 @@ function Section({ title, content }: { title: string; content: string }) {
 function PhraseList({ title, items, variant }: { title: string; items: string[]; variant?: 'warning' }) {
   return (
     <div class={`coaching-section${variant === 'warning' ? ' coaching-warning' : ''}`}>
-      <h4 class="coaching-section-title">{title}</h4>
+      <h2 class="coaching-section-title">{title}</h2>
       <ul class="coaching-phrases">
         {items.map((item, i) => <li key={i}>{item}</li>)}
       </ul>
