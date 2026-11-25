@@ -72,7 +72,7 @@ export function Log() {
       const updated = await getJournalEntries();
       setEntries(updated);
     } catch {
-      setError('Could not save your entry. Please try again.');
+      setError('Couldn\'t save your entry. Your data is safe - try again.');
     } finally {
       setSaving(false);
     }

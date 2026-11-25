@@ -120,8 +120,8 @@ export function Coach() {
       <div class="route-shell centered">
         <div class="welcome-block">
           <p class="welcome-text">
-            Could not load your data. If you are in private browsing mode,
-            try a regular browser window instead.
+            Couldn't load your people. Your data is safe. If you're in a private
+            window, try a regular one.
           </p>
           <button class="btn-primary" type="button" onClick={() => loadState()}>
             Try again

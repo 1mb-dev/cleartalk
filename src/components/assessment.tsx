@@ -88,7 +88,7 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
 
         {saveError && (
           <p class="error-inline" role="alert">
-            Could not save your results. Check that your browser allows storage and try again.
+            Couldn't save your results. Your data is safe - check that your browser allows storage, then try again.
           </p>
         )}
 

@@ -100,7 +100,7 @@ export function Profile() {
         setTimeout(() => setImportStatus(null), 4000);
         await loadProfile();
       } catch {
-        setImportStatus('Could not import file. Make sure it is a ClearTalk export.');
+        setImportStatus('Couldn\'t import that file. Your data is safe - make sure it\'s a ClearTalk export.');
         setTimeout(() => setImportStatus(null), 4000);
       }
     };

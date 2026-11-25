@@ -131,7 +131,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
     return (
       <div class="quicktag-wizard">
         <p class="assessment-prompt" role="alert">
-          Could not save. Check that your browser allows storage and try again.
+          Couldn't save. Your data is safe - check that your browser allows storage, then try again.
         </p>
         <button class="btn-primary" type="button" onClick={() => finalize(answers)}>
           Try again
