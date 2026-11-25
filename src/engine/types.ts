@@ -20,6 +20,8 @@ export interface User {
   id: string;
   displayName: string;
   discProfile: DiscProfile | null;
+  /** The style the user picked for themselves before taking the assessment. */
+  selfPick?: DiscType | null;
   createdAt: number;
   updatedAt: number;
 }
@@ -95,4 +97,11 @@ export const SITUATION_LABELS: Record<SituationType, string> = {
 
 export function isSituation(s: string | undefined): s is SituationType {
   return s !== undefined && Object.hasOwn(SITUATION_LABELS, s);
+}
+
+/** The reader's own style for a card: the assessment wins, then their own pick, else unknown. */
+export function resolveYourType(user: Pick<User, 'discProfile' | 'selfPick'>): { type: DiscType; source: 'assessment' | 'pick' } | null {
+  if (user.discProfile) return { type: user.discProfile.primary, source: 'assessment' };
+  if (user.selfPick) return { type: user.selfPick, source: 'pick' };
+  return null;
 }

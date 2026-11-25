@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { waitForCard } from './helpers.ts';
 
 /**
  * 5-minute multi-user simulation.
@@ -77,7 +78,7 @@ test.describe.parallel('Multi-user simulation', () => {
     // View all 5 situations for first contact
     for (const sit of SITUATIONS) {
       await page.click(`.situation-btn:has-text("${sitLabel(sit)}")`);
-      await page.waitForSelector('.coaching-card', { timeout: 10000 });
+      await waitForCard(page);
       await expect(page.locator('.coaching-section').first()).toBeAttached();
       await page.click('.back-link');
       await page.waitForSelector('.situation-btn');
@@ -140,11 +141,10 @@ test.describe.parallel('Multi-user simulation', () => {
     await page.waitForSelector('h1');
     await addContactViaQuickTag(page, 'NewUserContact');
 
-    // View a coaching card (now with assessment -- should see openWith/avoid)
+    // View a coaching card: with an assessment there is no style pick first
     await page.click('.situation-btn:first-child');
-    await page.waitForSelector('.coaching-card');
+    await waitForCard(page);
 
-    // Gated sections should be visible (has assessment)
     const sections = await page.locator('.coaching-section-title').allTextContents();
     expect(sections).toContain('Open with');
     expect(sections).toContain('Avoid');
@@ -198,7 +198,7 @@ test.describe.parallel('Multi-user simulation', () => {
 
     // Quick coach from person detail
     await page.click('.situation-btn-sm:first-child');
-    await page.waitForSelector('.coaching-card', { timeout: 10000 });
+    await waitForCard(page);
 
     // Navigate back to People tab and rename contact
     await page.click('[role="tab"]:has-text("People")');
@@ -247,7 +247,7 @@ test.describe.parallel('Multi-user simulation', () => {
     // Now use the app -- add a contact and view coaching card with share button
     await addContactViaQuickTag(page, 'ShareTest');
     await page.click('.situation-btn:first-child');
-    await page.waitForSelector('.coaching-card');
+    await waitForCard(page);
 
     // Share button should be present
     await expect(page.locator('.share-btn')).toBeAttached();

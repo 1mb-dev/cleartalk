@@ -626,17 +626,36 @@
   border-color: var(--color-accent);
 }
 
-.coaching-locked {
-  opacity: 0.7;
+.coaching-pick-note {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
 }
 
-.coaching-locked-hint {
-  font-size: var(--font-size-sm);
-  color: var(--color-text);
-  font-style: italic;
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-accent-subtle);
-  border-radius: var(--radius);
+/* Self-pick: the reader's own style before any assessment */
+.self-pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.self-pick-hint {
+  color: var(--color-text-muted);
+}
+
+.self-pick-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.self-pick-option {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.self-pick-name {
+  font-weight: 600;
 }
 
 /* Coach-to-log bridge */

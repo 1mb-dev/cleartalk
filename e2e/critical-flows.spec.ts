@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { waitForCard } from './helpers.ts';
 
 /** Add a contact via QuickTag wizard: name entry, 8 questions, confirm, save */
 async function addContact(page: Page, name: string) {
@@ -24,9 +25,31 @@ test.describe('Critical User Flows', () => {
 
     await page.click('.situation-btn:first-child');
 
-    await page.waitForSelector('.coaching-card');
+    await waitForCard(page);
     await expect(page.locator('.coaching-section-title').first()).toBeAttached();
     await expect(page.locator('.coaching-section-body').first()).toBeAttached();
+  });
+
+  test('first card asks the reader\'s style, then shows the whole card for that pair', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'PickTest');
+    await page.waitForSelector('.situation-btn');
+    await page.click('.situation-btn:first-child');
+
+    await expect(page.locator('.self-pick h2')).toHaveText('Which is closer to you?');
+    await page.click('.self-pick-option:has-text("Clarity")');
+
+    await expect(page.locator('.coaching-card .type-badge').first()).toHaveText('You: Clarity');
+    await expect(page.locator('.coaching-pick-note')).toContainText('Based on the style you picked');
+    const sections = await page.locator('.coaching-section-title').allTextContents();
+    expect(sections).toEqual(expect.arrayContaining(['Open with', 'Avoid']));
+
+    // The pick is remembered: the next card opens straight away.
+    await page.click('.back-link');
+    await page.click('.situation-btn:nth-child(2)');
+    await expect(page.locator('.coaching-card .type-badge').first()).toHaveText('You: Clarity');
+    await expect(page.locator('.self-pick')).toHaveCount(0);
   });
 
   test('coaching card has all sections', async ({ page }) => {
@@ -36,7 +59,7 @@ test.describe('Critical User Flows', () => {
 
     await page.waitForSelector('.situation-btn');
     await page.click('.situation-btn:first-child');
-    await page.waitForSelector('.coaching-card');
+    await waitForCard(page);
 
     const sections = await page.locator('.coaching-section-title').allTextContents();
     expect(sections).toContain('Approach');
@@ -50,7 +73,7 @@ test.describe('Critical User Flows', () => {
 
     await page.waitForSelector('.situation-btn');
     await page.click('.situation-btn:first-child');
-    await page.waitForSelector('.coaching-card');
+    await waitForCard(page);
 
     await page.click('button:has-text("Log how it went")');
     await page.waitForSelector('#log-contact');

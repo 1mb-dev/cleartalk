@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { waitForCard } from './helpers.ts';
 
 test.describe('Performance', () => {
   test('page loads within 3 seconds', async ({ page }) => {
@@ -70,7 +71,7 @@ test.describe('Performance', () => {
     await page.click('.situation-btn:first-child');
 
     // Coaching card should render (chunk loaded successfully)
-    await page.waitForSelector('.coaching-card', { timeout: 5000 });
+    await waitForCard(page);
     await expect(page.locator('.coaching-section').first()).toBeAttached();
   });
 

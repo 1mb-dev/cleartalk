@@ -30,6 +30,10 @@ export async function updateUserProfile(profile: User['discProfile']): Promise<v
   });
 }
 
+export async function setSelfPick(type: User['selfPick']): Promise<void> {
+  await db.users.update(DEFAULT_USER_ID, { selfPick: type, updatedAt: Date.now() });
+}
+
 export async function saveAssessment(assessment: Omit<Assessment, 'id'>): Promise<string> {
   const id = generateId();
   await db.assessments.add({ ...assessment, id });

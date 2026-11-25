@@ -4,7 +4,9 @@ import { DISC_LABELS } from '../engine/types.ts';
 
 interface CoachingCardProps {
   card: CoachingCardType;
-  hasAssessment: boolean;
+  /** Where the reader's own style came from; a pick is labelled so they can check it. */
+  yourSource: 'assessment' | 'pick';
+  onCheckStyle: () => void;
 }
 
 const TYPE_CLASS: Record<DiscType, string> = {
@@ -14,7 +16,7 @@ const TYPE_CLASS: Record<DiscType, string> = {
   C: 'disc-c',
 };
 
-export function CoachingCardView({ card, hasAssessment }: CoachingCardProps) {
+export function CoachingCardView({ card, yourSource, onCheckStyle }: CoachingCardProps) {
   return (
     <div class="coaching-card">
       <div class="coaching-card-header">
@@ -26,26 +28,16 @@ export function CoachingCardView({ card, hasAssessment }: CoachingCardProps) {
           Them: {DISC_LABELS[card.theirType]}
         </span>
       </div>
+      {yourSource === 'pick' && (
+        <p class="coaching-pick-note">
+          Based on the style you picked.{' '}
+          <button class="link-btn" type="button" onClick={onCheckStyle}>Check it in 3 minutes</button>
+        </p>
+      )}
 
       <Section title="Approach" content={card.approach} />
-
-      {hasAssessment ? (
-        <PhraseList title="Open with" items={card.openWith} />
-      ) : (
-        <LockedSection
-          title="Open with"
-          hint="These openers are tailored to your style. A 3-minute assessment unlocks them."
-        />
-      )}
-
-      {hasAssessment ? (
-        <PhraseList title="Avoid" items={card.avoid} variant="warning" />
-      ) : (
-        <LockedSection
-          title="Avoid"
-          hint="Your specific pitfalls depend on how you communicate. The assessment reveals them."
-        />
-      )}
+      <PhraseList title="Open with" items={card.openWith} />
+      <PhraseList title="Avoid" items={card.avoid} variant="warning" />
 
       <Section title="Expect this" content={card.theirReaction} />
       <Section title="If it goes sideways" content={card.ifGoesWrong} />
@@ -109,14 +101,5 @@ function ShareButton({ card }: { card: CoachingCardType }) {
     <button class="share-btn" type="button" onClick={handleShare}>
       <span aria-live="polite">{label}</span>
     </button>
-  );
-}
-
-function LockedSection({ title, hint }: { title: string; hint: string }) {
-  return (
-    <div class="coaching-section coaching-locked">
-      <h4 class="coaching-section-title">{title}</h4>
-      <p class="coaching-locked-hint">{hint}</p>
-    </div>
   );
 }

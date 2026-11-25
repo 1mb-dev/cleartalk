@@ -2,10 +2,11 @@ import { useState, useEffect } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
 import { QuickTag } from '../components/quick-tag.tsx';
 import { CoachingCardView } from '../components/coaching-card.tsx';
-import { getContacts, getContact, getOrCreateUser } from '../db/queries.ts';
+import { getContacts, getContact, getOrCreateUser, setSelfPick } from '../db/queries.ts';
 import { getCoachingCard } from '../engine/coaching.ts';
-import { DISC_LABELS, SITUATION_LABELS, isSituation } from '../engine/types.ts';
-import type { Contact, CoachingCard, SituationType, User } from '../engine/types.ts';
+import { DISC_LABELS, SITUATION_LABELS, isSituation, resolveYourType } from '../engine/types.ts';
+import type { Contact, CoachingCard, DiscType, SituationType, User } from '../engine/types.ts';
+import { SelfPick } from '../components/self-pick.tsx';
 import { navigate } from '../lib/transitions.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 import { Logo } from '../components/logo.tsx';
@@ -57,10 +58,10 @@ export function Coach() {
         const contact = await getContact(params.contactId);
         setSelectedContact(contact ?? null);
 
-        if (contact && isSituation(params.situation)) {
-          const yourType = u.discProfile?.primary ?? contact.discProfile.primary;
+        const you = resolveYourType(u);
+        if (contact && isSituation(params.situation) && you) {
           const loaded = await getCoachingCard(
-            yourType,
+            you.type,
             contact.discProfile.primary,
             params.situation,
           );
@@ -76,6 +77,15 @@ export function Coach() {
       setError(true);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleSelfPick(type: DiscType) {
+    try {
+      await setSelfPick(type);
+      await loadState();
+    } catch {
+      setError(true);
     }
   }
 
@@ -131,15 +141,34 @@ export function Coach() {
     );
   }
 
-  // Step 3: Show coaching card
-  if (selectedContact && card && isSituation(params.situation)) {
+  const you = user ? resolveYourType(user) : null;
+
+  // Step 3a: Before the first card, ask which style is closer to the reader
+  if (selectedContact && isSituation(params.situation) && user && !you) {
     return (
       <div class="route-shell">
         <button class="back-link" type="button" onClick={goBack}>
           <span aria-hidden="true">{'\u2190'}</span> {selectedContact.name}
         </button>
         <h1>{SITUATION_LABELS[params.situation]}</h1>
-        <CoachingCardView card={card} hasAssessment={!!user?.discProfile} />
+        <SelfPick onPick={handleSelfPick} />
+      </div>
+    );
+  }
+
+  // Step 3: Show coaching card
+  if (selectedContact && card && you && isSituation(params.situation)) {
+    return (
+      <div class="route-shell">
+        <button class="back-link" type="button" onClick={goBack}>
+          <span aria-hidden="true">{'\u2190'}</span> {selectedContact.name}
+        </button>
+        <h1>{SITUATION_LABELS[params.situation]}</h1>
+        <CoachingCardView
+          card={card}
+          yourSource={you.source}
+          onCheckStyle={() => navigate(() => setLocation('/profile'))}
+        />
 
         <div class="coach-log-bridge">
           <p class="coach-log-prompt">After the conversation:</p>
@@ -279,9 +308,11 @@ export function Coach() {
       {!user?.discProfile && contacts.length > 0 && (
         <div class="coach-nudge">
           <p>
-            Want advice tailored to your style too?{' '}
+            {user?.selfPick
+              ? `You picked ${DISC_LABELS[user.selfPick]} for yourself. `
+              : 'Want advice that fits how you talk, too? '}
             <button class="link-btn" type="button" onClick={() => navigate(() => setLocation('/profile'))}>
-              Take the 3-minute assessment
+              {user?.selfPick ? 'Check it in 3 minutes' : 'Take the 3-minute assessment'}
             </button>
           </p>
         </div>
