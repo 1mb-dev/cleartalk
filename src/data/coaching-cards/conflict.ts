@@ -16,7 +16,7 @@ const cards: CoachingCard[] = [
       "Raising your voice or pulling rank. Another Drive person pushes back harder.",
       "Refusing to give any ground. Conceding a fair point costs you less than it feels like it will.",
     ],
-    theirReaction: "Expect hard, fast pushback, usually at the idea more than at you. The tell that it's working: they start conceding small points. Take them without gloating.",
+    theirReaction: "Hard, fast pushback, usually at the idea more than at you. The tell that it's working: they start conceding small points. Take them without gloating.",
     ifGoesWrong: "When it turns into a power struggle, call a break: \"We're both dug in. Let's take half an hour, each write down where we stand, and check both against [the goal].\"",
     bodyLanguage: "Hold your ground, but don't step in. Arms loose, voice firm and not raised. Sit if they sit, stand if they stand.",
     onCall: "Sit back from the camera and keep your voice level.",
@@ -26,7 +26,7 @@ const cards: CoachingCard[] = [
     yourType: "D",
     theirType: "I",
     situation: "conflict",
-    approach: "Start with what you both want, then name the one specific thing you disagree on. Keep every sentence about that thing, and they'll hear that it isn't about them without you having to say so. Your directness can still land as a personal attack, so leave room for how they feel before you push for an answer.",
+    approach: "Start with what you both want, then name the one specific thing you disagree on. Keep every sentence about that thing, and they'll hear that it isn't about them without you having to say so. Leave room for how they feel before you push for an answer.",
     openWith: [
       "We both want [the goal]. I see [the approach] differently, and I'd like to talk it through.",
       "I'd rather tell you straight than let it sit. I don't agree with [the approach], and I want to sort it out.",
@@ -66,7 +66,7 @@ const cards: CoachingCard[] = [
     yourType: "D",
     theirType: "C",
     situation: "conflict",
-    approach: "Ask what they're worried about, and write it down. Often this is about pace more than substance: you want it done, they want it right. Show them moving fast doesn't mean cutting corners by naming what you'll check before you go.",
+    approach: "Ask what they're worried about, and write it down. Often this is about pace more than substance: you want it done, they want it right. Before you go ahead, name what you'll check and when.",
     openWith: [
       "Walk me through your concerns. What might I be missing?",
       "What's the specific risk you see? I want the detail before we decide.",
@@ -79,7 +79,7 @@ const cards: CoachingCard[] = [
     ],
     theirReaction: "A detailed counter-argument usually comes back, point by point. Listen to the specifics. If one of their concerns is right, say so plainly.",
     ifGoesWrong: "When they dig in behind more and more detail: \"That's a lot of risks. Which one worries you most? Let's deal with that one first.\"",
-    bodyLanguage: "Sit at the table with something to write on, and take notes on their points where they can see you do it. When they show you data, look at the data.",
+    bodyLanguage: "Take notes on their points where they can see you do it. When they show you data, look at the data.",
     onCall: "Share the document, and type their points into it where they can watch.",
   },
   // I -> D
@@ -90,7 +90,7 @@ const cards: CoachingCard[] = [
     approach: "Decide your position before you go in, and say it in one sentence. You tend to find your view by talking it through, and a Drive person reads the thinking aloud, the smoothing over and the jokes as dodging. Back it with a fact or two, and hold it when they push.",
     openWith: [
       "I disagree with this, and here's why.",
-      "We both feel strongly about this. Let's put both views on the table.",
+      "I see it differently: [your position]. The main reason is [the fact].",
     ],
     avoid: [
       "Joking your way through it.",
@@ -110,14 +110,14 @@ const cards: CoachingCard[] = [
     approach: "Name the disagreement out loud, and don't leave until you've said what changes and who does it. Between the two of you, it either heats up or gets papered over with cheerfulness, and neither settles anything. You don't have to be upbeat for this one.",
     openWith: [
       "I think we're both dancing around the real issue. Can we just say it?",
-      "I don't want to pretend everything's fine when it isn't. Here's what's bothering me.",
+      "I don't want to pretend everything's fine when it isn't. What's bothering me is [this].",
     ],
     avoid: [
       "Both of you performing agreement while you're each still annoyed.",
       "Having it in front of other people.",
       "Competing to be the more understanding one while nothing gets decided.",
     ],
-    theirReaction: "Expect them to match your mood, up or down. Loud usually clears fast. Polite and light means it's still there, so push for the specific thing.",
+    theirReaction: "They tend to match your mood, up or down. Loud usually clears fast. Polite and light means it's still there, so push for the specific thing.",
     ifGoesWrong: "If you're both making up without solving anything: \"Wait. Did we actually solve this, or did we just agree to not feel bad about it? What changes from here?\"",
     bodyLanguage: "Sit facing them. When it gets heated, slow your breathing and leave a gap between points.",
     onCall: "Turn off your self-view, so you're watching them and not yourself.",
@@ -151,7 +151,7 @@ const cards: CoachingCard[] = [
     openWith: [
       "Walk me through your reasoning first. Then I'll show you mine.",
       "Here's what I'm seeing in [the numbers]. Where does your read differ?",
-      "Can we find where we already agree and work outward?",
+      "Where do we already agree? Let's start there.",
     ],
     avoid: [
       "Cutting in before they've finished. They'll often go back and start the case again.",
@@ -160,7 +160,7 @@ const cards: CoachingCard[] = [
     ],
     theirReaction: "Usually calm, with their case laid out in order. Low emotion doesn't mean they care less. Take their points one at a time.",
     ifGoesWrong: "When you feel brushed off as too emotional: \"Let me show you what my view's based on. Then tell me what would change your mind.\"",
-    bodyLanguage: "Sit at the table. Keep your hands still. Finish your sentences instead of firing off points, and make notes while they talk.",
+    bodyLanguage: "Keep your hands still. Finish your sentences instead of firing off points, and make notes while they talk.",
     onCall: "Have your evidence open and ready to share.",
   },
   // S -> D
@@ -171,7 +171,7 @@ const cards: CoachingCard[] = [
     approach: "Raise it yourself, and don't wait for a better moment. You avoid conflict and they charge into it, so a disagreement you keep to yourself is one they may not know exists. Put your position in one sentence on paper first, so you still have it when they push.",
     openWith: [
       "I need to say something. Hear me out before you answer.",
-      "We disagree on [this], and I've been putting off saying it. Here's where I stand.",
+      "We disagree on [this]. I think [your position].",
       "This is hard for me to say, but it matters too much to leave.",
     ],
     avoid: [
@@ -180,7 +180,7 @@ const cards: CoachingCard[] = [
       "Caving at the first pushback. It's coming. Breathe, and stay put.",
       "Taking it back afterwards in a message. If you meant it in the room, let it stand.",
     ],
-    theirReaction: "Expect a fast, hard answer. A clear position gets an argument. A wobbly one gets pushed.",
+    theirReaction: "A fast, hard answer, usually. A clear position gets an argument. A wobbly one gets pushed.",
     ifGoesWrong: "If they steamroll you: \"I hear you. Now I need you to hear me.\" If they talk over you again: \"I'm not finished. Give me one minute.\"",
     bodyLanguage: "Feet planted, head level. Hands on the table or at your sides. Speak at a volume that surprises you a little.",
     onCall: "Raise the camera to eye level, and look into it while you say where you stand.",
@@ -200,7 +200,7 @@ const cards: CoachingCard[] = [
       "Putting it off because it feels like too much.",
     ],
     theirReaction: "Often relief that you raised it, then a lot of talking. Let them get it out, then give your side calmly.",
-    ifGoesWrong: "When it gets to be too much: \"I hear you. Give me a minute to think before I answer.\"",
+    ifGoesWrong: "When it gets to be too much: \"Hang on, I want to answer that properly. Give me a minute.\"",
     bodyLanguage: "Face them. Nod while they talk so they know you're with them. Lean in a little when it's your turn.",
     onCall: "Let your face move. A still face on a screen looks frozen.",
   },
@@ -211,15 +211,14 @@ const cards: CoachingCard[] = [
     situation: "conflict",
     approach: "Bring one specific moment and start with it. The two of you could go months being careful with each other, and \"something's off\" is easy for you both to wave away. A real moment with a day attached isn't.",
     openWith: [
-      "Neither of us wants this conversation, which is probably why we need it.",
+      "Neither of us likes doing this, so I'll go first.",
       "When [what happened] on [the day], I didn't say anything. I'd like to now.",
-      "I've been holding back so it wouldn't get awkward. The silence is worse.",
     ],
     avoid: [
       "Turning it into mutual reassurance and calling that settled.",
       "Agreeing to disagree too early. It's avoidance with a nicer name.",
     ],
-    theirReaction: "Expect a long pause while they decide whether to be straight with you. Wait it out. If you fill it, they'll usually back off into politeness.",
+    theirReaction: "Often a long pause while they decide whether to be straight with you. Wait it out. If you fill it, they'll back off into politeness.",
     ifGoesWrong: "When you both slide back into politeness: \"We're being very careful with each other. What's the part you haven't said yet?\"",
     bodyLanguage: "Sit side by side, or at a corner of the table. Keep your voice warm and even. When it goes quiet, breathe and wait.",
     onCall: "Keep your camera on, and when they pause, say \"No rush.\"",
@@ -241,7 +240,7 @@ const cards: CoachingCard[] = [
     ],
     theirReaction: "Questions about your examples are likely, and maybe nothing about how you feel. That's fine. If your points hold up, they'll often come back to you later, once they've reread the page.",
     ifGoesWrong: "If they say you haven't got enough to go on: \"It's what I've seen, and it's real. How do you read it?\"",
-    bodyLanguage: "Sit at the table with your points written down, and glance at them when you need to. Keep your voice steady. When they push back, nod and write it down.",
+    bodyLanguage: "Have your points written down, and glance at them when you need to. Keep your voice steady. When they push back, nod and write it down.",
     onCall: "Tape your notes beside the camera so you can read them without looking away.",
   },
   // C -> D
@@ -252,13 +251,13 @@ const cards: CoachingCard[] = [
     approach: "Say you disagree while you're in the room, and lead with the one risk that worries you most. A Drive person wants it settled quickly, so give them your conclusion first and keep the reasoning for when they ask.",
     openWith: [
       "I disagree, mainly because of one risk: [the risk].",
-      "I think this fails at [the weak point]. Here's why.",
+      "I think this fails at [the weak point]. I can take you through why.",
     ],
     avoid: [
       "Getting pulled into their pace. Keep yours, just put the main point first.",
       "Going along in the room and dragging your feet after. If you can't back it, say so now.",
     ],
-    theirReaction: "Expect them to go straight at your conclusion. Answer each point in a sentence, without getting defensive.",
+    theirReaction: "They'll usually go straight at your conclusion. Answer each point in a sentence, without getting defensive.",
     ifGoesWrong: "If they push to decide now, ask once more: \"I get the urgency. Give me until [tomorrow] to check it. If it holds up, I'll back it.\" If it goes ahead anyway: \"OK. Can we note the risk so we're both watching for it?\"",
     bodyLanguage: "Stand if they're standing, sit if they're sitting. Say the key point without looking at your notes, and look at them while you say it.",
     onCall: "Look at the camera for your main point, then go back to your notes.",
@@ -271,7 +270,7 @@ const cards: CoachingCard[] = [
     approach: "Ask what worries them before you bring in your analysis. They argue with feeling and you argue with detail, and starting with their concern keeps that from turning into two separate conversations.",
     openWith: [
       "Before I give you my side, what worries you most about this?",
-      "Let me say back what I'm hearing, then add what I'm seeing in [the data].",
+      "So your worry is [their concern]. Have I got that right?",
     ],
     avoid: [
       "Treating their argument as irrational because it's emotional. It may catch something your data misses.",
@@ -281,7 +280,7 @@ const cards: CoachingCard[] = [
     theirReaction: "It'll often sound like feeling more than fact. There's usually a concrete concern underneath. Keep asking until you could say it back to them.",
     ifGoesWrong: "When it turns into a fight about tone: \"I care about this as much as you do. I just show it in the detail. Where do we already agree?\"",
     bodyLanguage: "Let your face show some warmth. Lean in and nod while they talk, even when you disagree. Talk through your figures instead of reading them out.",
-    onCall: "Keep your face in view, and react while they talk, not only when it's your turn.",
+    onCall: "Keep your face in view, and react while they're still talking.",
   },
   // C -> S
   {
@@ -290,13 +289,12 @@ const cards: CoachingCard[] = [
     situation: "conflict",
     approach: "Check whether there's a conflict at all. A Steady person often disagrees by going quiet or pulling back instead of saying so, and it's easy to miss. If they've been quieter than usual, ask gently and make it easy to answer.",
     openWith: [
-      "I've picked up some tension and wanted to check in. Is there something we should talk about?",
-      "I might have missed something. How are things between us from your side?",
+      "Things have felt a bit off between us. Is something bothering you?",
       "Is there something I could be doing differently that would help?",
     ],
     avoid: [
       "Asking them to prove there's a problem. They may not have put it into words yet.",
-      "Pushing for an answer on the spot. Offer another time, and book it before you leave.",
+      "Pushing for an answer on the spot. Offer another time, and put it in the calendar.",
       "Analyzing it so closely that you miss how it feels to them.",
     ],
     theirReaction: "Often \"it's fine\" at first. Stay with it, gently: \"Thanks. I've noticed [what you've noticed], though, and I'd still like to hear about it.\"",
@@ -312,7 +310,7 @@ const cards: CoachingCard[] = [
     approach: "Agree up front on what would settle it. Left to it, you could each build a better case for weeks. Ask what evidence would change each of your minds, and set a date to decide.",
     openWith: [
       "Before we dig in: what would change your mind? Here's what would change mine.",
-      "Let's compare assumptions before we compare conclusions.",
+      "Can we check we're starting from the same assumptions?",
       "If we can't settle it today, when do we decide?",
     ],
     avoid: [
@@ -322,7 +320,7 @@ const cards: CoachingCard[] = [
     ],
     theirReaction: "A methodical answer, often with counter-evidence. Take it seriously, and keep an eye on the date you agreed.",
     ifGoesWrong: "When you're stuck: \"We've both got solid evidence for different answers. Can we agree on one test, and who calls it if the result's unclear?\"",
-    bodyLanguage: "Sit at the table with both analyses where you can both see them. Point to the specific figure you mean. When they make a good point, say so out loud.",
+    bodyLanguage: "Both analyses open where you can both see them. Point to the specific figure you mean. When they make a good point, say so out loud.",
     onCall: "Share one screen and work from the same document.",
   },
 ];

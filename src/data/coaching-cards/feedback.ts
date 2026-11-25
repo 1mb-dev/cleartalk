@@ -13,7 +13,7 @@ const cards: CoachingCard[] = [
     ],
     avoid: [
       "Starting with \"you need to.\" It turns into a contest.",
-      "A long wind-up. They'll hear stalling.",
+      "Circling before you get to it. They'll hear stalling.",
       "Winning the argument and leaving with nothing agreed.",
     ],
     theirReaction: "Pushback, usually straight away: they're testing whether your point holds. Answer it once, with the evidence, and keep your voice where it was. A one-word \"fine\" and a change of subject is a brush-off, so ask what they'll do differently.",
@@ -29,12 +29,12 @@ const cards: CoachingCard[] = [
     approach: "Keep it warm and private, and say why you're raising it before you say what it is. Then name the issue plainly and what it's doing to the team. Your plain version will sound colder to them than it does to you.",
     openWith: [
       "Got a few minutes, just us? There's something I want to talk through with you.",
-      "[What happened] is starting to land on the team. I'd like to sort it out with you before it grows.",
+      "[What happened] is causing problems for the team, and I'd like to sort it out with you.",
     ],
     avoid: [
       "Doing it anywhere other people can hear.",
       "Going all facts and no warmth. They'll feel dismissed.",
-      "Laughing along and leaving with nothing agreed. Settle one change and a day to check in, and book it before you go.",
+      "Laughing along and leaving with nothing agreed. Settle one change and a day to check in.",
     ],
     theirReaction: "A joke or a story first, usually. Let them talk; they tend to come back to the point once they've had their say. If they don't, bring it back yourself: \"Back to [the issue] for a second.\"",
     ifGoesWrong: "If they go quiet, which isn't like them: \"That's not easy to hear. Tell me how it looks from your side.\"",
@@ -52,7 +52,7 @@ const cards: CoachingCard[] = [
       "What would make [this] easier to get right?",
     ],
     avoid: [
-      "Rapid-fire delivery. They'll go quiet and you'll think it went fine.",
+      "Rattling through it. They'll go quiet and you'll think it went fine.",
       "Taking a nod as agreement.",
       "Springing it on them. When you ask for the time, say what it's about, and make it the same day.",
     ],
@@ -66,7 +66,7 @@ const cards: CoachingCard[] = [
     yourType: "D",
     theirType: "C",
     situation: "feedback",
-    approach: "Bring two or three specific examples, with dates. A verdict like \"this isn't good enough\" gives them nothing to fix. Show them, let them ask, and before you finish agree what good looks like in terms they can check.",
+    approach: "Bring two or three specific examples, with dates. A verdict like \"this isn't good enough\" gives them nothing to fix. Show them, let them ask, and end by agreeing what good looks like in terms they can check.",
     openWith: [
       "I've looked at the last few [reports] and I see a pattern. Can I show you?",
       "Here are the cases I mean. Walk me through how you were thinking.",
@@ -77,7 +77,7 @@ const cards: CoachingCard[] = [
     ],
     theirReaction: "Detailed questions: which ones, when, how often. They're working out exactly what to fix. Answer each one, and if you don't know, say you'll check. They may want a day to look into it before they agree, so name the day.",
     ifGoesWrong: "When they dig in: \"I could be reading this wrong. Show me what I'm missing.\"",
-    bodyLanguage: "Sit across a table. Notes out where they can see them. Keep your movements slow.",
+    bodyLanguage: "Lay the examples out where they can read them. Keep your movements slow. When they ask about one, point to it.",
     onCall: "Share your screen with the examples so you're both looking at the same thing.",
   },
   // I -> D
@@ -87,9 +87,9 @@ const cards: CoachingCard[] = [
     situation: "feedback",
     approach: "Get to the point faster than feels polite: the headline, one example, then stop. Any warm-up can wait until after they've answered.",
     openWith: [
-      "Bottom line: [this] isn't working. Here's what I'd change.",
+      "Bottom line: [this] isn't working, and I think we should [the change].",
       "Short version: [the report] missed [the deadline] twice this month.",
-      "Quick and direct: [this] is causing [the problem]. Can we change it?",
+      "[This] is causing [the problem]. Can we change it?",
     ],
     avoid: [
       "Warming up with catch-up or a story.",
@@ -97,7 +97,7 @@ const cards: CoachingCard[] = [
       "Taking the edge off when they push. Say it again, shorter.",
     ],
     theirReaction: "A fast answer, often a challenge to your example. Stay on that one example instead of piling on more. A one-word \"OK\" is a yes; take it and stop talking.",
-    ifGoesWrong: "If they wave it off: \"I hear you, and I still think it's a problem. It's already cost us [what it cost].\"",
+    ifGoesWrong: "If they wave it off: \"I still think it's a problem. It's already cost us [what it cost].\"",
     bodyLanguage: "Shoulders square. Look at them for the headline. Hands and voice calmer than usual.",
     onCall: "Keep your hands out of frame and say the headline to the camera.",
   },
@@ -115,9 +115,8 @@ const cards: CoachingCard[] = [
     avoid: [
       "Burying the point in compliments.",
       "Drifting into stories before you've said it.",
-      "Agreeing it's all fine when it isn't.",
     ],
-    theirReaction: "Quick, warm agreement, usually, and that doesn't mean it sank in. Sometimes the hurt goes sideways and they talk it over with someone else instead of you. Either way, book a check-in two days out before you leave, and ask then how [the change] is going.",
+    theirReaction: "Quick, warm agreement, usually, and that doesn't mean it sank in. If it stung, they may come back later wanting reassurance: give it, and don't take the point back. Either way, book a check-in two days out, and ask then how [the change] is going.",
     ifGoesWrong: "When you notice you're both reassuring each other: \"I think we're being too nice here. What needs to change?\"",
     bodyLanguage: "Sit facing them. Match their warmth, then go a notch quieter. Pause between points, and don't laugh the point away.",
     onCall: "Say it, then stop and let them answer first.",
@@ -138,7 +137,7 @@ const cards: CoachingCard[] = [
       "Letting your warmth carry the point. Say what you're asking for in one plain sentence, or they'll fill the gap with something worse.",
     ],
     theirReaction: "Close listening, and often a quick yes just to end the awkwardness. Ask, \"What's your honest take?\" Then wait. Their real answer may come tomorrow, so book the time before you leave.",
-    ifGoesWrong: "If they look hurt, slow down: \"I can see that's a lot. Take a minute, then tell me what you think.\"",
+    ifGoesWrong: "If they look hurt, slow down: \"That's a lot at once. Take a minute, then tell me what you think.\"",
     bodyLanguage: "Sit beside them rather than across. Lean in when they talk, and sit back when you say the hard part.",
     onCall: "Leave a longer gap than feels natural before you reply. Lag makes it hard for a quiet person to get a word in.",
   },
@@ -180,7 +179,7 @@ const cards: CoachingCard[] = [
     ],
     theirReaction: "A fast reply, often an argument. Don't read it as anger, and don't apologize your way out of it. If you get \"Fine. Done.\" and they've moved on, take it and stop explaining.",
     ifGoesWrong: "When they talk over you: \"I hear you. Now I need you to hear me.\"",
-    bodyLanguage: "Feet planted. Voice steady, not quiet. Look at them when you say the key point; you can soften after.",
+    bodyLanguage: "Feet planted. Voice up and steady. Look at them when you say the key point; you can soften after.",
     onCall: "Keep your written point beside the screen and look at the camera to say it.",
   },
   // S -> I
@@ -198,7 +197,7 @@ const cards: CoachingCard[] = [
       "Accepting \"totally, I'll fix it\" without agreeing on what \"fix it\" means.",
     ],
     theirReaction: "Warm and quick, often straight into ideas for fixing it. Before you go there, ask: \"What will you change first?\"",
-    ifGoesWrong: "If the cheerfulness sounds forced: \"How did that land? You can tell me if it stung.\"",
+    ifGoesWrong: "If the cheerfulness sounds forced: \"Did that sting? You can tell me if it did.\"",
     bodyLanguage: "Warm at the start. Nod while they talk. When you say the main point, hold still and say it clearly.",
     onCall: "Stop nodding while you say the main point, so it stands out.",
   },
@@ -210,7 +209,7 @@ const cards: CoachingCard[] = [
     approach: "Name the awkwardness, then say it, because between the two of you it'll get buried under politeness. One of you has to go first. Today it's you.",
     openWith: [
       "This is hard for me to bring up, and I think you'd want to know.",
-      "I've been putting this off because I didn't want to upset you. Putting it off was worse.",
+      "I didn't want to upset you, so I've waited. I shouldn't have.",
     ],
     avoid: [
       "Reassuring each other until it never gets said.",
@@ -236,9 +235,9 @@ const cards: CoachingCard[] = [
       "Relying on \"it doesn't feel right.\" Give them something to check.",
       "Taking their questions as a no. They're checking your examples before they agree.",
     ],
-    theirReaction: "Clarifying questions, and they may want to check it themselves before they agree to change anything. Let them, and put a date to pick it up again in the calendar before you leave.",
+    theirReaction: "Clarifying questions, and they may want to check it themselves before they agree to change anything. Let them, and agree the day you'll pick it up again.",
     ifGoesWrong: "When they challenge your examples: \"That's what I've seen. What does it look like from your side?\"",
-    bodyLanguage: "Sit at a table with your notes out. Even pace, even volume. Give them room; don't crowd the page.",
+    bodyLanguage: "Notes out, turned so they can read them. Even pace, even volume. Give them room; don't crowd the page.",
     onCall: "Send the examples ahead so they can read first.",
   },
   // C -> D
@@ -249,7 +248,7 @@ const cards: CoachingCard[] = [
     approach: "Name what they did and what it cost in your first two sentences, and write those two sentences before you go in. Keep one example ready to say aloud, and the rest of your analysis in reserve until they ask.",
     openWith: [
       "When you [what they did], [what happened]. I'd like us to change that.",
-      "Bottom line: [what they did] is costing us [what]. Here's what I'd do instead.",
+      "Bottom line: [what they did] is costing us [what]. I think we should [the change] instead.",
     ],
     avoid: [
       "Opening with the analysis. You'll lose them before the point.",
@@ -295,7 +294,7 @@ const cards: CoachingCard[] = [
       "Moving to action items before they've taken in the point.",
     ],
     theirReaction: "Usually quiet, with little on their face. Ask, \"What's your take?\" and wait longer than is comfortable. If they ask whether they're in trouble, or whether their work is OK overall, have an honest answer ready.",
-    ifGoesWrong: "When they go quiet and stay there: \"I may have piled on the detail. The main thing is [the one thing]. How's that landing?\"",
+    ifGoesWrong: "When they go quiet and stay there: \"I may have piled on the detail. The main thing is [the one thing]. Does that seem fair?\"",
     bodyLanguage: "Soft, even voice. Sit at their level. Have your notes, but don't read from them.",
     onCall: "Keep your notes off screen and your eyes on the camera.",
   },
@@ -304,19 +303,19 @@ const cards: CoachingCard[] = [
     yourType: "C",
     theirType: "C",
     situation: "feedback",
-    approach: "Settle what good looks like before either of you shows evidence. Without that, two careful people can trade findings forever. Show yours, hear theirs, and leave with one change.",
+    approach: "Settle what good looks like before either of you shows evidence. Without that, two careful people can trade findings all afternoon. Show yours, hear theirs, and leave with one change.",
     openWith: [
       "Before we start, what would good look like on [this]?",
       "Can we compare notes on [this]? I see a gap, and I want to check it against your read.",
       "I've written up what I found. Mark it up wherever you disagree.",
     ],
     avoid: [
-      "A data war, with each of you digging up finer detail.",
+      "Turning it into a data war, each of you digging up finer detail.",
       "Assuming your analysis is more careful than theirs.",
     ],
     theirReaction: "Questions that feel like challenges, usually. They're checking your work the way you'd check theirs.",
     ifGoesWrong: "When you're both still analyzing: \"We could go round on this forever. What's the one thing we change this week?\"",
-    bodyLanguage: "Sit across a table with the material between you. Point at the data, not at each other. Nod when they make a good point, and say so.",
+    bodyLanguage: "Point at the data when you disagree. Nod when they make a good point, and say so.",
     onCall: "Both open the same document.",
   },
 ];

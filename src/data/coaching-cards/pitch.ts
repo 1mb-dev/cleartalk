@@ -6,9 +6,9 @@ const cards: CoachingCard[] = [
     yourType: "D",
     theirType: "D",
     situation: "pitch",
-    approach: "Put the payoff and your ask in your first two sentences. Then raise the biggest objection yourself, with your answer, before they can. You'll both want to win the exchange, so answer each challenge once and move on.",
+    approach: "Put the payoff and your ask in your first two sentences. Then raise the biggest objection yourself, with your answer, before they can. Answer each challenge once and move on.",
     openWith: [
-      "This saves us [time or money]. Here's what I need to make it happen.",
+      "This saves us [time or money]. To make it happen, I need [what you need].",
       "I've got a fix for [the bottleneck]. Thirty seconds on the idea, then your questions.",
       "The obvious objection is [this one], and I've got an answer for it.",
     ],
@@ -26,9 +26,9 @@ const cards: CoachingCard[] = [
     yourType: "D",
     theirType: "I",
     situation: "pitch",
-    approach: "Paint what it looks like when it works: who it helps and what changes for the team. Then ask what they'd add, early, while it's still rough. People back what they helped shape, and your numbers can come after.",
+    approach: "Paint what it looks like when it works: who it helps and what changes for the team. Ask what they'd add while it's still rough, and bring your numbers after.",
     openWith: [
-      "Picture the team doing [this] without [the headache]. Here's how we get there.",
+      "Picture the team doing [this] without [the headache]. What would you add?",
       "Can I run an idea past you? I want your take before it's finished.",
     ],
     avoid: [
@@ -36,7 +36,7 @@ const cards: CoachingCard[] = [
       "Pitching it as yours alone.",
       "Jumping to the execution plan before they've bought in.",
     ],
-    theirReaction: "When it clicks you'll see it: they start adding ideas of their own. A yes in the room can fade by the end of the week, so follow up in writing the next day. Before you leave, pin it down: \"You're in? Great. Let's work out who does what.\"",
+    theirReaction: "When it clicks you'll see it: they start adding ideas of their own. Pin it down there and then: \"You're in? Great. Let's work out who does what.\" A yes can fade by the end of the week, so follow up in writing the next day.",
     ifGoesWrong: "If they're lukewarm, let them reshape it: \"Which part would you change first?\"",
     bodyLanguage: "Smile, and let your hands move more than usual. Sit at an angle to them. When they warm up, warm up with them.",
     onCall: "Sit a little closer to the camera than you normally would.",
@@ -56,7 +56,7 @@ const cards: CoachingCard[] = [
       "Calling it a shake-up.",
       "Knocking the current way to make yours look better. They may have built it.",
     ],
-    theirReaction: "Usually they listen closely and don't commit in the room. That's them thinking it over. Give them the time, and book the follow-up before you leave: \"Take a day or two with it. Can we pick it up on [Thursday]?\"",
+    theirReaction: "Usually they listen closely and don't commit in the room. That's them thinking it over. Give them the time, and book the follow-up: \"Take a day or two with it. Can we pick it up on [Thursday]?\"",
     ifGoesWrong: "When they push back, don't push harder. Ask: \"What's the part you'd want to keep?\"",
     bodyLanguage: "Sit down, and talk at their pace rather than yours. Sit back after you make a point and let the quiet run.",
     onCall: "Let the pauses run here too. They feel longer on a call than they are.",
@@ -69,7 +69,7 @@ const cards: CoachingCard[] = [
     approach: "Send the numbers the day before, so they can check them on their own time. They'll judge the pitch by how well it's prepared, and conviction won't cover the gaps. Bring what could go wrong and what you'd do about each.",
     openWith: [
       "I've modeled this out, including where it could break.",
-      "Here's what I want to do and why. Poke holes in it. I'd rather find the gaps now.",
+      "I want to do [this], because [why]. Poke holes in it. I'd rather find the gaps now.",
     ],
     avoid: [
       "Getting short with their questions.",
@@ -77,7 +77,7 @@ const cards: CoachingCard[] = [
     ],
     theirReaction: "A close cross-examination, often on the number you thought was minor. If your answers hold, they tend to back it firmly.",
     ifGoesWrong: "When they find a flaw, don't bluff: \"Good catch. Let me fix that and get back to you by [day].\"",
-    bodyLanguage: "Sit at a table with your numbers where you can both see them. When they question something, look at the figure before you answer. Slow, deliberate movements.",
+    bodyLanguage: "When they question something, look at the figure before you answer. Slow, deliberate movements.",
     onCall: "Share the document and stop on each number they ask about.",
   },
   // I -> D
@@ -88,7 +88,7 @@ const cards: CoachingCard[] = [
     approach: "Cut your story down to the idea, what it gets them, and what you need. Say the punchline first, and know your ask before you walk in: a yes, a budget, an hour of someone's time. The story can come later if they ask for it.",
     openWith: [
       "I'm proposing [this]. It gets us [result] and costs [what]. That's the pitch. Questions?",
-      "One idea: [the idea]. It fixes [the problem they raised]. Here's how.",
+      "One idea: [the idea]. It fixes [the problem they raised].",
     ],
     avoid: [
       "Opening with the backstory.",
@@ -105,15 +105,14 @@ const cards: CoachingCard[] = [
     yourType: "I",
     theirType: "I",
     situation: "pitch",
-    approach: "Let them add to it, then shrink it back to something you can start this week. Between the two of you, a plan can grow with every idea and never ship. Before you leave, decide who owns it, because each of you may assume the other does.",
+    approach: "Let them add to it, then shrink it back to something you can start this week. Between the two of you, a plan can grow with every idea and never ship. Decide who owns it, because each of you may assume the other does.",
     openWith: [
       "What if we could [do this]? I think we can, and I've got a rough plan.",
-      "I want us to leave this with real next steps. Here's the idea.",
+      "I've got an idea, and I want us to leave with real next steps.",
     ],
     avoid: [
       "Getting so excited together that nobody pins down what you're making.",
       "Leaving without deciding what's not in the first version.",
-      "Ending on a high with nothing written down.",
     ],
     theirReaction: "Usually they match your excitement right away and start adding to it. Use it, then rein it in: \"OK, we're both in. Before we go, who's taking this, and what happens this week?\"",
     ifGoesWrong: "When it's all vision and no plan: \"I love where this is going. What's one thing we can do by Friday to test it?\"",
@@ -125,7 +124,7 @@ const cards: CoachingCard[] = [
     yourType: "I",
     theirType: "S",
     situation: "pitch",
-    approach: "Tell them who it helps, then ask who it might be harder on. They usually know where a change will land, so you'll hear the risks you missed. Your enthusiasm can push them into a polite yes they don't mean, so give them time before you ask for one.",
+    approach: "Tell them who it helps, then ask who it might be harder on: they usually know where a change will land. Give them time before you ask for a yes. Asked on the spot, they'll often give a polite one they don't mean.",
     openWith: [
       "I think there's a way to make [this] easier for the team. Can I run it past you?",
       "I'm excited about this, so tell me if I'm getting ahead of myself.",
@@ -148,7 +147,7 @@ const cards: CoachingCard[] = [
     approach: "Say the idea in a sentence or two, then go straight to the evidence: the numbers, an example or two, and what could go wrong. Point out the weakest part yourself before they find it.",
     openWith: [
       "I've got an idea, and I've done the homework. The idea first, then the numbers.",
-      "I'd like to propose [this]. I'll show you where it's thinnest, too.",
+      "I'd like to propose [this]. I'll show you the weakest part, too.",
     ],
     avoid: [
       "Pitching on enthusiasm alone. It makes them more skeptical.",
@@ -157,7 +156,7 @@ const cards: CoachingCard[] = [
     ],
     theirReaction: "Interest usually looks quiet: not much reaction, lots of specific questions. When they start asking how it would be done, they're coming round.",
     ifGoesWrong: "When they pick your numbers apart: \"Which one worries you most? Let's check it together.\"",
-    bodyLanguage: "Sit at a table with the numbers on screen or on paper. Keep your hands still and point at a figure instead of waving at it.",
+    bodyLanguage: "Numbers on paper or on screen, in front of you both. Keep your hands still and point at a figure instead of waving at it.",
     onCall: "Share the document and let them read before you explain it.",
   },
   // S -> D
@@ -165,7 +164,7 @@ const cards: CoachingCard[] = [
     yourType: "S",
     theirType: "D",
     situation: "pitch",
-    approach: "Say the result in your first sentence, even if it feels like boasting. You'll tend to undersell, and they won't dig for what you leave out. Say that sentence out loud once beforehand. It comes out stronger the second time.",
+    approach: "Say the result in your first sentence, even if it feels like boasting. They won't dig for what you leave out. Practice that sentence out loud once before you go in.",
     openWith: [
       "I've got a fix for [the problem]. It saves [what], and I can have it running by [a date you can hit].",
       "I'm proposing [this]. It deals with the problem you raised [when].",
@@ -197,7 +196,7 @@ const cards: CoachingCard[] = [
     theirReaction: "Often they get excited and start adding ideas. Take the good ones and hold your line: \"I like that. Let's get the base plan solid first.\"",
     ifGoesWrong: "When it went well in the room and nothing has happened since: \"You liked [the idea] last week. Can we agree on one step for this week before it fades?\"",
     bodyLanguage: "Lean in when you share the idea, and let it show that you like it. When it's time for next steps, slow down.",
-    onCall: "Put the next steps in the chat before you hang up.",
+    onCall: "Put the next steps in the chat and ask them to add the date.",
   },
   // S -> S
   {
@@ -237,7 +236,7 @@ const cards: CoachingCard[] = [
     ],
     theirReaction: "Usually careful, specific questions, one after another. If they start suggesting fixes, they're buying in.",
     ifGoesWrong: "If they turn it down on the evidence: \"Thanks for being straight with me. Would you help me fix the weak spots?\"",
-    bodyLanguage: "Sit at a table with your notes ready. Pause before you answer a question. A rushed answer costs more than a quiet moment.",
+    bodyLanguage: "Keep your notes in front of you and use them. Pause before you answer a question. A rushed answer costs more than a quiet moment.",
     onCall: "Keep your notes beside the call window so you're not looking away to find them.",
   },
   // C -> D
@@ -247,7 +246,7 @@ const cards: CoachingCard[] = [
     situation: "pitch",
     approach: "Pick one option and recommend it, with the one number that matters. Keep the full analysis in your back pocket. If they don't ask for it, check once before you finish: \"Want the numbers, or is that enough to decide?\"",
     openWith: [
-      "My recommendation: [this]. Expected impact: [result]. I've got the full analysis if you want it.",
+      "I recommend [this]. It gets us [result]. I've got the full analysis if you want it.",
       "We should do [this], because the numbers show [result].",
     ],
     avoid: [
@@ -296,7 +295,7 @@ const cards: CoachingCard[] = [
       "Calling it a transformation.",
       "Getting so deep in the data that you skip how it affects people.",
     ],
-    theirReaction: "Often they listen closely and say little at first. Book the next conversation before you leave: \"Can we go through your questions on [Thursday]?\"",
+    theirReaction: "Often they listen closely and say little at first. Book the next conversation: \"Can we go through your questions on [Thursday]?\"",
     ifGoesWrong: "When they seem unsure: \"Take the analysis with you and go through it at your own pace. What questions should I be ready for?\"",
     bodyLanguage: "Sit beside them and go through the documents together. Match their pace. When they go quiet, wait, and don't fill it with more data.",
     onCall: "Share your screen and stop talking while they read.",
@@ -319,7 +318,7 @@ const cards: CoachingCard[] = [
     ],
     theirReaction: "Precise questions, and if they find a flaw they'll usually say so straight out. Thank them and fix it. Suggested refinements mean they're working on it with you.",
     ifGoesWrong: "If they reject the analysis: \"Which assumptions do you disagree with? I'd rather fix those than start over.\"",
-    bodyLanguage: "Sit at a table with the material between you. When they challenge something, look up the figure together instead of arguing from memory.",
+    bodyLanguage: "Have the source material open between you. When they challenge something, look up the figure together instead of arguing from memory.",
     onCall: "Share the source file instead of a screenshot so you can both check it.",
   },
 ];
