@@ -301,8 +301,8 @@ export function Profile() {
           </div>
           {confirmClear ? (
             <div class="confirm-delete-actions">
-              <button class="btn-danger btn-sm" type="button" onClick={handleClearAll}>Confirm</button>
-              <button class="btn-secondary btn-sm" type="button" onClick={() => setConfirmClear(false)}>Cancel</button>
+              <button class="btn-danger btn-sm" type="button" onClick={handleClearAll}>Delete all</button>
+              <button class="btn-secondary btn-sm" type="button" onClick={() => setConfirmClear(false)} autoFocus>Cancel</button>
             </div>
           ) : (
             <button class="btn-ghost-danger btn-sm" type="button" onClick={() => setConfirmClear(true)}>

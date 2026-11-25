@@ -1528,6 +1528,7 @@
   font-weight: 600;
   font-size: var(--font-size-base);
   border-radius: var(--radius);
+  white-space: nowrap;
 }
 
 .confirm-delete {

@@ -332,6 +332,13 @@ test.describe('Critical User Flows', () => {
     expect(clear?.width).toBeGreaterThanOrEqual(44);
   });
 
+  test('clearing all data names what it does and starts on Cancel', async ({ page }) => {
+    await page.goto('/profile');
+    await page.click('button:has-text("Clear")');
+    await expect(page.locator('.confirm-delete-actions .btn-danger')).toHaveText('Delete all');
+    await expect(page.locator('.confirm-delete-actions button:has-text("Cancel")')).toBeFocused();
+  });
+
   test('contact can be renamed', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('h1');
