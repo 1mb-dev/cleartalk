@@ -52,6 +52,28 @@ test.describe('Critical User Flows', () => {
     await expect(page.locator('.self-pick')).toHaveCount(0);
   });
 
+  test('card shows the last note logged about this person', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'NoteTest');
+    await page.click('.situation-btn:first-child');
+    await waitForCard(page);
+    await expect(page.locator('.coaching-last-note')).toHaveCount(0);
+
+    await page.click('button:has-text("Log how it went")');
+    await page.locator('.outcome-option').nth(3).click();
+    await page.fill('#log-note', 'Went better when I asked first.');
+    await page.click('button:has-text("Log it")');
+    await page.waitForSelector('text=Saved!');
+
+    await page.click('[role="tab"]:has-text("Coach")');
+    await page.click('.contact-pick-card:has-text("NoteTest")');
+    await page.click('.situation-btn:nth-child(2)');
+    await waitForCard(page);
+    await expect(page.locator('.coaching-last-note .coaching-section-body')).toHaveText('Went better when I asked first.');
+    await expect(page.locator('.coaching-last-note-meta')).toHaveText('Give Feedback, today');
+  });
+
   test('coaching card has all sections', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('h1');

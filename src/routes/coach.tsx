@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
 import { QuickTag } from '../components/quick-tag.tsx';
 import { CoachingCardView } from '../components/coaching-card.tsx';
-import { getContacts, getContact, getOrCreateUser, setSelfPick } from '../db/queries.ts';
+import { getContacts, getContact, getJournalForContact, getOrCreateUser, setSelfPick } from '../db/queries.ts';
 import { getCoachingCard } from '../engine/coaching.ts';
 import { DISC_LABELS, SITUATION_LABELS, isSituation, resolveYourType } from '../engine/types.ts';
-import type { Contact, CoachingCard, DiscType, SituationType, User } from '../engine/types.ts';
+import type { Contact, CoachingCard, DiscType, JournalEntry, SituationType, User } from '../engine/types.ts';
 import { SelfPick } from '../components/self-pick.tsx';
 import { navigate } from '../lib/transitions.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
@@ -20,6 +20,7 @@ export function Coach() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [card, setCard] = useState<CoachingCard | null>(null);
+  const [lastNote, setLastNote] = useState<JournalEntry | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [showQuickTag, setShowQuickTag] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -59,11 +60,13 @@ export function Coach() {
       const loaded = contact && isSituation(params.situation) && you
         ? await getCoachingCard(you.type, contact.discProfile.primary, params.situation)
         : null;
+      const recent = loaded && contact ? await getJournalForContact(contact.id, 20) : [];
       if (seq !== loadSeq.current) return;
       setUser(u);
       setContacts(allContacts);
       setSelectedContact(contact ?? null);
       setCard(loaded);
+      setLastNote(recent.find(e => e.note.trim()) ?? null);
     } catch {
       if (seq === loadSeq.current) setError(true);
     } finally {
@@ -158,6 +161,7 @@ export function Coach() {
         <CoachingCardView
           card={card}
           yourSource={you.source}
+          lastNote={lastNote}
           onCheckStyle={() => navigate(() => setLocation('/profile'))}
         />
 

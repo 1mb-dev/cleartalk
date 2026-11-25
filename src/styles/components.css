@@ -638,6 +638,16 @@
   border-color: var(--color-accent);
 }
 
+.coaching-last-note {
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--color-border);
+}
+
+.coaching-last-note-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
 .coaching-pick-note {
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);

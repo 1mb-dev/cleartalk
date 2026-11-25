@@ -1,12 +1,15 @@
 import { useState } from 'preact/hooks';
-import type { CoachingCard as CoachingCardType, DiscType } from '../engine/types.ts';
-import { DISC_LABELS } from '../engine/types.ts';
+import type { CoachingCard as CoachingCardType, DiscType, JournalEntry } from '../engine/types.ts';
+import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
+import { formatRelativeDate } from '../lib/format.ts';
 
 interface CoachingCardProps {
   card: CoachingCardType;
   /** Where the reader's own style came from; a pick is labelled so they can check it. */
   yourSource: 'assessment' | 'pick';
   onCheckStyle: () => void;
+  /** The reader's most recent journal note about this person, if any. */
+  lastNote?: JournalEntry | null;
 }
 
 const TYPE_CLASS: Record<DiscType, string> = {
@@ -16,7 +19,7 @@ const TYPE_CLASS: Record<DiscType, string> = {
   C: 'disc-c',
 };
 
-export function CoachingCardView({ card, yourSource, onCheckStyle }: CoachingCardProps) {
+export function CoachingCardView({ card, yourSource, onCheckStyle, lastNote }: CoachingCardProps) {
   return (
     <div class="coaching-card">
       <div class="coaching-card-header">
@@ -35,6 +38,16 @@ export function CoachingCardView({ card, yourSource, onCheckStyle }: CoachingCar
         </p>
       )}
 
+      {lastNote && (
+        <div class="coaching-section coaching-last-note">
+          <h2 class="coaching-section-title">What you noted last time</h2>
+          <p class="coaching-section-body">{lastNote.note}</p>
+          <p class="coaching-last-note-meta">
+            {SITUATION_LABELS[lastNote.situationType]}, {midSentence(formatRelativeDate(lastNote.loggedAt))}
+          </p>
+        </div>
+      )}
+
       <Section title="Approach" content={card.approach} />
       <PhraseList title="Open with" items={card.openWith} />
       <PhraseList title="Avoid" items={card.avoid} variant="warning" />
@@ -46,6 +59,11 @@ export function CoachingCardView({ card, yourSource, onCheckStyle }: CoachingCar
       <ShareButton card={card} />
     </div>
   );
+}
+
+/** "Today" and "Yesterday" follow a comma; dates like "Mar 10" keep their capital. */
+function midSentence(when: string): string {
+  return when === 'Today' || when === 'Yesterday' ? when.toLowerCase() : when;
 }
 
 function Section({ title, content }: { title: string; content: string }) {
