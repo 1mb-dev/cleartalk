@@ -18,7 +18,6 @@ import difficultNews from '../src/data/coaching-cards/difficult-news.ts';
 
 const BASE_URL = 'https://cleartalk.1mb.dev';
 const BYLINE = "Cleartalk helps you prepare for hard conversations. It isn't therapy.";
-const CTA = 'Add someone, answer eight quick questions about how they talk, and get the card for the two of you. It covers feedback, requests, disagreements, pitches and bad news. What you add stays on your device.';
 const STYLES = ['D', 'I', 'S', 'C'];
 const EXPECT_CAPTION = 'People don’t always match their style. Go by what you see.';
 
@@ -126,7 +125,6 @@ function page(card, key) {
         <p class="insight-cta-text">The same conversation, if one of these sounds more like you:</p>
         <ul class="insight-siblings" role="list">${others.join('')}</ul>
         <p class="insight-byline">${BYLINE}</p>
-        <p class="insight-cta-text">${CTA}</p>
         <a class="btn-primary" href="/">Try Cleartalk - free, no sign-up</a>
       </footer>
     </main>

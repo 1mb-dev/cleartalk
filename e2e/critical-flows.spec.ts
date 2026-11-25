@@ -372,6 +372,11 @@ test.describe('Critical User Flows', () => {
     expect(await page.locator('.coaching-phrases').first().locator('li').count()).toBeGreaterThan(1);
     await expect(page.locator('.coaching-on-call-label')).toHaveText('On a call');
     await expect(page.locator('.insight-byline')).toContainText("It isn't therapy.");
+    // The footer is the sibling links, the byline and the button; no closing pitch paragraph.
+    await expect(page.locator('.insight-cta > p')).toHaveText([
+      'The same conversation, if one of these sounds more like you:',
+      "Cleartalk helps you prepare for hard conversations. It isn't therapy.",
+    ]);
     await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveCount(1);
     await expect(page.locator('script[src]')).toHaveCount(0);
     await context.close();
