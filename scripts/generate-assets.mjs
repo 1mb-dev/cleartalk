@@ -217,7 +217,6 @@ async function main() {
   }
 
   const ico = Buffer.concat([header, ...dirEntries, ...imageDataBuffers]);
-  const { writeFileSync } = await import('fs');
   writeFileSync('public/favicon.ico', ico);
   console.log('  favicon.ico (16+32+48)');
 
