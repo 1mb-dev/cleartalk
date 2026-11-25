@@ -4,16 +4,12 @@ import { QuickTag } from '../components/quick-tag.tsx';
 import { CoachingCardView } from '../components/coaching-card.tsx';
 import { getContacts, getContact, getOrCreateUser } from '../db/queries.ts';
 import { getCoachingCard } from '../engine/coaching.ts';
-import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
+import { DISC_LABELS, SITUATION_LABELS, isSituation } from '../engine/types.ts';
 import type { Contact, CoachingCard, SituationType, User } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 import { Logo } from '../components/logo.tsx';
 import { canInstall, isInstalled, wasDismissed, triggerInstall, dismissPrompt, onInstallAvailable } from '../lib/install-prompt.ts';
-
-function isValidSituation(s: string | undefined): s is SituationType {
-  return !!s && s in SITUATION_LABELS;
-}
 
 type CoachParams = { contactId?: string; situation?: string };
 
@@ -29,7 +25,7 @@ export function Coach() {
   const [error, setError] = useState(false);
   const [installAvailable, setInstallAvailable] = useState(canInstall() && !isInstalled() && !wasDismissed());
 
-  const pageTitle = selectedContact && isValidSituation(params.situation)
+  const pageTitle = selectedContact && isSituation(params.situation)
     ? `${SITUATION_LABELS[params.situation]} for ${selectedContact.name} - ClearTalk`
     : selectedContact
       ? `Coaching for ${selectedContact.name} - ClearTalk`
@@ -61,7 +57,7 @@ export function Coach() {
         const contact = await getContact(params.contactId);
         setSelectedContact(contact ?? null);
 
-        if (contact && isValidSituation(params.situation)) {
+        if (contact && isSituation(params.situation)) {
           const yourType = u.discProfile?.primary ?? contact.discProfile.primary;
           const loaded = await getCoachingCard(
             yourType,
@@ -136,7 +132,7 @@ export function Coach() {
   }
 
   // Step 3: Show coaching card
-  if (selectedContact && card && isValidSituation(params.situation)) {
+  if (selectedContact && card && isSituation(params.situation)) {
     return (
       <div class="route-shell">
         <button class="back-link" type="button" onClick={goBack}>

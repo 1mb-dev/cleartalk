@@ -15,12 +15,6 @@ try {
   }
 } catch { /* private browsing */ }
 
-// Safety net for unhandled async errors (ErrorBoundary only catches sync render errors)
-window.addEventListener('unhandledrejection', () => {
-  // Intentionally swallowed -- per-route try/catch blocks handle user-visible errors.
-  // This listener prevents the browser default (console noise in production).
-});
-
 // Request persistent storage once the service worker is ready, so precached
 // assets survive eviction and the PWA opens reliably offline.
 if ('serviceWorker' in navigator) {

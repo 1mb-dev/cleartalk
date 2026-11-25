@@ -54,4 +54,11 @@ describe('formatRelativeDate', () => {
     vi.setSystemTime(now);
     expect(formatRelativeDate(now.getTime())).toBe('Today');
   });
+
+  it('counts calendar days, not 24-hour periods', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-03-24T09:00:00'));
+    expect(formatRelativeDate(new Date('2026-03-23T23:00:00').getTime())).toBe('Yesterday');
+    expect(formatRelativeDate(new Date('2026-03-22T23:30:00').getTime())).toBe('2d ago');
+  });
 });

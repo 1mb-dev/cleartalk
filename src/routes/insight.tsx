@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
 import { getCoachingCard } from '../engine/coaching.ts';
-import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
-import type { CoachingCard, SituationType } from '../engine/types.ts';
+import { DISC_LABELS, SITUATION_LABELS, isSituation } from '../engine/types.ts';
+import type { CoachingCard } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 import { parsePair } from '../lib/parse-pair.ts';
@@ -31,7 +31,7 @@ export function Insight() {
     setError(false);
 
     const parsed = parsePair(pair ?? '');
-    if (!parsed || !situation || !(situation in SITUATION_LABELS)) {
+    if (!parsed || !isSituation(situation)) {
       setError(true);
       setLoading(false);
       return;
@@ -41,7 +41,7 @@ export function Insight() {
       const loaded = await getCoachingCard(
         parsed.yourType,
         parsed.theirType,
-        situation as SituationType,
+        situation,
       );
       setCard(loaded);
     } catch {

@@ -73,13 +73,27 @@ test.describe('Accessibility', () => {
   });
 
   test('loading states have aria-live', async ({ page }) => {
-    // Navigate to a route that shows loading state
+    // Loading text unmounts within milliseconds, so record each node as it is added
+    // rather than polling for it.
+    await page.addInitScript(() => {
+      const seen: (string | null)[] = [];
+      (window as unknown as { __loadingAriaLive: typeof seen }).__loadingAriaLive = seen;
+      new MutationObserver((mutations) => {
+        for (const m of mutations) {
+          for (const node of m.addedNodes) {
+            if (!(node instanceof Element)) continue;
+            const hits = node.matches('.loading-text') ? [node] : [...node.querySelectorAll('.loading-text')];
+            for (const el of hits) seen.push(el.getAttribute('aria-live'));
+          }
+        }
+      }).observe(document, { childList: true, subtree: true });
+    });
+
     await page.goto('/');
-    // The loading text should have aria-live when present
-    const loadingText = page.locator('.loading-text');
-    if (await loadingText.isVisible()) {
-      await expect(loadingText).toHaveAttribute('aria-live', 'polite');
-    }
+    await expect(page.locator('.loading-text')).toHaveCount(0);
+    const seen = await page.evaluate(() => (window as unknown as { __loadingAriaLive: (string | null)[] }).__loadingAriaLive);
+    expect(seen.length).toBeGreaterThan(0);
+    expect(seen.every(v => v === 'polite')).toBe(true);
   });
 
   test('all images and icons have alt text or aria-hidden', async ({ page }) => {
@@ -111,15 +125,15 @@ test.describe('Accessibility', () => {
   });
 
   test('respects prefers-reduced-motion', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
-    // Verify animation-duration is effectively 0
-    const duration = await page.evaluate(() => {
-      const el = document.querySelector('body');
-      return el ? getComputedStyle(el).getPropertyValue('animation-duration') : '';
-    });
-    // With reduced motion, transitions should be near-zero
-    // The CSS sets 0.01ms -- this is effectively disabled
+    const button = page.locator('.btn-primary').first();
+    const seconds = () => button.evaluate(el => parseFloat(getComputedStyle(el).transitionDuration));
+
+    // Measure the same element both ways, so an element that never animates cannot pass.
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    expect(await seconds()).toBeGreaterThan(0.001);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    expect(await seconds()).toBeLessThanOrEqual(0.001);
   });
 
   test('touch targets are at least 44px', async ({ page }) => {

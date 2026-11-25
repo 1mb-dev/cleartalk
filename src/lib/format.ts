@@ -1,8 +1,11 @@
+function startOfDay(d: Date): number {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+}
+
 export function formatRelativeDate(ts: number): string {
   const d = new Date(ts);
-  const now = new Date();
-  const diff = now.getTime() - d.getTime();
-  const days = Math.floor(diff / 86400000);
+  // Round, not floor: local midnights are 23h or 25h apart across a DST change.
+  const days = Math.round((startOfDay(new Date()) - startOfDay(d)) / 86400000);
   if (days === 0) return 'Today';
   if (days === 1) return 'Yesterday';
   if (days < 7) return `${days}d ago`;
