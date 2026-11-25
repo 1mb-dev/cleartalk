@@ -43,11 +43,10 @@ function scoreForType(profile: DiscProfile, type: DiscType): number {
 
 /**
  * DISC wheel visualization.
- * Four quadrants with scores inside circles; type labels on left/right sides.
+ * Four quadrants; circle size shows weight, with no numbers (this is not a test score).
  */
 export function DiscWheel({ profile, size = 360 }: DiscWheelProps) {
-  const summary = `${DISC_LABELS[profile.primary]} (${scoreForType(profile, profile.primary)}%), ` +
-    `${DISC_LABELS[profile.secondary]} (${scoreForType(profile, profile.secondary)}%)`;
+  const summary = `Mostly ${DISC_LABELS[profile.primary]}, then ${DISC_LABELS[profile.secondary]}`;
 
   return (
     <div class="disc-wheel-container">
@@ -73,18 +72,6 @@ export function DiscWheel({ profile, size = 360 }: DiscWheelProps) {
             <g key={q.type}>
               <circle cx={q.cx} cy={q.cy} r="25" fill={SUBTLE_VARS[q.type]} />
               <circle cx={q.cx} cy={q.cy} r={radius} fill={COLOR_VARS[q.type]} opacity="0.85" />
-              {/* Score number */}
-              <text
-                x={q.cx}
-                y={q.cy + 3.5}
-                text-anchor="middle"
-                font-size="10"
-                font-weight="700"
-                font-family="var(--font-ui)"
-                fill="var(--color-bg)"
-              >
-                {score}
-              </text>
               {/* Type label on side */}
               <text
                 x={q.labelX}
