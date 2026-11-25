@@ -76,6 +76,36 @@ test.describe('Critical User Flows', () => {
     expect(states.filter(s => s !== 'other')).toEqual(['loading', 'pick']);
   });
 
+  test('a failed load stays on its own route', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'FailTest');
+    await page.waitForSelector('.situation-btn');
+
+    // Fail the next load's user read, then let reads work again.
+    await page.evaluate(() => {
+      const w = window as unknown as { realGet: typeof IDBObjectStore.prototype.get };
+      w.realGet = IDBObjectStore.prototype.get;
+      IDBObjectStore.prototype.get = () => { throw new Error('test: read failed'); };
+    });
+    await page.click('.situation-btn:first-child');
+    await expect(page.locator('.welcome-text')).toContainText("Couldn't load your people.");
+    // Look at the screen after the new route renders and before its load starts.
+    await page.evaluate(() => {
+      const w = window as unknown as { realGet: typeof IDBObjectStore.prototype.get; errorAfterNav?: boolean };
+      IDBObjectStore.prototype.get = w.realGet;
+      const push = history.pushState;
+      history.pushState = function (...args: Parameters<History['pushState']>) {
+        push.apply(this, args);
+        setTimeout(() => { w.errorAfterNav = !!document.body.textContent?.includes("Couldn't load your people."); });
+      };
+    });
+
+    await page.click('[role="tab"]:has-text("Coach")');
+    await expect(page.locator('.contact-pick-card:has-text("FailTest")')).toBeVisible();
+    expect(await page.evaluate(() => (window as unknown as { errorAfterNav?: boolean }).errorAfterNav)).toBe(false);
+  });
+
   test('card shows the last note logged about this person', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('h1');

@@ -30,7 +30,9 @@ export function Coach() {
   // holds the previous route's data; it must not be shown until this route's load lands.
   const routeKey = `${params.contactId ?? ''}/${params.situation ?? ''}`;
   const [loadedKey, setLoadedKey] = useState<string | null>(null);
-  const [error, setError] = useState(false);
+  // Keyed like loadedKey, so a failure on one route is not shown on the next.
+  const [errorKey, setErrorKey] = useState<string | null>(null);
+  const error = errorKey === routeKey;
   const [installAvailable, setInstallAvailable] = useState(canInstall() && !isInstalled() && !wasDismissed());
 
   const pageTitle = selectedContact && isSituation(params.situation)
@@ -54,7 +56,7 @@ export function Coach() {
     // Route changes and a style pick can start overlapping loads; only the latest may write state.
     const seq = ++loadSeq.current;
     setLoading(true);
-    setError(false);
+    setErrorKey(null);
     try {
       const [u, allContacts] = await Promise.all([
         getOrCreateUser(),
@@ -74,7 +76,7 @@ export function Coach() {
       setLastNote(recent.find(e => e.note.trim()) ?? null);
       setLoadedKey(routeKey);
     } catch {
-      if (seq === loadSeq.current) setError(true);
+      if (seq === loadSeq.current) setErrorKey(routeKey);
     } finally {
       if (seq === loadSeq.current) setLoading(false);
     }
@@ -88,7 +90,7 @@ export function Coach() {
       await setSelfPick(type);
       if (seq === loadSeq.current) await loadState();
     } catch {
-      if (seq === loadSeq.current) setError(true);
+      if (seq === loadSeq.current) setErrorKey(routeKey);
     }
   }
 
