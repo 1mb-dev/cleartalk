@@ -3,6 +3,7 @@ import { observations } from '../data/observations.ts';
 import { typeFromObservations } from '../engine/typing.ts';
 import { addContact } from '../db/queries.ts';
 import { DISC_LABELS } from '../engine/types.ts';
+import { STYLE_LINES } from '../data/style-lines.ts';
 import type { DiscProfile, Contact } from '../engine/types.ts';
 
 interface QuickTagProps {
@@ -88,6 +89,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
             Next
           </button>
         </form>
+        <p class="welcome-hint">A first name is enough. It stays on this device.</p>
       </div>
     );
   }
@@ -104,7 +106,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
         <div class="quicktag-confirm">
           <p class="quicktag-confirm-name">{name}</p>
           <p class="quicktag-confirm-type">
-            Their style: <strong>{DISC_LABELS[pendingResult.profile.primary]}</strong>
+            Mostly <strong>{DISC_LABELS[pendingResult.profile.primary]}</strong> - {STYLE_LINES[pendingResult.profile.primary].other}.
           </p>
           <div class="quicktag-confirm-actions">
             <button class="btn-primary" type="button" onClick={() => finalize(answers)}>

@@ -124,7 +124,7 @@ function ShareButton({ card }: { card: CoachingCardType }) {
     try {
       if (typeof navigator.share === 'function') {
         await navigator.share({
-          title: `How to ${card.situation.replaceAll('_', ' ')} with ${card.theirType === 'I' ? 'an' : 'a'} ${DISC_LABELS[card.theirType]} communicator`,
+          title: `${SITUATION_LABELS[card.situation]}: ${DISC_LABELS[card.yourType]} to ${DISC_LABELS[card.theirType]}`,
           url,
         });
         return;
@@ -141,9 +141,9 @@ function ShareButton({ card }: { card: CoachingCardType }) {
   }
 
   const label =
-    status === 'copied' ? 'Link copied!' :
+    status === 'copied' ? 'Link copied' :
     status === 'failed' ? 'Could not copy link' :
-    'Share this insight';
+    'Share this card';
 
   return (
     <button class="share-btn" type="button" onClick={handleShare}>

@@ -59,7 +59,7 @@ async function logOutcome(page: Page) {
   const outcome = Math.floor(Math.random() * 5);
   await page.locator('.outcome-option').nth(outcome).click();
   await page.click('button:has-text("Log it")');
-  await page.waitForSelector('text=Saved!', { timeout: 5000 });
+  await page.waitForSelector('text=Saved', { timeout: 5000 });
 }
 
 // ─────────────────────────────────────────────────────────

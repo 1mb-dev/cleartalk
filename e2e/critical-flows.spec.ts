@@ -88,7 +88,7 @@ test.describe('Critical User Flows', () => {
     await page.locator('.outcome-option').nth(3).click();
     await page.fill('#log-note', 'Went better when I asked first.');
     await page.click('button:has-text("Log it")');
-    await page.waitForSelector('text=Saved!');
+    await page.waitForSelector('text=Saved');
 
     await page.click('[role="tab"]:has-text("Coach")');
     await page.click('.contact-pick-card:has-text("NoteTest")');
@@ -128,7 +128,7 @@ test.describe('Critical User Flows', () => {
     await page.click('button:has-text("Choose file")');
     await (await chooser).setFiles({ name: 'export.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(file)) });
     await expect(page.locator('.setting-status')).toHaveText(
-      "Added or updated 1 person and 1 note. Skipped 2 that weren't valid. Your data is safe.",
+      "Added or updated 1 person and 1 conversation. Skipped 2 that couldn't be used. Your data is safe.",
     );
 
     await page.click('[role="tab"]:has-text("People")');
@@ -202,7 +202,7 @@ test.describe('Critical User Flows', () => {
     await page.locator('.outcome-option').nth(3).click();
 
     await page.click('button:has-text("Log it")');
-    await expect(page.locator('button[type="submit"] span')).toContainText('Saved!');
+    await expect(page.locator('button[type="submit"] span')).toContainText('Saved');
   });
 
   test('contact appears in People tab after creation', async ({ page }) => {

@@ -106,8 +106,7 @@ export function Log() {
         <div class="welcome-block">
           <p class="welcome-text">
             After a conversation, take ten seconds to note how it went.
-            Small observations add up - you will see your own patterns
-            within a week.
+            Your note shows up on that person's card the next time you open it.
           </p>
           <button class="btn-secondary" type="button" onClick={() => navigate(() => setLocation('/'))}>
             Add someone to get started
@@ -185,7 +184,7 @@ export function Log() {
         {error && <p class="error-inline" role="alert">{error}</p>}
 
         <button class="btn-primary" type="submit" disabled={!canSubmit} aria-busy={saving}>
-          <span aria-live="polite">{saving ? 'Saving...' : saved ? 'Saved!' : 'Log it'}</span>
+          <span aria-live="polite">{saving ? 'Saving...' : saved ? 'Saved' : 'Log it'}</span>
         </button>
       </form>
 

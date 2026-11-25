@@ -136,7 +136,7 @@ export function PersonDetail() {
       <div class="type-summary compact">
         <p class="type-default">{profile.communicationDefault}</p>
 
-        <h4>When talking to {profile.label[0] === 'I' ? 'an' : 'a'} {profile.label}</h4>
+        <h4>When you talk to {contact.name}</h4>
         <ul>
           <li>{profile.strengths[0]} - lean into this</li>
           <li>{profile.blindSpots[0]} - watch for this</li>

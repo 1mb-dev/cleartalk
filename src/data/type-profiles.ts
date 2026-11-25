@@ -58,9 +58,9 @@ export const typeProfiles: Record<DiscType, TypeProfile> = {
     underStress: "Gets scattered. Starts something new rather than face what's stuck. Talks more and listens less. Looks for reassurance and calls it collaboration.",
     communicationDefault: "Starts with a story. Thinks out loud. Would rather talk face to face than write it down. Expects a warm response and takes a neutral face as a bad sign.",
     growthAreas: [
-      "Write down what you agreed to before you leave the room. Spoken agreements evaporate.",
+      "Write down what you agreed to and send it the same day.",
       "Ask \"What do you think?\" and wait for the whole answer.",
-      "Give the hard feedback. Relationships survive honesty better than silence.",
+      "Give the hard feedback while it's still fresh.",
     ],
   },
   S: {
@@ -107,7 +107,7 @@ export const typeProfiles: Record<DiscType, TypeProfile> = {
     growthAreas: [
       "When you spot a problem, bring one possible fix with it.",
       "Share your thinking earlier. People can't answer a concern they haven't heard.",
-      "Pick a deadline and keep it. Good enough and done beats perfect and stuck.",
+      "Pick a deadline and keep it, even if the work isn't perfect yet.",
     ],
   },
 };

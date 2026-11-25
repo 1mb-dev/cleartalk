@@ -97,8 +97,8 @@ export function Profile() {
         const text = await file.text();
         const result = await importData(text);
         setImportStatus(
-          `Added or updated ${result.contacts} ${result.contacts === 1 ? 'person' : 'people'} and ${result.entries} ${result.entries === 1 ? 'note' : 'notes'}.`
-          + (result.skipped ? ` Skipped ${result.skipped} that weren't valid. Your data is safe.` : ''),
+          `Added or updated ${result.contacts} ${result.contacts === 1 ? 'person' : 'people'} and ${result.entries} ${result.entries === 1 ? 'conversation' : 'conversations'}.`
+          + (result.skipped ? ` Skipped ${result.skipped} that couldn't be used. Your data is safe.` : ''),
         );
         setTimeout(() => setImportStatus(null), 4000);
         await loadProfile();
@@ -185,9 +185,9 @@ export function Profile() {
       ) : (
         <div class="welcome-block">
           <p class="welcome-text">
-            Everyone has a default way of communicating - patterns
-            you don't notice until someone points them out.
-            A short assessment helps you see yours.
+            {user?.selfPick
+              ? `You picked ${DISC_LABELS[user.selfPick]} for yourself. The assessment checks it with 24 quick choices and replaces the pick once you're done.`
+              : 'Everyone has a default way of communicating. Make 24 quick choices and see which style your answers lean toward.'}
           </p>
           <button class="btn-primary" type="button" onClick={() => setShowAssessment(true)}>
             Take the assessment
@@ -214,8 +214,8 @@ export function Profile() {
 
           {patterns.worked.length === 0 && patterns.change.length === 0 && (
             <p class="patterns-empty">
-              When you log a conversation, add a line about what happened. The ones that went well
-              and the ones you'd do differently collect here.
+              Notes from the conversations that went well and the ones you'd do differently collect
+              here. Ones you rated Okay stay in your Log.
             </p>
           )}
         </div>
@@ -312,8 +312,8 @@ export function Profile() {
           <div class="how-step">
             <span class="how-step-num">3</span>
             <div>
-              <h4>Track your growth</h4>
-              <p>Log how conversations go. Over time, you will see which styles you handle well and where to improve.</p>
+              <h4>Log how it went</h4>
+              <p>After a conversation, rate it and add a line. Your last note shows on that person's card next time, and notes from the ones that went well or badly collect here.</p>
             </div>
           </div>
         </div>
@@ -323,8 +323,8 @@ export function Profile() {
       <div class="about-section">
         <h2>About ClearTalk</h2>
         <p class="about-text">
-          Know what to say before you say it. ClearTalk coaches you
-          for the person and the moment - so you say the right thing, the right way.
+          Know what to say before you say it. ClearTalk gives you a short card for the
+          person and the conversation, with lines you can say out loud.
         </p>
         <div class="usp-grid">
           <div class="usp-item">
@@ -346,7 +346,7 @@ export function Profile() {
               <line x1="12" y1="16" x2="12" y2="12" />
               <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
-            <p>Grounded in how people actually communicate</p>
+            <p>Not therapy</p>
           </div>
           <div class="usp-item">
             <svg class="usp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

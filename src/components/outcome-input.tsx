@@ -3,7 +3,7 @@ interface OutcomeInputProps {
   onChange: (value: 1 | 2 | 3 | 4 | 5) => void;
 }
 
-const labels = ['Rough', 'Difficult', 'Okay', 'Good', 'Great'];
+const labels = ['Bad', 'Rough', 'Okay', 'Good', 'Great'];
 
 export function OutcomeInput({ value, onChange }: OutcomeInputProps) {
   return (

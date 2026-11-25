@@ -235,8 +235,8 @@ export function Coach() {
           </svg>
           <h1>Before your next conversation</h1>
           <p class="welcome-text">
-            Pick a person. Pick the moment. Get clear on what to say
-            and how to say it - for the way they actually hear it.
+            Pick someone and the conversation you're about to have.
+            You get a short card for how they tend to hear things.
           </p>
           <div class="welcome-features">
             <div class="welcome-feature">
@@ -284,7 +284,7 @@ export function Coach() {
             onClick={() => selectContact(c.id)}
           >
             <span class={`type-avatar disc-${c.discProfile.primary.toLowerCase()}`} aria-hidden="true">
-              {c.discProfile.primary}
+              {Array.from(c.name.trim())[0]?.toUpperCase()}
             </span>
             <span class="contact-pick-name">{c.name}</span>
             <span class="contact-pick-type">{DISC_LABELS[c.discProfile.primary]}</span>

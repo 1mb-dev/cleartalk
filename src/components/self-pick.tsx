@@ -13,7 +13,7 @@ export function SelfPick({ onPick }: SelfPickProps) {
     <section class="self-pick" aria-labelledby="self-pick-title">
       <h2 id="self-pick-title">Which is closer to you?</h2>
       <p class="self-pick-hint">
-        Pick the one that fits most days. The advice changes with how you talk, not just how they do.
+        Pick the one that fits most days. The advice changes with how you talk as well as how they do.
       </p>
       <div class="self-pick-options">
         {ORDER.map(t => (

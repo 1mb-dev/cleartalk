@@ -116,7 +116,7 @@ export function People() {
                 {DISC_LABELS[c.discProfile.primary]}
               </span>
               {c.confidence !== 'high' && (
-                <span class="confidence-badge">{c.confidence}</span>
+                <span class="confidence-badge">{c.confidence === 'low' ? 'rough guess' : 'fair guess'}</span>
               )}
             </div>
           </button>

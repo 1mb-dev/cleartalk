@@ -4,7 +4,7 @@ import { STYLE_LINES } from '../data/style-lines.ts';
 
 const READ: Record<Contact['confidence'], string> = {
   high: '',
-  medium: ' Your read on them is fair, not certain.',
+  medium: ' Your read on them is a fair guess.',
   low: ' Your read on them is rough so far.',
 };
 
