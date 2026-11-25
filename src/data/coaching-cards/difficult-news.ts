@@ -277,7 +277,7 @@ const cards: CoachingCard[] = [
       "Getting impatient with their reaction. It passes.",
     ],
     theirReaction: "It'll show, and they may want to talk it through before anything else. Questions usually come after that, and that's when your detail helps. Before you finish, say what happens next.",
-    ifGoesWrong: "If they go quiet, which isn't like them: \"We don't have to do the details now. They'll keep.\"",
+    ifGoesWrong: "If they go quiet, which isn't like them, and the details can wait: \"We don't have to do the details now. They'll keep.\"",
     bodyLanguage: "Sit at an angle rather than square on. Speak a little more softly than usual. Keep your notes down while they react.",
     onCall: "Close your notes before you say it; they'll see your eyes move to them.",
   },
