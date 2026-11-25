@@ -37,21 +37,20 @@ export interface ImportResult {
 export async function importData(json: string): Promise<ImportResult> {
   const data: unknown = JSON.parse(json);
   return db.transaction('rw', [db.users, db.assessments, db.contacts, db.journal], async () => {
-    const [user, assessmentIds, latestAssessment, contacts, journalIds] = await Promise.all([
+    const [user, assessmentIds, contacts, journalIds] = await Promise.all([
       db.users.get(DEFAULT_USER_ID),
       db.assessments.toCollection().primaryKeys(),
-      db.assessments.orderBy('takenAt').last(),
       db.contacts.toArray(),
       db.journal.toCollection().primaryKeys(),
     ]);
+    const now = Date.now();
     const plan = planImport(data, {
-      user,
+      user: user ?? { id: DEFAULT_USER_ID, displayName: '', discProfile: null, createdAt: now, updatedAt: now },
       assessmentIds: new Set(assessmentIds),
-      latestAssessment,
       contacts: new Map(contacts.map(c => [c.id, c])),
       journalIds: new Set(journalIds),
     });
-    if (plan.user) await db.users.put(plan.user);
+    if (plan.user) await db.users.put({ ...plan.user, updatedAt: now });
     await db.assessments.bulkAdd(plan.assessments);
     await db.contacts.bulkPut(plan.contacts);
     await db.journal.bulkAdd(plan.journal);

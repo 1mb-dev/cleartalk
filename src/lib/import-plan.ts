@@ -3,10 +3,9 @@ import { DEFAULT_USER_ID, isSituation } from '../engine/types.ts';
 import { sanitizeName, sanitizeNote } from './sanitize.ts';
 
 export interface Existing {
-  user: User | undefined;
+  /** The stored user, or a blank one when none is stored yet. */
+  user: User;
   assessmentIds: Set<string>;
-  /** The stored assessment with the highest takenAt. */
-  latestAssessment?: Assessment;
   contacts: Map<string, Contact>;
   journalIds: Set<string>;
 }
@@ -32,17 +31,11 @@ function isProfile(v: unknown): v is DiscProfile {
     && ['d', 'i', 's', 'c'].every(k => typeof v[k] === 'number');
 }
 
-function toUser(v: unknown): User | null {
-  if (!isRec(v) || !isTime(v.createdAt) || !isTime(v.updatedAt)) return null;
-  if (v.discProfile !== null && !isProfile(v.discProfile)) return null;
-  return {
-    id: DEFAULT_USER_ID,
-    displayName: isStr(v.displayName) ? v.displayName : '',
-    discProfile: v.discProfile,
-    selfPick: isType(v.selfPick) ? v.selfPick : null,
-    createdAt: v.createdAt,
-    updatedAt: v.updatedAt,
-  };
+/** The style fields of an exported user; nothing else on the record is imported. */
+function toStyle(v: unknown): Pick<User, 'discProfile' | 'selfPick'> | null {
+  if (!isRec(v)) return null;
+  if (v.discProfile != null && !isProfile(v.discProfile)) return null;
+  return { discProfile: v.discProfile ?? null, selfPick: isType(v.selfPick) ? v.selfPick : null };
 }
 
 function toAssessment(v: unknown): Assessment | null {
@@ -71,29 +64,11 @@ function toEntry(v: unknown): JournalEntry | null {
   };
 }
 
-function sameProfile(a: DiscProfile | null, b: DiscProfile | null): boolean {
-  if (!a || !b) return a === b;
-  return a.primary === b.primary && a.secondary === b.secondary && a.d === b.d && a.i === b.i && a.s === b.s && a.c === b.c;
-}
-
-/**
- * The newer record's value wins per field. Nothing clears a user field once set, so an empty field
- * means never set: every route creates a blank user on first visit, newer than any export.
- */
-function mergeUser(a: User, b: User): User {
-  const [newer, older] = a.updatedAt >= b.updatedAt ? [a, b] : [b, a];
-  return {
-    ...newer,
-    displayName: newer.displayName || older.displayName,
-    discProfile: newer.discProfile ?? older.discProfile,
-    selfPick: newer.selfPick ?? older.selfPick ?? null,
-  };
-}
-
 /**
  * Merge an export into what is stored: nothing is deleted, and a stored record is only replaced
- * by a newer one. Records that fail validation, and notes about people who exist in neither
- * place, are skipped and counted.
+ * by a newer one. The reader's own style is the exception: the file fills what this device lacks
+ * and never replaces what it has. Records that fail validation, and notes about people who exist
+ * in neither place, are skipped and counted.
  */
 export function planImport(data: unknown, existing: Existing): ImportPlan {
   if (!isRec(data) || !Array.isArray(data.contacts)) {
@@ -105,29 +80,31 @@ export function planImport(data: unknown, existing: Existing): ImportPlan {
   // Both are written with bulkAdd, which aborts the whole import on a repeated id.
   const assessmentIds = new Set(existing.assessmentIds);
   const assessments: Assessment[] = [];
-  let latest = existing.latestAssessment;
+  let newestFile: Assessment | null = null;
   for (const raw of list('assessments')) {
     const a = toAssessment(raw);
     if (!a) { skipped++; continue; }
     if (!assessmentIds.has(a.id)) { assessments.push(a); assessmentIds.add(a.id); }
-    if (!latest || a.takenAt > latest.takenAt) latest = a;
+    if (!newestFile || a.takenAt > newestFile.takenAt) newestFile = a;
   }
 
-  let incoming: User | null = null;
+  let fileProfile: DiscProfile | null = null;
+  let filePick: DiscType | null = null;
   for (const raw of list('users')) {
-    const u = toUser(raw);
+    const u = toStyle(raw);
     if (!u) { skipped++; continue; }
-    incoming = incoming ? mergeUser(incoming, u) : u;
+    fileProfile ??= u.discProfile;
+    filePick ??= u.selfPick ?? null;
   }
-  const stored = existing.user;
-  let user = incoming && stored ? mergeUser(stored, incoming) : incoming ?? stored ?? null;
-  // A merged user's updatedAt can be newer than its profile, so the profile comes from the latest
-  // assessment, not from whichever user record is newer.
-  if (user && latest) user = { ...user, discProfile: latest.result };
-  if (user && stored && sameProfile(user.discProfile, stored.discProfile)
-    && (user.selfPick ?? null) === (stored.selfPick ?? null) && user.displayName === stored.displayName) {
-    user = null;
-  }
+  // Fill only what this device lacks: an assessment result if it has none, a pick only if it
+  // still has no style at all. Timestamps play no part, so no clock can roll a style back.
+  // A stored value that is missing (older versions wrote no key) or corrupt counts as absent.
+  const s = existing.user;
+  const hasProfile = isProfile(s.discProfile) ? s.discProfile : null;
+  const hasPick = isType(s.selfPick) ? s.selfPick : null;
+  const discProfile = hasProfile ?? fileProfile ?? newestFile?.result ?? null;
+  const selfPick = hasPick ?? (discProfile ? null : filePick);
+  const user = discProfile !== hasProfile || selfPick !== hasPick ? { ...s, discProfile, selfPick } : null;
 
   // Keyed by id: bulkPut keeps the last copy of a repeated id, which may be the older one.
   const planned = new Map<string, Contact>();

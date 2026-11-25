@@ -15,7 +15,8 @@ const entry = (id: string, contactId: string) => ({
 const assessment = (id: string, takenAt: number, primary: DiscProfile['primary']) => ({
   id, userId: 'default', answers: {}, result: { ...profile, primary }, takenAt,
 });
-const empty = (): Existing => ({ user: undefined, assessmentIds: new Set(), contacts: new Map(), journalIds: new Set() });
+const blank = (): User => ({ id: 'default', displayName: '', discProfile: null, createdAt: 1, updatedAt: 1 });
+const empty = (): Existing => ({ user: blank(), assessmentIds: new Set(), contacts: new Map(), journalIds: new Set() });
 
 describe('planImport', () => {
   it('adds everything into an empty store', () => {
@@ -31,9 +32,9 @@ describe('planImport', () => {
     expect(planImport({ users: [user(5, 'S')], contacts: [] }, existing).user).toBeNull();
   });
 
-  it('takes the imported profile when it is newer', () => {
+  it('keeps the stored profile even when the imported one is newer', () => {
     const existing = { ...empty(), user: user(5, 'C') };
-    expect(planImport({ users: [user(9, 'S')], contacts: [] }, existing).user?.discProfile?.primary).toBe('S');
+    expect(planImport({ users: [user(9, 'S')], contacts: [] }, existing).user).toBeNull();
   });
 
   it('restores the imported profile over the blank user a new device creates on first visit', () => {
@@ -49,11 +50,9 @@ describe('planImport', () => {
     expect(plan.user?.selfPick).toBe('C');
   });
 
-  it('keeps a stored assessment when the newer import only has a pick', () => {
+  it('changes nothing when the device has an assessment and the import only has a pick', () => {
     const imported = { ...user(9), discProfile: null, selfPick: 'D' };
-    const plan = planImport({ users: [imported], contacts: [] }, { ...empty(), user: user(5, 'C') });
-    expect(plan.user?.discProfile?.primary).toBe('C');
-    expect(plan.user?.selfPick).toBe('D');
+    expect(planImport({ users: [imported], contacts: [] }, { ...empty(), user: user(5, 'C') }).user).toBeNull();
   });
 
   it('adds a record repeated inside the file once', () => {
@@ -67,18 +66,17 @@ describe('planImport', () => {
     expect(plan.skipped).toBe(0);
   });
 
-  it('keeps the latest assessment when a newer user record carries an older one', () => {
-    // A device that imported an old export stores the old profile under its own, newer updatedAt.
-    const existing = { ...empty(), user: user(3, 'C'), assessmentIds: new Set(['a2']), latestAssessment: assessment('a2', 3, 'C') };
-    const plan = planImport({ users: [user(5, 'S')], assessments: [assessment('a1', 1, 'S')], contacts: [] }, existing);
+  it('adds imported assessments to the history without replacing the stored style', () => {
+    const existing = { ...empty(), user: user(3, 'C'), assessmentIds: new Set(['a2']) };
+    const plan = planImport({ users: [user(5, 'S')], assessments: [assessment('a1', 9, 'S')], contacts: [] }, existing);
     expect(plan.user).toBeNull();
     expect(plan.assessments.map(a => a.id)).toEqual(['a1']);
   });
 
-  it('takes a newer imported assessment even when the stored user record is newer', () => {
-    const existing = { ...empty(), user: user(9, 'C'), assessmentIds: new Set(['a1']), latestAssessment: assessment('a1', 1, 'C') };
-    const plan = planImport({ users: [user(5, 'S')], assessments: [assessment('a2', 5, 'S')], contacts: [] }, existing);
-    expect(plan.user?.discProfile?.primary).toBe('S');
+  it('sets the style from the newest imported assessment when the file has no valid user', () => {
+    const plan = planImport({ users: [{ discProfile: 'bad' }], assessments: [assessment('a1', 1, 'S'), assessment('a2', 5, 'I')], contacts: [] }, empty());
+    expect(plan.user?.discProfile?.primary).toBe('I');
+    expect(plan.skipped).toBe(1);
   });
 
   it('writes no user when the file has none and nothing changes', () => {
