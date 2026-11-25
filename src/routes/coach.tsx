@@ -26,6 +26,10 @@ export function Coach() {
   const [showQuickTag, setShowQuickTag] = useState(false);
   const [loading, setLoading] = useState(true);
   const loadSeq = useRef(0);
+  // The component is reused across coach routes, so the first render after a route change still
+  // holds the previous route's data; it must not be shown until this route's load lands.
+  const routeKey = `${params.contactId ?? ''}/${params.situation ?? ''}`;
+  const [loadedKey, setLoadedKey] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const [installAvailable, setInstallAvailable] = useState(canInstall() && !isInstalled() && !wasDismissed());
 
@@ -68,6 +72,7 @@ export function Coach() {
       setSelectedContact(contact ?? null);
       setCard(loaded);
       setLastNote(recent.find(e => e.note.trim()) ?? null);
+      setLoadedKey(routeKey);
     } catch {
       if (seq === loadSeq.current) setError(true);
     } finally {
@@ -76,11 +81,14 @@ export function Coach() {
   }
 
   async function handleSelfPick(type: DiscType) {
+    // A route change during the write starts its own load, which already reads the pick; this
+    // closure's loadState would load the old route over it.
+    const seq = loadSeq.current;
     try {
       await setSelfPick(type);
-      await loadState();
+      if (seq === loadSeq.current) await loadState();
     } catch {
-      setError(true);
+      if (seq === loadSeq.current) setError(true);
     }
   }
 
@@ -116,7 +124,7 @@ export function Coach() {
     );
   }
 
-  if (loading) {
+  if (loading || (loadedKey !== routeKey && !error)) {
     return <div class="route-shell centered"><p class="loading-text" aria-live="polite">Loading...</p></div>;
   }
 

@@ -143,7 +143,8 @@ test.describe.parallel('Multi-user simulation', () => {
 
     // View a coaching card: with an assessment there is no style pick first
     await page.click('.situation-btn:first-child');
-    await waitForCard(page);
+    await expect(page.locator('.coaching-card')).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('.self-pick')).toHaveCount(0);
 
     const sections = await page.locator('.coaching-section-title').allTextContents();
     expect(sections).toContain('Open with');

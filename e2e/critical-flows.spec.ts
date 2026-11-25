@@ -52,6 +52,30 @@ test.describe('Critical User Flows', () => {
     await expect(page.locator('.self-pick')).toHaveCount(0);
   });
 
+  test('a new coach route shows Loading, not the previous route\'s data', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'StaleTest');
+    await page.waitForSelector('.situation-btn');
+
+    // A one-frame flash of the style question, then Loading, made waitForCard skip its click.
+    await page.evaluate(() => {
+      const w = window as unknown as { states: string[] };
+      w.states = [];
+      new MutationObserver(() => {
+        const s = document.querySelector('.self-pick') ? 'pick' : document.querySelector('.loading-text') ? 'loading' : 'other';
+        if (w.states.at(-1) !== s) w.states.push(s);
+      }).observe(document.body, { childList: true, subtree: true });
+    });
+    await page.click('.situation-btn:first-child');
+    await page.waitForFunction(() => {
+      const states = (window as unknown as { states: string[] }).states;
+      return states.at(-1) === 'pick' && states.includes('loading');
+    });
+    const states = await page.evaluate(() => (window as unknown as { states: string[] }).states);
+    expect(states.filter(s => s !== 'other')).toEqual(['loading', 'pick']);
+  });
+
   test('card shows the last note logged about this person', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('h1');
