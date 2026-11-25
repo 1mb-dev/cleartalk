@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
 import { QuickTag } from '../components/quick-tag.tsx';
 import { CoachingCardView } from '../components/coaching-card.tsx';
@@ -23,6 +23,7 @@ export function Coach() {
   const [user, setUser] = useState<User | null>(null);
   const [showQuickTag, setShowQuickTag] = useState(false);
   const [loading, setLoading] = useState(true);
+  const loadSeq = useRef(0);
   const [error, setError] = useState(false);
   const [installAvailable, setInstallAvailable] = useState(canInstall() && !isInstalled() && !wasDismissed());
 
@@ -44,6 +45,8 @@ export function Coach() {
   }, [params.contactId, params.situation]);
 
   async function loadState() {
+    // Route changes and a style pick can start overlapping loads; only the latest may write state.
+    const seq = ++loadSeq.current;
     setLoading(true);
     setError(false);
     try {
@@ -51,32 +54,20 @@ export function Coach() {
         getOrCreateUser(),
         getContacts(),
       ]);
+      const contact = params.contactId ? await getContact(params.contactId) : undefined;
+      const you = resolveYourType(u);
+      const loaded = contact && isSituation(params.situation) && you
+        ? await getCoachingCard(you.type, contact.discProfile.primary, params.situation)
+        : null;
+      if (seq !== loadSeq.current) return;
       setUser(u);
       setContacts(allContacts);
-
-      if (params.contactId) {
-        const contact = await getContact(params.contactId);
-        setSelectedContact(contact ?? null);
-
-        const you = resolveYourType(u);
-        if (contact && isSituation(params.situation) && you) {
-          const loaded = await getCoachingCard(
-            you.type,
-            contact.discProfile.primary,
-            params.situation,
-          );
-          setCard(loaded);
-        } else {
-          setCard(null);
-        }
-      } else {
-        setSelectedContact(null);
-        setCard(null);
-      }
+      setSelectedContact(contact ?? null);
+      setCard(loaded);
     } catch {
-      setError(true);
+      if (seq === loadSeq.current) setError(true);
     } finally {
-      setLoading(false);
+      if (seq === loadSeq.current) setLoading(false);
     }
   }
 
