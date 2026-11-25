@@ -130,6 +130,12 @@ input, textarea, select {
   outline-offset: 2px;
 }
 
+/* Script moves focus to the page heading after a route change so a screen reader starts there;
+   it is not a control, so it gets no ring */
+h1[tabindex="-1"]:focus {
+  outline: none;
+}
+
 /* Skip link */
 .skip-link {
   position: absolute;

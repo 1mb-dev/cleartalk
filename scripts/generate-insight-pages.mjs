@@ -9,6 +9,7 @@ import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DISC_LABELS } from '../src/engine/types.ts';
 import { STYLE_LINES } from '../src/data/style-lines.ts';
+import { typeset, typesetCard } from '../src/lib/typeset.ts';
 import feedback from '../src/data/coaching-cards/feedback.ts';
 import request from '../src/data/coaching-cards/request.ts';
 import conflict from '../src/data/coaching-cards/conflict.ts';
@@ -19,7 +20,7 @@ const BASE_URL = 'https://cleartalk.1mb.dev';
 const BYLINE = "Cleartalk helps you prepare for hard conversations. It isn't therapy.";
 const CTA = 'Add someone, answer eight quick questions about how they talk, and get the card for the two of you. It covers feedback, requests, disagreements, pitches and bad news. What you add stays on your device.';
 const STYLES = ['D', 'I', 'S', 'C'];
-const EXPECT_CAPTION = "People don't always match their style. Go by what you see.";
+const EXPECT_CAPTION = 'People don’t always match their style. Go by what you see.';
 
 const root = join(import.meta.dirname, '..');
 const distDir = join(root, 'dist');
@@ -106,7 +107,7 @@ function page(card, key) {
       </a>
       <article class="coaching-card">
         <header class="insight-header">
-          <h1>${esc(m.h1)}</h1>
+          <h1>${esc(typeset(m.h1))}</h1>
           <div class="coaching-card-header">
             <span class="type-badge disc-${you.toLowerCase()}">You: ${DISC_LABELS[you]}</span>
             <span class="coaching-arrow" aria-hidden="true">&rarr;</span>
@@ -139,7 +140,7 @@ for (const card of [...feedback, ...request, ...conflict, ...pitch, ...difficult
   const key = `${card.yourType.toLowerCase()}-to-${card.theirType.toLowerCase()}/${card.situation}`;
   const dir = join(distDir, 'insight', key);
   mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, 'index.html'), page(card, key));
+  writeFileSync(join(dir, 'index.html'), page(typesetCard(card), key));
   generated++;
 }
 if (generated !== 80) throw new Error(`expected 80 insight pages, generated ${generated}`);

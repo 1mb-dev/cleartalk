@@ -538,6 +538,12 @@
   gap: var(--space-8);
 }
 
+.coaching-card-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
 .coaching-card-header {
   display: flex;
   align-items: center;

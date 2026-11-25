@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import type { CoachingCard as CoachingCardType, DiscType, JournalEntry, Opener } from '../engine/types.ts';
 import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
 import { formatRelativeDate, midSentence } from '../lib/format.ts';
+import { typesetCard } from '../lib/typeset.ts';
 
 interface CoachingCardProps {
   card: CoachingCardType;
@@ -19,24 +20,27 @@ const TYPE_CLASS: Record<DiscType, string> = {
   C: 'disc-c',
 };
 
-export function CoachingCardView({ card, yourSource, onCheckStyle, lastNote }: CoachingCardProps) {
+export function CoachingCardView({ card: data, yourSource, onCheckStyle, lastNote }: CoachingCardProps) {
+  const card = typesetCard(data);
   return (
     <div class="coaching-card">
-      <div class="coaching-card-header">
-        <span class={`type-badge ${TYPE_CLASS[card.yourType]}`}>
-          You: {DISC_LABELS[card.yourType]}
-        </span>
-        <span class="coaching-arrow" aria-hidden="true">{'\u2192'}</span>
-        <span class={`type-badge ${TYPE_CLASS[card.theirType]}`}>
-          Them: {DISC_LABELS[card.theirType]}
-        </span>
+      <div class="coaching-card-top">
+        <div class="coaching-card-header">
+          <span class={`type-badge ${TYPE_CLASS[card.yourType]}`}>
+            You: {DISC_LABELS[card.yourType]}
+          </span>
+          <span class="coaching-arrow" aria-hidden="true">{'\u2192'}</span>
+          <span class={`type-badge ${TYPE_CLASS[card.theirType]}`}>
+            Them: {DISC_LABELS[card.theirType]}
+          </span>
+        </div>
+        {yourSource === 'pick' && (
+          <p class="coaching-pick-note">
+            Based on the style you picked.{' '}
+            <button class="link-btn" type="button" onClick={onCheckStyle}>Check it in 3 minutes</button>
+          </p>
+        )}
       </div>
-      {yourSource === 'pick' && (
-        <p class="coaching-pick-note">
-          Based on the style you picked.{' '}
-          <button class="link-btn" type="button" onClick={onCheckStyle}>Check it in 3 minutes</button>
-        </p>
-      )}
 
       {lastNote && (
         <div class="coaching-section coaching-last-note">
@@ -54,7 +58,7 @@ export function CoachingCardView({ card, yourSource, onCheckStyle, lastNote }: C
 
       <div class="coaching-section">
         <h2 class="coaching-section-title">Expect this</h2>
-        <p class="coaching-caption">People don't always match their style. Go by what you see.</p>
+        <p class="coaching-caption">People don’t always match their style. Go by what you see.</p>
         <p class="coaching-section-body">{card.theirReaction}</p>
       </div>
       <Section title="If it goes sideways" content={card.ifGoesWrong} />
