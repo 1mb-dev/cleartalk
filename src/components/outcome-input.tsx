@@ -3,7 +3,7 @@ interface OutcomeInputProps {
   onChange: (value: 1 | 2 | 3 | 4 | 5) => void;
 }
 
-const labels = ['Rough', 'Difficult', 'Okay', 'Good', 'Great'];
+export const OUTCOME_LABELS = ['Bad', 'Rough', 'Okay', 'Good', 'Great'];
 
 export function OutcomeInput({ value, onChange }: OutcomeInputProps) {
   return (
@@ -21,7 +21,7 @@ export function OutcomeInput({ value, onChange }: OutcomeInputProps) {
               class="sr-only"
             />
             <span class={`outcome-circle outcome-${n}`}>{n}</span>
-            <span class="outcome-label">{labels[n - 1]}</span>
+            <span class="outcome-label">{OUTCOME_LABELS[n - 1]}</span>
           </label>
         ))}
       </div>

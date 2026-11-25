@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
+import { StyleLine } from '../components/style-line.tsx';
+import { OUTCOME_LABELS } from '../components/outcome-input.tsx';
 import { getContact, deleteContact, updateContact, getJournalForContact } from '../db/queries.ts';
 import { sanitizeName } from '../lib/sanitize.ts';
 import { SITUATION_LABELS } from '../engine/types.ts';
-import { DiscWheel } from '../components/disc-wheel.tsx';
 import { typeProfiles } from '../data/type-profiles.ts';
 import type { Contact, JournalEntry, SituationType } from '../engine/types.ts';
 import { navigate } from '../lib/transitions.ts';
@@ -21,7 +22,7 @@ export function PersonDetail() {
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
 
-  useDocumentTitle(contact ? `${contact.name} - ClearTalk` : 'People - ClearTalk');
+  useDocumentTitle(contact ? `${contact.name} - Cleartalk` : 'People - Cleartalk');
 
   useEffect(() => {
     if (id) loadPerson(id);
@@ -128,17 +129,12 @@ export function PersonDetail() {
           </button>
         </div>
       )}
-      <p class="coach-subtitle">
-        {profile.label} type
-        {contact.confidence !== 'high' && ` (${contact.confidence} confidence)`}
-      </p>
-
-      <DiscWheel profile={contact.discProfile} size={160} />
+      <StyleLine contact={contact} />
 
       <div class="type-summary compact">
         <p class="type-default">{profile.communicationDefault}</p>
 
-        <h4>When talking to {profile.label[0] === 'I' ? 'an' : 'a'} {profile.label}</h4>
+        <h4>When you talk to {contact.name}</h4>
         <ul>
           <li>{profile.strengths[0]} - lean into this</li>
           <li>{profile.blindSpots[0]} - watch for this</li>
@@ -168,7 +164,7 @@ export function PersonDetail() {
             {entries.slice(0, 5).map(e => (
               <div key={e.id} class="journal-entry">
                 <span class={`outcome-dot outcome-${e.outcome}`} aria-hidden="true" />
-                <span class="sr-only">Outcome: {e.outcome} of 5</span>
+                <span class="sr-only">Outcome: {OUTCOME_LABELS[e.outcome - 1]}</span>
                 <div class="journal-entry-content">
                   <span class="journal-situation">{SITUATION_LABELS[e.situationType]}</span>
                   {e.note && <span class="journal-note">{e.note}</span>}

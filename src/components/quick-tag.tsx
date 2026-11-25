@@ -3,6 +3,8 @@ import { observations } from '../data/observations.ts';
 import { typeFromObservations } from '../engine/typing.ts';
 import { addContact } from '../db/queries.ts';
 import { DISC_LABELS } from '../engine/types.ts';
+import { STYLE_LINES } from '../data/style-lines.ts';
+import { useAnswerGuard } from '../lib/use-answer-guard.ts';
 import type { DiscProfile, Contact } from '../engine/types.ts';
 
 interface QuickTagProps {
@@ -16,6 +18,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
   const [answers, setAnswers] = useState<Record<string, 'a' | 'b'>>({});
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const acceptAnswer = useAnswerGuard();
 
   const total = observations.length;
 
@@ -27,6 +30,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
   const [pendingResult, setPendingResult] = useState<{ profile: DiscProfile; confidence: Contact['confidence'] } | null>(null);
 
   function selectAnswer(choice: 'a' | 'b') {
+    if (!acceptAnswer()) return;
     const obs = observations[step];
     const updated = { ...answers, [obs.id]: choice };
     setAnswers(updated);
@@ -88,6 +92,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
             Next
           </button>
         </form>
+        <p class="welcome-hint">A first name is enough. It stays on this device.</p>
       </div>
     );
   }
@@ -104,7 +109,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
         <div class="quicktag-confirm">
           <p class="quicktag-confirm-name">{name}</p>
           <p class="quicktag-confirm-type">
-            Their style: <strong>{DISC_LABELS[pendingResult.profile.primary]}</strong>
+            Mostly <strong>{DISC_LABELS[pendingResult.profile.primary]}</strong> - {STYLE_LINES[pendingResult.profile.primary].other}.
           </p>
           <div class="quicktag-confirm-actions">
             <button class="btn-primary" type="button" onClick={() => finalize(answers)}>
@@ -131,7 +136,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
     return (
       <div class="quicktag-wizard">
         <p class="assessment-prompt" role="alert">
-          Could not save. Check that your browser allows storage and try again.
+          Couldn't save. Your data is safe - check that your browser allows storage, then try again.
         </p>
         <button class="btn-primary" type="button" onClick={() => finalize(answers)}>
           Try again

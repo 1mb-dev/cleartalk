@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useLocation, useSearch } from 'wouter';
-import { OutcomeInput } from '../components/outcome-input.tsx';
+import { OutcomeInput, OUTCOME_LABELS } from '../components/outcome-input.tsx';
 import { getContacts, addJournalEntry, getJournalEntries } from '../db/queries.ts';
 import { DISC_LABELS, SITUATION_LABELS, isSituation } from '../engine/types.ts';
 import type { Contact, JournalEntry, SituationType } from '../engine/types.ts';
@@ -9,7 +9,7 @@ import { navigate } from '../lib/transitions.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 
 export function Log() {
-  useDocumentTitle('Log - ClearTalk');
+  useDocumentTitle('Log - Cleartalk');
   const [, setLocation] = useLocation();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
@@ -72,7 +72,7 @@ export function Log() {
       const updated = await getJournalEntries();
       setEntries(updated);
     } catch {
-      setError('Could not save your entry. Please try again.');
+      setError('Couldn\'t save your entry. Your data is safe - try again.');
     } finally {
       setSaving(false);
     }
@@ -106,8 +106,7 @@ export function Log() {
         <div class="welcome-block">
           <p class="welcome-text">
             After a conversation, take ten seconds to note how it went.
-            Small observations add up - you will see your own patterns
-            within a week.
+            Your note shows up on that person's card the next time you open it.
           </p>
           <button class="btn-secondary" type="button" onClick={() => navigate(() => setLocation('/'))}>
             Add someone to get started
@@ -185,7 +184,7 @@ export function Log() {
         {error && <p class="error-inline" role="alert">{error}</p>}
 
         <button class="btn-primary" type="submit" disabled={!canSubmit} aria-busy={saving}>
-          <span aria-live="polite">{saving ? 'Saving...' : saved ? 'Saved!' : 'Log it'}</span>
+          <span aria-live="polite">{saving ? 'Saving...' : saved ? 'Saved' : 'Log it'}</span>
         </button>
       </form>
 
@@ -200,7 +199,7 @@ export function Log() {
               return (
                 <div key={e.id} class="journal-entry">
                   <span class={`outcome-dot outcome-${e.outcome}`} aria-hidden="true" />
-                  <span class="sr-only">Outcome: {e.outcome} of 5</span>
+                  <span class="sr-only">Outcome: {OUTCOME_LABELS[e.outcome - 1]}</span>
                   <div class="journal-entry-content">
                     <span class="journal-person">
                       {contact?.name ?? 'Unknown'}

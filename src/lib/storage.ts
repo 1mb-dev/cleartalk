@@ -1,13 +1,6 @@
 import { db } from '../db/schema.ts';
-import type { User, Assessment, Contact, JournalEntry } from '../engine/types.ts';
-
-interface ExportPayload {
-  users: User[];
-  assessments: Assessment[];
-  contacts: Contact[];
-  journal: JournalEntry[];
-  exportedAt: string;
-}
+import { DEFAULT_USER_ID } from '../engine/types.ts';
+import { planImport } from './import-plan.ts';
 
 export async function exportData(): Promise<string> {
   const [users, assessments, contacts, journal] = await Promise.all([
@@ -32,43 +25,37 @@ export function downloadJson(data: string, filename: string): void {
   setTimeout(() => URL.revokeObjectURL(url), 100);
 }
 
-export async function importData(json: string): Promise<{ contacts: number; entries: number }> {
-  const data: ExportPayload = JSON.parse(json);
+export interface ImportResult {
+  contacts: number;
+  entries: number;
+  skipped: number;
+  /** The reader's own style or pick was written. */
+  style: boolean;
+}
 
-  if (!data.contacts || !Array.isArray(data.contacts)) {
-    throw new Error('Invalid export file: missing contacts');
-  }
-  if (data.users && !Array.isArray(data.users)) {
-    throw new Error('Invalid export file: users must be an array');
-  }
-  if (data.assessments && !Array.isArray(data.assessments)) {
-    throw new Error('Invalid export file: assessments must be an array');
-  }
-  if (data.journal && !Array.isArray(data.journal)) {
-    throw new Error('Invalid export file: journal must be an array');
-  }
-
-  let contactCount = 0;
-  let entryCount = 0;
-
-  await db.transaction('rw', [db.users, db.assessments, db.contacts, db.journal], async () => {
-    for (const user of data.users ?? []) {
-      await db.users.put(user);
-    }
-    for (const assessment of data.assessments ?? []) {
-      await db.assessments.put(assessment);
-    }
-    for (const contact of data.contacts) {
-      await db.contacts.put(contact);
-      contactCount++;
-    }
-    for (const entry of data.journal ?? []) {
-      await db.journal.put(entry);
-      entryCount++;
-    }
+/** Merge an export into local data. Never deletes, never replaces a newer record. */
+export async function importData(json: string): Promise<ImportResult> {
+  const data: unknown = JSON.parse(json);
+  return db.transaction('rw', [db.users, db.assessments, db.contacts, db.journal], async () => {
+    const [user, assessmentIds, contacts, journalIds] = await Promise.all([
+      db.users.get(DEFAULT_USER_ID),
+      db.assessments.toCollection().primaryKeys(),
+      db.contacts.toArray(),
+      db.journal.toCollection().primaryKeys(),
+    ]);
+    const now = Date.now();
+    const plan = planImport(data, {
+      user: user ?? { id: DEFAULT_USER_ID, displayName: '', discProfile: null, createdAt: now, updatedAt: now },
+      assessmentIds: new Set(assessmentIds),
+      contacts: new Map(contacts.map(c => [c.id, c])),
+      journalIds: new Set(journalIds),
+    });
+    if (plan.user) await db.users.put({ ...plan.user, updatedAt: now });
+    await db.assessments.bulkAdd(plan.assessments);
+    await db.contacts.bulkPut(plan.contacts);
+    await db.journal.bulkAdd(plan.journal);
+    return { contacts: plan.contacts.length, entries: plan.journal.length, skipped: plan.skipped, style: plan.user !== null };
   });
-
-  return { contacts: contactCount, entries: entryCount };
 }
 
 export async function clearAllData(): Promise<void> {

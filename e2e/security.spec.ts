@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 
 test.describe('Security Headers & CSP', () => {
@@ -12,12 +13,16 @@ test.describe('Security Headers & CSP', () => {
     // frame-ancestors is in _headers file (HTTP header only, not valid in meta)
   });
 
-  test('serves security headers', async ({ request }) => {
-    const res = await request.get('/');
-    const headers = res.headers();
-    // CF Pages serves these from _headers file
-    // In preview mode they may not be present, so check HTML-level CSP instead
-    expect(res.ok()).toBe(true);
+  test('ships security headers for Cloudflare Pages', () => {
+    // vite preview does not apply _headers, so check the built file Cloudflare reads.
+    const headers = readFileSync('dist/_headers', 'utf8');
+    for (const h of [
+      'X-Frame-Options: DENY',
+      'X-Content-Type-Options: nosniff',
+      'Strict-Transport-Security: max-age=31536000',
+      'Referrer-Policy: strict-origin-when-cross-origin',
+      'Permissions-Policy:',
+    ]) expect(headers).toContain(h);
   });
 
   test('has mobile web app meta tags', async ({ page }) => {
@@ -28,14 +33,13 @@ test.describe('Security Headers & CSP', () => {
 
   test('no inline scripts in HTML', async ({ page }) => {
     await page.goto('/');
-    // Only the module script for the app entry should exist
+    // Inline code is only the module entry; a JSON-LD block is data the browser never runs.
     const scripts = await page.locator('script').all();
     for (const script of scripts) {
       const type = await script.getAttribute('type');
       const src = await script.getAttribute('src');
-      // All scripts should be external (have src) or module type
       if (!src) {
-        expect(type).toBe('module');
+        expect(['module', 'application/ld+json']).toContain(type);
       }
     }
   });

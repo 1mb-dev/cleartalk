@@ -1,0 +1,402 @@
+{
+  "d-to-d/feedback": {
+    "title": "Feedback for someone who pushes back as hard as you do",
+    "h1": "Giving feedback to someone who pushes back hard, when you're just as direct",
+    "description": "You both bristle at being told what to do. Name the slipping result and their part in it, then ask for their fix before you offer yours."
+  },
+  "d-to-i/feedback": {
+    "title": "Feedback for someone warm and sociable, when you're blunt",
+    "h1": "Giving feedback to someone warm and sociable, when you're the blunt one",
+    "description": "Your plain version sounds colder to them than it does to you. Keep it private, say why you're raising it first, then name the issue plainly."
+  },
+  "d-to-s/feedback": {
+    "title": "Feedback for someone who goes quiet, when you move fast",
+    "h1": "Giving feedback to someone who goes quiet, when you're used to moving fast",
+    "description": "Their silence isn't agreement. Slow down, say the point once, ask how it looked from their side, then count to five in your head."
+  },
+  "d-to-c/feedback": {
+    "title": "Feedback for a detail person, when you'd rather be brief",
+    "h1": "Giving feedback to someone who wants every detail, when you'd rather get to the point",
+    "description": "A verdict gives them nothing to fix. Bring two or three dated examples, answer every question, and agree what good looks like in terms they can check."
+  },
+  "i-to-d/feedback": {
+    "title": "Feedback for an impatient person, when you warm up first",
+    "h1": "Giving feedback to a blunt, impatient person, when you like to warm up first",
+    "description": "Get to the point faster than feels polite: the headline, one example, then stop. A one-word OK is a yes, so take it and stop talking."
+  },
+  "i-to-i/feedback": {
+    "title": "Feedback for someone as upbeat as you",
+    "h1": "Giving feedback to someone upbeat, when you'd both rather keep it pleasant",
+    "description": "Left alone, two upbeat people keep it pleasant and nothing lands. Say the uncomfortable part, ask what they'll change, and book a check-in two days out."
+  },
+  "i-to-s/feedback": {
+    "title": "Feedback for someone who agrees just to end it",
+    "h1": "Giving feedback to someone quiet and agreeable, when you're the enthusiastic one",
+    "description": "Your enthusiasm can swamp them, and they may agree just to end the conversation. Bring one point, say it slower than feels natural, and book tomorrow."
+  },
+  "i-to-c/feedback": {
+    "title": "Feedback for someone who questions every example",
+    "h1": "Giving feedback to someone who questions every example, when you tell it as a story",
+    "description": "Retold examples grow. Write two or three down with dates, read them rather than retell them, and answer their questions from your notes."
+  },
+  "s-to-d/feedback": {
+    "title": "Feedback for someone forceful, when you avoid confrontation",
+    "h1": "Giving feedback to someone forceful, when you'd rather avoid confrontation",
+    "description": "Your risk is hedging until the message never arrives. Write your point down, say it in your first sentence, and don't apologize your way out of it."
+  },
+  "s-to-i/feedback": {
+    "title": "Feedback for someone who agrees too quickly",
+    "h1": "Giving feedback to someone cheerful who agrees too quickly, when you're the gentle one",
+    "description": "Between your gentleness and their friendly yes, nothing lands. Say plainly it's feedback, ask what they'll change first, and send the agreed change after."
+  },
+  "s-to-s/feedback": {
+    "title": "Feedback for someone as reluctant to upset people as you",
+    "h1": "Giving feedback to someone as reluctant to upset people as you are",
+    "description": "Between two polite people, feedback gets buried. Name the awkwardness, then say it. One of you has to go first, and today it's you."
+  },
+  "s-to-c/feedback": {
+    "title": "Feedback for an exacting person, when you soften things",
+    "h1": "Giving feedback to someone precise and exacting, when you tend to soften things",
+    "description": "Every \"sorry\" makes your evidence sound weaker to them. Drop the cushioning, bring specific examples, and agree how you'd both know it's better."
+  },
+  "c-to-d/feedback": {
+    "title": "Feedback for someone impatient with detail",
+    "h1": "Giving feedback to someone impatient with detail, when detail is your strength",
+    "description": "Name what they did and what it cost in your first two sentences. Keep one example ready and the rest of your analysis in reserve until they ask."
+  },
+  "c-to-i/feedback": {
+    "title": "Feedback for someone expressive, when you lead with numbers",
+    "h1": "Giving feedback to someone warm and expressive, when you lead with the numbers",
+    "description": "Your precision can sound like a grade. Say the point in one plain sentence, look at the numbers side by side, and let the warmth come from your tone."
+  },
+  "c-to-s/feedback": {
+    "title": "Feedback for someone who takes criticism to heart",
+    "h1": "Giving feedback to someone who takes criticism to heart, when you notice every flaw",
+    "description": "A full critique can feel like a verdict on all their work. Pick the one thing that matters most, leave the rest at your desk, and check how it's landing."
+  },
+  "c-to-c/feedback": {
+    "title": "Feedback for someone as analytical as you",
+    "h1": "Giving feedback to someone just as careful and analytical as you",
+    "description": "Two careful people can trade findings all afternoon. Agree what good looks like before anyone shows evidence, then leave with one change for this week."
+  },
+  "d-to-d/request": {
+    "title": "Asking a blunt person for something, when you're blunt too",
+    "h1": "Asking a blunt, busy person for something, when you're just as direct",
+    "description": "Treat it as a deal. Put your terms first, decide beforehand what you'd trade, and read a counter as a sign they're in. A second no is the answer."
+  },
+  "d-to-i/request": {
+    "title": "Asking an enthusiast to take something on",
+    "h1": "Asking someone enthusiastic to take something on, when your asks can sound like orders",
+    "description": "Ask rather than assign. Tell them who it helps and who they'd work with, then have them name the date: one they pick holds better than one you hand them."
+  },
+  "d-to-s/request": {
+    "title": "Asking someone who rarely says no, when you move fast",
+    "h1": "Asking someone who rarely says no for help, when you move fast",
+    "description": "At your pace it can sound like there's only one answer. Give the context first, ask what they'd move to make room, and treat \"I'll try\" as a maybe."
+  },
+  "d-to-c/request": {
+    "title": "Asking someone exacting to get something done",
+    "h1": "Asking someone who wants it exactly right, when you just want it done",
+    "description": "\"Just get it done\" leaves them guessing. Say what you need, to what standard, by when, and what it feeds, so they know where good enough will do."
+  },
+  "i-to-d/request": {
+    "title": "Asking a blunt person for a quick decision",
+    "h1": "Asking a blunt, impatient person for a decision, when you like to set the scene",
+    "description": "Ask in your first sentence, give the reason in your second, and save the story until after they've answered. Once you have a yes, you're done."
+  },
+  "i-to-i/request": {
+    "title": "Asking a fellow enthusiast for help",
+    "h1": "Asking a fellow enthusiast for help, when you both say yes to everything",
+    "description": "This will be fun and may produce zero results. Enjoy the ideas, then agree who does what by when, and which of you sends the recap."
+  },
+  "i-to-s/request": {
+    "title": "Asking someone who hates to say no, when you're hard to refuse",
+    "h1": "Asking someone who hates to say no for help, when your enthusiasm is hard to refuse",
+    "description": "Your enthusiasm can carry them into a yes they can't deliver. Ask once, plainly, say whether no is a real option, and wait for what's under the quiet."
+  },
+  "i-to-c/request": {
+    "title": "Asking for help from someone who needs a clear brief",
+    "h1": "Asking someone who needs a clear brief to take something on, when you think in big ideas",
+    "description": "\"It'll be amazing\" gives them nothing to work with. Write a short brief with scope, deadline and standard, and answer their questions without a pep talk."
+  },
+  "s-to-d/request": {
+    "title": "Asking a decisive person, when you'd rather not impose",
+    "h1": "Asking a busy, decisive person for something, when you'd rather not impose",
+    "description": "Say the ask first, in one sentence you wrote down beforehand. Give context only if they ask, and know your first step, because a yes means today."
+  },
+  "s-to-i/request": {
+    "title": "Asking someone whose yes comes easily, when you ask gently",
+    "h1": "Asking someone who says yes easily for help, when your asks come out gentle",
+    "description": "A gentle ask can sound optional to them. Say why it matters, ask what they'll do first, and put the yes in writing afterwards."
+  },
+  "s-to-s/request": {
+    "title": "Asking someone who hates imposing as much as you do",
+    "h1": "Asking for something from someone who hates imposing as much as you do",
+    "description": "When neither of you likes imposing, the ask can disappear into the courtesy. Say exactly what you need, and which parts are fixed and which can bend."
+  },
+  "s-to-c/request": {
+    "title": "Asking a careful, exacting person to take something on",
+    "h1": "Asking a careful, exacting person for help, when you'd rather not spell it all out",
+    "description": "Every gap you leave comes back as a question or a guess. Write down what you need, why, and what done looks like. If they ask twice, fix the page."
+  },
+  "c-to-d/request": {
+    "title": "Getting approval from someone who decides fast",
+    "h1": "Asking someone impatient for approval, when you have the full reasoning ready",
+    "description": "Ask first, then say what it saves, one sentence each. Hold the reasoning until they ask, and if they say no, find out if it's the cost or the timing."
+  },
+  "c-to-i/request": {
+    "title": "Asking someone who says yes on the spot",
+    "h1": "Asking someone who says yes on the spot, when you start with the detail",
+    "description": "Give the big picture and who it helps first. Their yes comes instantly; your thoroughness is what turns it into something real, so bring it out then."
+  },
+  "c-to-s/request": {
+    "title": "Asking someone dependable, when you lead with requirements",
+    "h1": "Asking someone quietly dependable for help, when you lead with requirements",
+    "description": "On its own, your detail can read like a checklist handed down. Say why it matters first, ask how they'd go about it, and give them a day if it can wait."
+  },
+  "c-to-c/request": {
+    "title": "Asking someone as thorough as you for something",
+    "h1": "Asking someone as thorough as you, when you'd both polish the request forever",
+    "description": "Left alone, you could polish this request for a week. Agree what good enough to start looks like, set a time to decide, and lock it by the third round."
+  },
+  "d-to-d/conflict": {
+    "title": "Disagreeing with someone as forceful as you",
+    "h1": "Disagreeing with someone who digs in, when you're just as forceful",
+    "description": "Two forceful people soon care more about winning than the answer. Agree the goal, say their case back before yours, then test both against it."
+  },
+  "d-to-i/conflict": {
+    "title": "Disagreeing with someone who takes it personally",
+    "h1": "Disagreeing with someone who takes it personally, when you come across as blunt",
+    "description": "Start with what you both want, and keep every sentence on the one thing you disagree on. That tells them it isn't personal better than saying so."
+  },
+  "d-to-s/conflict": {
+    "title": "Disagreeing with someone who goes quiet, when you push hard",
+    "h1": "Disagreeing with someone who goes quiet instead of pushing back, when you push hard",
+    "description": "You push, they go quiet, and you leave thinking there was no disagreement. Ask what they'd do if it were their call, then wait."
+  },
+  "d-to-c/conflict": {
+    "title": "Disagreeing with someone who sees every risk",
+    "h1": "Disagreeing with someone who sees every risk, when you want to move fast",
+    "description": "Often it's pace more than substance: you want it done, they want it right. Ask what worries them, write it down, and say plainly when they're right."
+  },
+  "i-to-d/conflict": {
+    "title": "Standing up to someone forceful, when you think out loud",
+    "h1": "Standing up to someone forceful, when you work out your view by talking",
+    "description": "They read thinking aloud and jokes as dodging. Decide your position before you go in, say it in one sentence, back it with a fact, and hold it."
+  },
+  "i-to-i/conflict": {
+    "title": "Disagreeing with someone as expressive as you",
+    "h1": "Disagreeing with someone as expressive as you, without papering over it",
+    "description": "It either heats up or gets papered over with cheerfulness. Name it out loud, and don't leave until you've agreed what changes and who does it."
+  },
+  "i-to-s/conflict": {
+    "title": "Disagreeing with someone who quietly gives way",
+    "h1": "Disagreeing with someone who quietly gives way, when you think out loud",
+    "description": "They can hear each half-formed point as your final word. Say your view once, ask for theirs, then stop talking and watch for a sigh or a pause."
+  },
+  "i-to-c/conflict": {
+    "title": "Disagreeing with someone who argues from data",
+    "h1": "Disagreeing with someone who argues from data, when you argue from stories",
+    "description": "Neither of you feels heard until you argue about the same thing. Hear their whole case, put your evidence beside it, and start where they overlap."
+  },
+  "s-to-d/conflict": {
+    "title": "Standing up to someone who charges into conflict",
+    "h1": "Standing up to someone who charges into conflict, when you'd rather avoid it",
+    "description": "A disagreement you keep to yourself is one they may not know exists. Write your position in one sentence, raise it yourself, and hold it when they push."
+  },
+  "s-to-i/conflict": {
+    "title": "Clearing the air with someone who wants to talk it out",
+    "h1": "Clearing the air with someone who wants to talk it all out, when you stay calm",
+    "description": "Your calm can read as distance. Say how you feel as well as what you think, let them talk, and agree one change before relief carries you both out."
+  },
+  "s-to-s/conflict": {
+    "title": "Raising a disagreement with someone as conflict-shy as you",
+    "h1": "Raising a disagreement with someone as conflict-shy as you",
+    "description": "Two careful people can go months without saying it. Bring one real moment with a day attached, start with it, and wait out the long pause that follows."
+  },
+  "s-to-c/conflict": {
+    "title": "Raising a concern with someone logical and reserved",
+    "h1": "Raising a concern with someone logical and reserved, when you'd rather not make a fuss",
+    "description": "Your concern may not register in the room, so leave a page: what happened, when, and what it cost. They'll often come back once they've reread it."
+  },
+  "c-to-d/conflict": {
+    "title": "Disagreeing with someone who wants it settled now",
+    "h1": "Disagreeing with someone who wants it settled now, when you've spotted a risk",
+    "description": "Say you disagree while you're in the room. Lead with the one risk that worries you most, conclusion first, and keep the reasoning until they ask."
+  },
+  "c-to-i/conflict": {
+    "title": "Disagreeing with someone who argues from feeling",
+    "h1": "Disagreeing with someone who argues from feeling, when you argue with detail",
+    "description": "Ask what worries them before you bring in your analysis, or it turns into two separate conversations. There's usually a concrete concern underneath."
+  },
+  "c-to-s/conflict": {
+    "title": "Checking in with someone who pulls back instead of arguing",
+    "h1": "Checking for a hidden disagreement with someone who pulls back, when you might miss it",
+    "description": "They often disagree by going quiet, and it's easy to miss. If they've been quieter than usual, ask gently, and offer to hear it by message instead."
+  },
+  "c-to-c/conflict": {
+    "title": "Settling a dispute with someone as evidence-driven as you",
+    "h1": "Settling a disagreement with someone as evidence-driven as you",
+    "description": "Left to it, you'll each build a better case for weeks. Agree what evidence would change each mind, set a date to decide, and pick who calls it."
+  },
+  "d-to-d/pitch": {
+    "title": "Pitching to someone as competitive as you",
+    "h1": "Pitching an idea to someone who challenges everything, when you're just as competitive",
+    "description": "Payoff and ask in your first two sentences, then raise the biggest objection yourself. A sharp challenge means they're interested; answer it once."
+  },
+  "d-to-i/pitch": {
+    "title": "Pitching to someone who wants to help shape the idea",
+    "h1": "Pitching to someone who wants to help shape it, when you'd present it finished",
+    "description": "Paint what changes for the team and ask what they'd add while it's still rough. Bring the numbers after, and follow up in writing the next day."
+  },
+  "d-to-s/pitch": {
+    "title": "Pitching a change to someone wary of change",
+    "h1": "Pitching a change to someone wary of change, when your urgency feels like pressure",
+    "description": "Pressure makes people guard what they have. Show what would stay the same, offer a trial you can undo, and ask for the decision after a day or two."
+  },
+  "d-to-c/pitch": {
+    "title": "Pitching to someone who checks every number",
+    "h1": "Pitching an idea to someone who checks every number, when you lead with conviction",
+    "description": "Conviction won't cover the gaps. Send the numbers the day before, bring what could go wrong, and if they find a flaw, don't bluff."
+  },
+  "i-to-d/pitch": {
+    "title": "Pitching to someone who wants the punchline first",
+    "h1": "Pitching an idea to someone who wants the punchline, when you love the story",
+    "description": "Cut it to the idea, what it gets them, and what you need, and know your ask before you walk in. If they turn it down, ask what the deal-breaker is."
+  },
+  "i-to-i/pitch": {
+    "title": "Pitching to someone as full of ideas as you",
+    "h1": "Pitching an idea to someone as full of ideas as you are",
+    "description": "Your shared plan can grow with every idea and never ship. Let them add to it, shrink it back to this week, and decide who owns it before you go."
+  },
+  "i-to-s/pitch": {
+    "title": "Pitching to someone quiet, when your excitement rushes them",
+    "h1": "Pitching an idea to someone patient and quiet, when your excitement can rush them",
+    "description": "Tell them who it helps, then ask who it might be harder on. They usually know where a change will land. Give them time before you ask for a yes."
+  },
+  "i-to-c/pitch": {
+    "title": "Pitching to someone skeptical of hype",
+    "h1": "Pitching an idea to someone skeptical of hype, when you sell with enthusiasm",
+    "description": "Say the idea in a sentence or two, then go straight to the numbers and what could go wrong. Point out the weakest part yourself before they find it."
+  },
+  "s-to-d/pitch": {
+    "title": "Pitching to a decisive person, when you tend to undersell",
+    "h1": "Pitching an idea to someone decisive and busy, when you tend to undersell",
+    "description": "They won't dig for what you leave out. Say the result in your first sentence, even if it feels like boasting, and say it aloud once beforehand."
+  },
+  "s-to-i/pitch": {
+    "title": "Pitching to someone easily excited, when you're low-key",
+    "h1": "Pitching an idea to someone easily excited, when you're the low-key one",
+    "description": "Say up front that you're pitching and what you want from them. Let their enthusiasm build on it, then pin down when they'll do their part."
+  },
+  "s-to-s/pitch": {
+    "title": "Pitching to someone who won't push, when you won't either",
+    "h1": "Pitching an idea to someone who won't push, when you won't either",
+    "description": "Good ideas can die politely between two people who won't push. Ask for their support in so many words, tie it to a date, and ask what they don't like."
+  },
+  "s-to-c/pitch": {
+    "title": "Pitching to someone who wants proof behind the idea",
+    "h1": "Pitching an idea to someone who wants proof, when you just know it's right",
+    "description": "Back it with your two or three strongest facts and say where you're least sure. Naming the weak spot yourself makes the rest easier to believe."
+  },
+  "c-to-d/pitch": {
+    "title": "Pitching to someone who decides fast",
+    "h1": "Pitching an idea to someone who decides fast, when you've done the full analysis",
+    "description": "Pick one option, recommend it, and give the one number that matters. Keep the full analysis in your back pocket and offer it once before you finish."
+  },
+  "c-to-i/pitch": {
+    "title": "Pitching to someone moved by stories, when you have data",
+    "h1": "Pitching an idea to someone moved by stories, when your case is in the data",
+    "description": "Wrap the analysis in a story: what becomes possible and who it helps, by name if you can, then the numbers. Take the ideas they add that fit now."
+  },
+  "c-to-s/pitch": {
+    "title": "Pitching a change to someone who thinks of the people first",
+    "h1": "Pitching a change to someone who thinks of the people it affects, when you lead with data",
+    "description": "Start with what it changes for the people doing the work, then the data. Ask what would worry them; they'll often spot what the analysis missed."
+  },
+  "c-to-c/pitch": {
+    "title": "Pitching to someone who'll check your method",
+    "h1": "Pitching an analysis to someone who'll check your method, when you'd check theirs",
+    "description": "Name the limits of your analysis before they find them, and still end on a clear recommendation. Ask early what result would change their mind."
+  },
+  "d-to-d/difficult_news": {
+    "title": "Breaking bad news to someone who runs as hot as you",
+    "h1": "Breaking bad news to someone who runs hot, when you do too",
+    "description": "News in your first sentence, plan in your second. If it was your call, own it once and move on. When they ask what you do now, the worst is over."
+  },
+  "d-to-i/difficult_news": {
+    "title": "Breaking bad news to someone who feels it out loud",
+    "h1": "Breaking bad news to someone who feels it out loud, when you get straight to it",
+    "description": "Give them one human sentence before the news, then say it plainly. Let them react out loud before you get to the fix."
+  },
+  "d-to-s/difficult_news": {
+    "title": "Breaking bad news to someone who hides how hard it lands",
+    "h1": "Breaking bad news to someone who hides how hard it lands, when you're quick about it",
+    "description": "A calm face often hides how hard it's landing. Say it clearly and gently, then stay, tell them what happens next, and check in the next day."
+  },
+  "d-to-c/difficult_news": {
+    "title": "Breaking bad news to someone who needs exact facts",
+    "h1": "Breaking bad news to someone who needs the facts, when you'd skip to the decision",
+    "description": "Gaps get filled with the worst case. Be exact, say what you don't know yet and when you will, and let their questions run before you push for a decision."
+  },
+  "i-to-d/difficult_news": {
+    "title": "Breaking bad news to someone impatient, when you ease in",
+    "h1": "Breaking bad news to someone impatient, when you'd usually ease into it",
+    "description": "Ease in and they'll lose patience before you get there. Go in with what happened and what you'd do, say both, then stop talking and let them ask."
+  },
+  "i-to-i/difficult_news": {
+    "title": "Breaking bad news to someone as upbeat as you",
+    "h1": "Breaking bad news to someone as upbeat as you, without softening it away",
+    "description": "You'll both want to soften it, and the facts can bend until they're wrong. Write them down first, and say them all before anyone starts cheering up."
+  },
+  "i-to-s/difficult_news": {
+    "title": "Breaking bad news to someone who goes quiet and composed",
+    "h1": "Breaking bad news to someone who goes quiet and composed, when you're expressive",
+    "description": "Be gentler and clearer than usual at once. Keep your own reaction small, say what's changing and what happens next, then let the silence sit."
+  },
+  "i-to-c/difficult_news": {
+    "title": "Breaking bad news to someone who wants the why",
+    "h1": "Breaking bad news to someone who wants the why, when you lead with feelings",
+    "description": "Give them the news before your feelings about it; your care shows in how clear you are. They may look unaffected. Don't take that to mean they are."
+  },
+  "s-to-d/difficult_news": {
+    "title": "Breaking bad news to someone who may get loud",
+    "h1": "Breaking bad news to someone who may get loud, when you'd rather soften it",
+    "description": "Write the news and your next step down beforehand so nerves can't soften them. If they get loud, slow down and keep going. It usually blows over fast."
+  },
+  "s-to-i/difficult_news": {
+    "title": "Breaking bad news to someone who needs to talk it through",
+    "h1": "Breaking bad news to someone who needs to talk it through, when you're the gentle one",
+    "description": "The risk sits at the start: being so gentle it never fully lands. Get the whole news out first, then let them talk as long as they need."
+  },
+  "s-to-s/difficult_news": {
+    "title": "Breaking bad news to someone as gentle as you",
+    "h1": "Breaking bad news to someone as gentle and quiet as you",
+    "description": "Between you, it can get softened until it barely lands, or met with a silence neither of you breaks. Say it early, in plain words, then stay."
+  },
+  "s-to-c/difficult_news": {
+    "title": "Breaking bad news to someone calm and exact",
+    "h1": "Breaking bad news to someone calm and exact, when you feel the pull to soften it",
+    "description": "Lead with what happened and why, with notes to keep the details exact. They can seem detached, so ask once how they're doing, and follow up in writing."
+  },
+  "c-to-d/difficult_news": {
+    "title": "Breaking bad news to someone who wants the fix now",
+    "h1": "Breaking bad news to someone who wants the fix now, when you'd start with the analysis",
+    "description": "Headline first, plan second, analysis held back. They'll likely ask how you fix it within seconds, and if there's anger, it burns out fast."
+  },
+  "c-to-i/difficult_news": {
+    "title": "Breaking bad news to someone who takes it to heart",
+    "h1": "Breaking bad news to someone who takes it to heart, when you lead with the facts",
+    "description": "Say it's hard before you say what it is; one sentence does it. Let them talk it through, and your detail helps once the questions start."
+  },
+  "c-to-s/difficult_news": {
+    "title": "Breaking bad news to someone who worries quietly",
+    "h1": "Breaking bad news to someone who worries quietly, when your delivery is even and factual",
+    "description": "Lead with what answers their first worry: what stays the same, if you're sure, or what happens next. Let your voice be warmer than your notes."
+  },
+  "c-to-c/difficult_news": {
+    "title": "Breaking bad news to someone as analytical as you",
+    "h1": "Breaking bad news to someone as analytical as you, before you both get lost in it",
+    "description": "You'll both want to keep digging. Give the full facts, say once that it's hard, and agree when you'll stop and decide, or split the cause from the fix."
+  }
+}

@@ -1,3 +1,6 @@
+/** All data belongs to one local user; there are no accounts. */
+export const DEFAULT_USER_ID = 'default';
+
 export type DiscType = 'D' | 'I' | 'S' | 'C';
 
 export type SituationType =
@@ -20,6 +23,8 @@ export interface User {
   id: string;
   displayName: string;
   discProfile: DiscProfile | null;
+  /** The style the user picked for themselves before taking the assessment. */
+  selfPick?: DiscType | null;
   createdAt: number;
   updatedAt: number;
 }
@@ -53,16 +58,25 @@ export interface JournalEntry {
   loggedAt: number;
 }
 
+/** A line to say. With `onlyIf`, the reader says it only when that condition is true. */
+export type Opener = string | { line: string; onlyIf: string };
+
 export interface CoachingCard {
   yourType: DiscType;
   theirType: DiscType;
   situation: SituationType;
   approach: string;
-  openWith: string[];
+  openWith: Opener[];
   avoid: string[];
   theirReaction: string;
   ifGoesWrong: string;
   bodyLanguage: string;
+  /** The body-language move for a video call, shown under its own label. */
+  onCall?: string;
+}
+
+export function openerLine(o: Opener): string {
+  return typeof o === 'string' ? o : o.line;
 }
 
 export interface AssessmentQuestion {
@@ -95,4 +109,11 @@ export const SITUATION_LABELS: Record<SituationType, string> = {
 
 export function isSituation(s: string | undefined): s is SituationType {
   return s !== undefined && Object.hasOwn(SITUATION_LABELS, s);
+}
+
+/** The reader's own style for a card: the assessment wins, then their own pick, else unknown. */
+export function resolveYourType(user: Pick<User, 'discProfile' | 'selfPick'>): { type: DiscType; source: 'assessment' | 'pick' } | null {
+  if (user.discProfile) return { type: user.discProfile.primary, source: 'assessment' };
+  if (user.selfPick) return { type: user.selfPick, source: 'pick' };
+  return null;
 }

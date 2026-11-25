@@ -1,23 +1,24 @@
 import { useState, useEffect } from 'preact/hooks';
 import { Assessment } from '../components/assessment.tsx';
 import { DiscWheel } from '../components/disc-wheel.tsx';
-import { getOrCreateUser, getJournalEntries, getJournalCount, getContacts } from '../db/queries.ts';
+import { getOrCreateUser, getJournalEntries, getJournalCount, getContacts, setSelfPick } from '../db/queries.ts';
+import { SelfPick } from '../components/self-pick.tsx';
 import { typeProfiles } from '../data/type-profiles.ts';
-import { calculateInsights } from '../engine/insights.ts';
+import { findPatterns, type NotedMoment, type Patterns } from '../engine/insights.ts';
 import { exportData, downloadJson, importData, clearAllData } from '../lib/storage.ts';
 import { canInstall, isInstalled, triggerInstall, onInstallAvailable } from '../lib/install-prompt.ts';
 import { getOfflineStatus, type OfflineStatus } from '../lib/offline-ready.ts';
-import { DISC_LABELS } from '../engine/types.ts';
-import type { User, DiscProfile, JournalEntry } from '../engine/types.ts';
-import type { InsightsSummary } from '../engine/insights.ts';
+import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
+import { formatRelativeDate, midSentence } from '../lib/format.ts';
+import type { User, DiscProfile, DiscType, JournalEntry } from '../engine/types.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 
 export function Profile() {
-  useDocumentTitle('Profile - ClearTalk');
+  useDocumentTitle('Profile - Cleartalk');
   const [user, setUser] = useState<User | null>(null);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [entryCount, setEntryCount] = useState(0);
-  const [insights, setInsights] = useState<InsightsSummary | null>(null);
+  const [patterns, setPatterns] = useState<Patterns>({ worked: [], change: [], rough: null });
   const [showAssessment, setShowAssessment] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -50,7 +51,7 @@ export function Profile() {
       setUser(u);
       setEntries(e);
       setEntryCount(n);
-      setInsights(calculateInsights(e, c));
+      setPatterns(findPatterns(e, c));
     } catch {
       setError(true);
     } finally {
@@ -61,6 +62,15 @@ export function Profile() {
   function handleAssessmentComplete(profile: DiscProfile) {
     setShowAssessment(false);
     setUser(prev => prev ? { ...prev, discProfile: profile } : prev);
+  }
+
+  async function handleSelfPick(type: DiscType) {
+    try {
+      await setSelfPick(type);
+      setUser(prev => prev ? { ...prev, selfPick: type } : prev);
+    } catch {
+      setError(true);
+    }
   }
 
   function toggleTheme() {
@@ -93,15 +103,23 @@ export function Profile() {
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
+      setImportStatus(null);
       try {
         const text = await file.text();
         const result = await importData(text);
-        setImportStatus(`Imported ${result.contacts} contacts and ${result.entries} journal entries.`);
-        setTimeout(() => setImportStatus(null), 4000);
+        const changed = result.contacts || result.entries;
+        const added = `Added or updated ${result.contacts} ${result.contacts === 1 ? 'person' : 'people'} and ${result.entries} ${result.entries === 1 ? 'conversation' : 'conversations'}.`;
+        setImportStatus(
+          [
+            result.style ? 'Restored your style.' : '',
+            changed ? added : '',
+            !result.style && !changed && !result.skipped ? 'Nothing new in that file. Everything in it is already here.' : '',
+            result.skipped ? `Skipped ${result.skipped} that couldn't be used. Your data is safe.` : '',
+          ].filter(Boolean).join(' '),
+        );
         await loadProfile();
       } catch {
-        setImportStatus('Could not import file. Make sure it is a ClearTalk export.');
-        setTimeout(() => setImportStatus(null), 4000);
+        setImportStatus('Couldn\'t import that file. Your data is safe - make sure it\'s a Cleartalk export.');
       }
     };
     input.click();
@@ -114,7 +132,7 @@ export function Profile() {
       setUser(null);
       setEntries([]);
       setEntryCount(0);
-      setInsights(null);
+      setPatterns({ worked: [], change: [], rough: null });
     } catch {
       setError(true);
     }
@@ -167,7 +185,7 @@ export function Profile() {
             <h4>Under stress</h4>
             <p class="type-default">{primary.underStress}</p>
 
-            <h4>Growth areas</h4>
+            <h4>Things to try</h4>
             <ul>
               {primary.growthAreas.map((g, i) => <li key={i}>{g}</li>)}
             </ul>
@@ -182,9 +200,9 @@ export function Profile() {
       ) : (
         <div class="welcome-block">
           <p class="welcome-text">
-            Everyone has a default way of communicating - patterns
-            you don't notice until someone points them out.
-            A short assessment helps you see yours.
+            {user?.selfPick
+              ? `You picked ${DISC_LABELS[user.selfPick]} for yourself. The assessment checks it with 24 quick choices and replaces the pick once you're done.`
+              : 'Everyone has a default way of communicating. Make 24 quick choices and see which style your answers lean toward.'}
           </p>
           <button class="btn-primary" type="button" onClick={() => setShowAssessment(true)}>
             Take the assessment
@@ -193,54 +211,32 @@ export function Profile() {
         </div>
       )}
 
+      {!profile && user?.selfPick && (
+        <div class="profile-pick">
+          <SelfPick current={user.selfPick} onPick={handleSelfPick} />
+        </div>
+      )}
+
       {/* Patterns */}
       {entries.length > 0 && (
         <div class="patterns-section">
           <h2>Your patterns</h2>
+          <p class="patterns-count">{entryCount} {entryCount === 1 ? 'conversation' : 'conversations'} logged.</p>
 
-          {insights ? (
-            <div class="insights-content">
-              <div class="insights-overview">
-                <div class="insight-stat">
-                  <span class="insight-number">{insights.overallAverage}</span>
-                  <span class="insight-label">average outcome</span>
-                </div>
-                <div class="insight-stat">
-                  <span class="insight-number">{entryCount}</span>
-                  <span class="insight-label">conversations logged</span>
-                </div>
-              </div>
+          {patterns.worked.length > 0 && <NoteList title="What worked" moments={patterns.worked} />}
+          {patterns.change.length > 0 && <NoteList title="What you'd change" moments={patterns.change} />}
 
-              {insights.byType.length > 0 && (
-                <div class="insights-by-type">
-                  {insights.byType.map(stat => (
-                    <div key={stat.theirType} class="insight-type-row">
-                      <span class={`type-dot disc-${stat.theirType.toLowerCase()}`} aria-hidden="true" />
-                      <span class="insight-type-name">{DISC_LABELS[stat.theirType]}</span>
-                      <span class="insight-type-avg">{stat.average}</span>
-                      <span class="insight-type-count">{stat.count} logged</span>
-                      <span class={`insight-trend trend-${stat.trend}`} aria-hidden="true">
-                        {stat.trend === 'improving' ? '\u2191' : stat.trend === 'declining' ? '\u2193' : '\u2192'}
-                      </span>
-                      <span class="sr-only">{stat.trend}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+          {patterns.rough && (
+            <p class="patterns-rough">
+              {patterns.rough.count} recent conversations that went badly were with {DISC_LABELS[patterns.rough.type]} people.
+              Read their card again before the next one.
+            </p>
+          )}
 
-              {insights.tips.length > 0 && (
-                <div class="insights-tips">
-                  <h4>Growth</h4>
-                  <ul>
-                    {insights.tips.map((tip, i) => <li key={i}>{tip}</li>)}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ) : (
+          {patterns.worked.length === 0 && patterns.change.length === 0 && (
             <p class="patterns-empty">
-              Patterns will appear here as you log more conversations.
-              You have {entries.length} of 5 needed.
+              Notes from the conversations that went well and the ones you'd do differently collect
+              here. Ones you rated Okay stay in your Log.
             </p>
           )}
         </div>
@@ -267,7 +263,7 @@ export function Profile() {
           <div class="setting-row">
             <div>
               <span class="setting-label">Offline mode</span>
-              <p class="setting-hint">May be unreliable. Open ClearTalk once while online to refresh.</p>
+              <p class="setting-hint">May be unreliable. Open Cleartalk once while online to refresh.</p>
             </div>
           </div>
         )}
@@ -289,7 +285,7 @@ export function Profile() {
         <div class="setting-row">
           <div>
             <span class="setting-label">Import data</span>
-            <p class="setting-hint">Restore from a ClearTalk export file</p>
+            <p class="setting-hint">Restore from a Cleartalk export file</p>
           </div>
           <button class="btn-secondary btn-sm" type="button" onClick={handleImport}>
             Choose file
@@ -305,8 +301,8 @@ export function Profile() {
           </div>
           {confirmClear ? (
             <div class="confirm-delete-actions">
-              <button class="btn-danger btn-sm" type="button" onClick={handleClearAll}>Confirm</button>
-              <button class="btn-secondary btn-sm" type="button" onClick={() => setConfirmClear(false)}>Cancel</button>
+              <button class="btn-danger btn-sm" type="button" onClick={handleClearAll}>Delete all</button>
+              <button class="btn-secondary btn-sm" type="button" onClick={() => setConfirmClear(false)} autoFocus>Cancel</button>
             </div>
           ) : (
             <button class="btn-ghost-danger btn-sm" type="button" onClick={() => setConfirmClear(true)}>
@@ -318,7 +314,7 @@ export function Profile() {
 
       {/* How it works */}
       <div class="how-it-works">
-        <h2>How ClearTalk works</h2>
+        <h2>How Cleartalk works</h2>
         <div class="how-steps">
           <div class="how-step">
             <span class="how-step-num">1</span>
@@ -337,8 +333,8 @@ export function Profile() {
           <div class="how-step">
             <span class="how-step-num">3</span>
             <div>
-              <h4>Track your growth</h4>
-              <p>Log how conversations go. Over time, you will see which styles you handle well and where to improve.</p>
+              <h4>Log how it went</h4>
+              <p>After a conversation, rate it and add a line. Your last note shows on that person's card next time, and notes from the ones that went well or badly collect here.</p>
             </div>
           </div>
         </div>
@@ -346,10 +342,10 @@ export function Profile() {
 
       {/* About */}
       <div class="about-section">
-        <h2>About ClearTalk</h2>
+        <h2>About Cleartalk</h2>
         <p class="about-text">
-          Know what to say before you say it. ClearTalk coaches you
-          for the person and the moment - so you say the right thing, the right way.
+          Know what to say before you say it. Cleartalk gives you a short card for the
+          person and the conversation, with lines you can say out loud.
         </p>
         <div class="usp-grid">
           <div class="usp-item">
@@ -371,7 +367,7 @@ export function Profile() {
               <line x1="12" y1="16" x2="12" y2="12" />
               <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
-            <p>Grounded in how people actually communicate</p>
+            <p>Not therapy</p>
           </div>
           <div class="usp-item">
             <svg class="usp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -386,10 +382,26 @@ export function Profile() {
         <h2>Privacy</h2>
         <div class="privacy-details">
           <p>All your contacts, assessments, and conversation notes are stored locally on your device in your browser's storage. Nothing is sent to a server.</p>
-          <p>ClearTalk uses Cloudflare Web Analytics for anonymous page-view counts. This does not use cookies, does not collect personal data, and cannot identify you.</p>
+          <p>Cleartalk uses Cloudflare Web Analytics for anonymous page-view counts. This does not use cookies, does not collect personal data, and cannot identify you.</p>
           <p>You can export or delete all your data at any time from the settings above.</p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function NoteList({ title, moments }: { title: string; moments: NotedMoment[] }) {
+  return (
+    <div class="patterns-notes">
+      <h3>{title}</h3>
+      <ul>
+        {moments.map((m, i) => (
+          <li key={i}>
+            <p class="patterns-note">{m.note}</p>
+            <p class="patterns-meta">{m.contactName}, {SITUATION_LABELS[m.situation]}, {midSentence(formatRelativeDate(m.loggedAt))}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

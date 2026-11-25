@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { answerQuestions, waitForCard } from './helpers.ts';
 
 test.describe('Performance', () => {
   test('page loads within 3 seconds', async ({ page }) => {
@@ -42,7 +43,7 @@ test.describe('Performance', () => {
     await page.waitForSelector('h1');
     // Navigate through all tabs
     for (const tab of ['People', 'Log', 'Profile', 'Coach']) {
-      await page.click(`[role="tab"]:has-text("${tab}")`);
+      await page.click(`.tab-item:has-text("${tab}")`);
       await page.waitForSelector('h1');
     }
     expect(rejections).toHaveLength(0);
@@ -56,10 +57,7 @@ test.describe('Performance', () => {
     await page.click('button:has-text("Start with someone")');
     await page.fill('.quicktag-name-input', 'LazyTest');
     await page.click('button:has-text("Next")');
-    for (let i = 0; i < 8; i++) {
-      await page.waitForSelector('.assessment-option');
-      await page.locator('.assessment-option').first().click();
-    }
+    await answerQuestions(page, 8);
 
     // Confirm QuickTag result
     await page.waitForSelector('.quicktag-confirm');
@@ -70,7 +68,7 @@ test.describe('Performance', () => {
     await page.click('.situation-btn:first-child');
 
     // Coaching card should render (chunk loaded successfully)
-    await page.waitForSelector('.coaching-card', { timeout: 5000 });
+    await waitForCard(page);
     await expect(page.locator('.coaching-section').first()).toBeAttached();
   });
 
@@ -90,8 +88,8 @@ test.describe('Performance', () => {
     const res = await request.get('/manifest.webmanifest');
     expect(res.ok()).toBe(true);
     const manifest = await res.json();
-    expect(manifest.name).toBe('ClearTalk');
-    expect(manifest.short_name).toBe('ClearTalk');
+    expect(manifest.name).toBe('Cleartalk');
+    expect(manifest.short_name).toBe('Cleartalk');
     expect(manifest.display).toBe('standalone');
     expect(manifest.icons.length).toBeGreaterThanOrEqual(2);
   });

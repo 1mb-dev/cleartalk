@@ -1,8 +1,8 @@
-# ClearTalk
+# Cleartalk
 
 Know what to say before you say it.
 
-ClearTalk coaches you for the person and the moment - what to say, what to avoid, how to read the room. 80 handcrafted coaching cards across 5 common situations.
+Cleartalk coaches you for the person and the moment - what to say, what to avoid, how to read the room. 80 coaching cards across 5 common situations.
 
 ## How it works
 
@@ -10,9 +10,11 @@ ClearTalk coaches you for the person and the moment - what to say, what to avoid
 2. **Pick a situation** - feedback, request, conflict, pitch, or difficult news
 3. **Get coaching** - approach strategy, opener phrases, pitfalls to avoid, recovery moves
 4. **Log the outcome** - track how conversations go over time
-5. **See patterns** - insights surface what's working and what isn't
+5. **Read your notes** - what worked and what you'd change collect on your Profile
 
-The assessment is opt-in. You get coaching immediately. Taking the 3-minute assessment personalizes the openers and pitfalls to your style.
+The assessment is opt-in. Before your first card you pick which of four styles is closer to you; the 3-minute assessment replaces that pick once you take it.
+
+Each card is also a public page at `/insight/{you}-to-{them}/{situation}/`.
 
 ## Stack
 
@@ -22,7 +24,7 @@ The assessment is opt-in. You get coaching immediately. Taking the 3-minute asse
 - **vite-plugin-pwa** - offline-capable service worker
 - **Cloudflare Pages** - static hosting
 
-All data stays on your device. No accounts, no tracking, no backend.
+All data stays on your device. No accounts, no backend. Cloudflare Web Analytics counts anonymous page views.
 
 ## Development
 

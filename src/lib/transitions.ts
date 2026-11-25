@@ -2,17 +2,18 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+export function focusMainHeading(): void {
+  const heading = document.getElementById('main')?.querySelector('h1');
+  if (heading) {
+    heading.setAttribute('tabindex', '-1');
+    heading.focus({ preventScroll: true });
+  }
+}
+
 function restoreFocus(): void {
   requestAnimationFrame(() => {
-    const main = document.getElementById('main');
-    if (main) {
-      main.scrollTo(0, 0);
-      const heading = main.querySelector('h1');
-      if (heading) {
-        heading.setAttribute('tabindex', '-1');
-        heading.focus({ preventScroll: true });
-      }
-    }
+    document.getElementById('main')?.scrollTo(0, 0);
+    focusMainHeading();
   });
 }
 

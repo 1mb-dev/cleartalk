@@ -1,128 +1,145 @@
 /**
- * Pre-render static HTML pages for each insight route.
- * Crawlers/bots get these HTML files with correct OG meta tags.
- * Human visitors get the SPA (JS takes over and renders the full experience).
- *
- * Generates 80 files: 4 types x 4 types x 5 situations = 80 pages.
- * Output: dist/insight/{pair}/{situation}/index.html
+ * Render each coaching card as a static public page: dist/insight/{pair}/{situation}/index.html.
+ * The page is complete HTML and CSS with no app JavaScript, so readers, link previews and
+ * crawlers all get the full card. Runs after `vite build`; Node strips the TypeScript types
+ * from the imported data files.
  */
 
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { DISC_LABELS } from '../src/engine/types.ts';
+import { STYLE_LINES } from '../src/data/style-lines.ts';
+import { typeset, typesetCard } from '../src/lib/typeset.ts';
+import feedback from '../src/data/coaching-cards/feedback.ts';
+import request from '../src/data/coaching-cards/request.ts';
+import conflict from '../src/data/coaching-cards/conflict.ts';
+import pitch from '../src/data/coaching-cards/pitch.ts';
+import difficultNews from '../src/data/coaching-cards/difficult-news.ts';
 
-const DISC_LABELS = {
-  D: 'Drive',
-  I: 'Influence',
-  S: 'Steady',
-  C: 'Clarity',
-};
-
-const SITUATION_LABELS = {
-  feedback: 'Give Feedback',
-  request: 'Make a Request',
-  conflict: 'Navigate Conflict',
-  pitch: 'Pitch an Idea',
-  difficult_news: 'Deliver Difficult News',
-};
-
-const TYPES = ['d', 'i', 's', 'c'];
-const SITUATIONS = Object.keys(SITUATION_LABELS);
 const BASE_URL = 'https://cleartalk.1mb.dev';
+const BYLINE = "Cleartalk helps you prepare for hard conversations. It isn't therapy.";
+const STYLES = ['D', 'I', 'S', 'C'];
+const EXPECT_CAPTION = 'People don’t always match their style. Go by what you see.';
 
-// Read the built index.html to get the correct asset paths
-const distDir = join(import.meta.dirname, '..', 'dist');
+const root = join(import.meta.dirname, '..');
+const distDir = join(root, 'dist');
+const meta = JSON.parse(readFileSync(join(root, 'src', 'data', 'insight-pages.json'), 'utf-8'));
 const indexHtml = readFileSync(join(distDir, 'index.html'), 'utf-8');
 
-// Extract the script and link tags from the built index.html
-const headMatch = indexHtml.match(/<head>([\s\S]*?)<\/head>/);
-const scriptMatch = indexHtml.match(/<script[^>]*src="[^"]*"[^>]*><\/script>/g);
-const linkMatch = indexHtml.match(/<link[^>]*rel="(?:stylesheet|modulepreload)"[^>]*>/g);
+// Public pages carry the same policy as the app. The CSP is a meta tag (see index.html), so it
+// has to be copied; a page without it runs with no policy at all.
+const csp = indexHtml.match(/<meta http-equiv="Content-Security-Policy"[^>]*>/)?.[0];
+const styles = indexHtml.match(/<link[^>]*rel="stylesheet"[^>]*>/g) ?? [];
+if (!csp || styles.length === 0) {
+  throw new Error('dist/index.html is missing its CSP meta tag or stylesheet; build the app first');
+}
 
-let generated = 0;
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const section = (title, body, extra = '') =>
+  `<section class="coaching-section${extra}">\n          <h2 class="coaching-section-title">${title}</h2>\n          ${body}\n        </section>`;
+const para = (t) => `<p class="coaching-section-body">${esc(t)}</p>`;
 
-for (const yourType of TYPES) {
-  for (const theirType of TYPES) {
-    const pair = `${yourType}-to-${theirType}`;
-    const yourLabel = DISC_LABELS[yourType.toUpperCase()];
-    const theirLabel = DISC_LABELS[theirType.toUpperCase()];
+function opener(o) {
+  if (typeof o === 'string') return `<li>${esc(o)}</li>`;
+  return `<li class="coaching-phrase-conditional"><span class="coaching-only-if">Only if ${esc(o.onlyIf)}</span><span class="coaching-line">${esc(o.line)}</span></li>`;
+}
 
-    for (const situation of SITUATIONS) {
-      const situationLabel = SITUATION_LABELS[situation].toLowerCase();
-      const theirArticle = theirLabel[0] === 'I' ? 'an' : 'a';
-      const yourArticle = yourLabel[0] === 'I' ? 'an' : 'a';
-      const title = `How to ${situationLabel} with ${theirArticle} ${theirLabel} communicator - ClearTalk`;
-      const description = `Coaching for ${yourArticle} ${yourLabel} communicator: how to ${situationLabel} effectively with someone who communicates like ${theirArticle} ${theirLabel}. What to say, what to avoid, and how to read the room.`;
-      const url = `${BASE_URL}/insight/${pair}/${situation}`;
+function page(card, key) {
+  const m = meta[key];
+  if (!m) throw new Error(`src/data/insight-pages.json has no entry for ${key}`);
+  // The page is a directory index; Cloudflare 308s the slash-less form, so link the real address.
+  const url = `${BASE_URL}/insight/${key}/`;
+  const image = `${BASE_URL}/assets/og/${key.replace('/', '_')}.png`;
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: m.h1,
+    description: m.description,
+    inLanguage: 'en',
+    mainEntityOfPage: url,
+    image,
+    author: { '@type': 'Organization', name: 'Cleartalk', url: `${BASE_URL}/` },
+    publisher: { '@type': 'Organization', name: '1mb-dev', url: 'https://github.com/1mb-dev' },
+  }).replace(/</g, '\\u003c');
+  const you = card.yourType;
+  const them = card.theirType;
+  const gloss = you === them
+    ? `Both ${DISC_LABELS[you]}: each of you ${STYLE_LINES[you].other}.`
+    : `${DISC_LABELS[you]}: ${STYLE_LINES[you].other}. ${DISC_LABELS[them]}: ${STYLE_LINES[them].other}.`;
+  const others = STYLES.filter((s) => s !== you).map((s) =>
+    `<li><a href="/insight/${s.toLowerCase()}-to-${them.toLowerCase()}/${card.situation}/"><strong>${DISC_LABELS[s]}</strong>: ${esc(STYLE_LINES[s].self)}</a></li>`);
 
-      const dir = join(distDir, 'insight', pair, situation);
-      mkdirSync(dir, { recursive: true });
-
-      const situationVerb = SITUATION_LABELS[situation].toLowerCase();
-      const jsonLd = JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'HowTo',
-        name: `How to ${situationVerb} with ${theirArticle} ${theirLabel} communicator`,
-        description,
-        step: [
-          { '@type': 'HowToStep', name: 'Understand the approach', text: `Learn how to approach ${situationVerb} with ${theirArticle} ${theirLabel} communication style.` },
-          { '@type': 'HowToStep', name: 'Choose your opening', text: 'Use tailored phrases to start the conversation effectively.' },
-          { '@type': 'HowToStep', name: 'Know what to avoid', text: `Understand the pitfalls when communicating with ${theirArticle} ${theirLabel} style.` },
-        ],
-        tool: { '@type': 'HowToTool', name: 'ClearTalk' },
-      });
-
-      const html = `<!doctype html>
-<html lang="en">
+  return `<!doctype html>
+<html lang="en" class="static-page">
   <head>
     <meta charset="UTF-8" />
+    ${csp}
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#2c2926" />
-    <meta name="description" content="${description}" />
-    <script type="application/ld+json">${jsonLd}</script>
-
-    <meta property="og:title" content="${title}" />
-    <meta property="og:description" content="${description}" />
+    <title>${esc(m.title)}</title>
+    <meta name="description" content="${esc(m.description)}" />
+    <link rel="canonical" href="${url}" />
+    <meta property="og:title" content="${esc(m.title)}" />
+    <meta property="og:description" content="${esc(m.description)}" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="${url}" />
-    <meta property="og:image" content="${BASE_URL}/assets/og/${pair}.png" />
-    <meta property="og:site_name" content="ClearTalk" />
-
+    <meta property="og:image" content="${image}" />
+    <meta property="og:site_name" content="Cleartalk" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="${title}" />
-    <meta name="twitter:description" content="${description}" />
-    <meta name="twitter:image" content="${BASE_URL}/assets/og/${pair}.png" />
-
-    <link rel="canonical" href="${url}" />
-
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="ClearTalk" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
+    <meta name="twitter:title" content="${esc(m.title)}" />
+    <meta name="twitter:description" content="${esc(m.description)}" />
+    <meta name="twitter:image" content="${image}" />
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-
     <link rel="preload" href="/assets/fonts/fraunces-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/assets/fonts/source-sans-3-variable.woff2" as="font" type="font/woff2" crossorigin />
-
-    ${(linkMatch ?? []).join('\n    ')}
-
-    <title>${title}</title>
+    ${styles.join('\n    ')}
+    <script type="application/ld+json">${jsonLd}</script>
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
-    <div id="app"></div>
-    ${(scriptMatch ?? []).join('\n    ')}
+    <main id="main" class="route-shell insight-page">
+      <a class="insight-brand" href="/">
+        <img src="/favicon.svg" width="24" height="24" alt="" />
+        <span class="insight-brand-name">Cleartalk</span>
+      </a>
+      <article class="coaching-card">
+        <header class="insight-header">
+          <h1>${esc(typeset(m.h1))}</h1>
+          <div class="coaching-card-header">
+            <span class="type-badge disc-${you.toLowerCase()}">You: ${DISC_LABELS[you]}</span>
+            <span class="coaching-arrow" aria-hidden="true">&rarr;</span>
+            <span class="type-badge disc-${them.toLowerCase()}">Them: ${DISC_LABELS[them]}</span>
+          </div>
+          <p class="insight-gloss">${gloss}</p>
+        </header>
+        ${section('Approach', para(card.approach))}
+        ${section('Open with', `<ul class="coaching-phrases">${card.openWith.map(opener).join('')}</ul>`)}
+        ${section('Avoid', `<ul class="coaching-phrases">${card.avoid.map((a) => `<li>${esc(a)}</li>`).join('')}</ul>`, ' coaching-warning')}
+        ${section('Expect this', `<p class="coaching-caption">${EXPECT_CAPTION}</p>\n          ${para(card.theirReaction)}`)}
+        ${section('If it goes sideways', para(card.ifGoesWrong))}
+        ${section('Body language', para(card.bodyLanguage) + (card.onCall ? `\n          <p class="coaching-section-body coaching-on-call"><span class="coaching-on-call-label">On a call</span> ${esc(card.onCall)}</p>` : ''))}
+      </article>
+      <footer class="insight-cta">
+        <p class="insight-cta-text">The same conversation, if one of these sounds more like you:</p>
+        <ul class="insight-siblings" role="list">${others.join('')}</ul>
+        <p class="insight-byline">${BYLINE}</p>
+        <a class="btn-primary" href="/">Try Cleartalk - free, no sign-up</a>
+      </footer>
+    </main>
   </body>
 </html>
 `;
-
-      writeFileSync(join(dir, 'index.html'), html);
-      generated++;
-    }
-  }
 }
 
+let generated = 0;
+for (const card of [...feedback, ...request, ...conflict, ...pitch, ...difficultNews]) {
+  const key = `${card.yourType.toLowerCase()}-to-${card.theirType.toLowerCase()}/${card.situation}`;
+  const dir = join(distDir, 'insight', key);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, 'index.html'), page(typesetCard(card), key));
+  generated++;
+}
+if (generated !== 80) throw new Error(`expected 80 insight pages, generated ${generated}`);
 console.log(`Generated ${generated} insight pages in dist/insight/`);

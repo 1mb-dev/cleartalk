@@ -1,4 +1,4 @@
-import { test, expect, devices } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 const viewports = {
   'phone-375': { width: 375, height: 812 },
@@ -51,7 +51,7 @@ for (const [name, viewport] of Object.entries(viewports)) {
     test('insight page', async ({ browser }) => {
       const ctx = await browser.newContext({ viewport });
       const page = await ctx.newPage();
-      await page.goto('/insight/d-to-s/feedback');
+      await page.goto('/insight/d-to-s/feedback/');
       await page.waitForSelector('h1');
       await page.screenshot({ path: `test-results/visual-${name}-insight.png`, fullPage: false });
       await ctx.close();

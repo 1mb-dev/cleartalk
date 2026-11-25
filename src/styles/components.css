@@ -373,9 +373,12 @@
   transition: border-color var(--transition-fast), background var(--transition-fast);
 }
 
-.assessment-option:hover {
-  border-color: var(--color-accent);
-  background: var(--color-accent-subtle);
+/* A touch screen keeps :hover on the last tapped spot, where the next question's option renders */
+@media (hover: hover) {
+  .assessment-option:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-subtle);
+  }
 }
 
 .assessment-option:active {
@@ -532,26 +535,28 @@
 .coaching-card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-8);
+}
+
+.coaching-card-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 .coaching-card-header {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   flex-wrap: wrap;
-  padding: var(--space-4);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
 }
 
 .type-badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--font-size-base);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-sm);
   font-weight: 600;
   border-radius: var(--radius-full);
 }
@@ -569,18 +574,19 @@
 .coaching-section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 6px;
 }
 
 .coaching-section-title {
   font-family: var(--font-display);
-  font-size: var(--font-size-sm);
+  font-size: 1.0625rem;
   font-weight: 600;
   color: var(--color-text);
   letter-spacing: 0;
 }
 
 .coaching-section-body {
+  max-width: 65ch;
   font-size: var(--font-size-base);
   line-height: var(--line-height-body);
 }
@@ -589,22 +595,75 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-4);
 }
 
+/* Openers are speech: set in the display face with hanging quotes. Fraunces ships roman only. */
 .coaching-phrases li {
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-accent-subtle);
-  border-left: 3px solid var(--color-accent);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0 0 0 var(--space-4);
+  border-left: 2px solid var(--color-border);
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.coaching-phrases li::before {
+  content: "\201C";
+  margin-left: -0.45em;
+}
+
+.coaching-phrases li::after {
+  content: "\201D";
+}
+
+/* The condition sits above the quote in the UI face; the quote marks wrap only the speech */
+.coaching-phrase-conditional {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.coaching-phrases .coaching-phrase-conditional::before,
+.coaching-phrases .coaching-phrase-conditional::after {
+  content: none;
+}
+
+.coaching-line::before {
+  content: "\201C";
+  margin-left: -0.45em;
+}
+
+.coaching-line::after {
+  content: "\201D";
+}
+
+.coaching-only-if {
+  font-family: var(--font-ui);
   font-size: var(--font-size-sm);
-  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.coaching-caption,
+.coaching-on-call-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.coaching-on-call-label {
+  font-weight: 600;
+}
+
+/* Avoid items are advice, not speech */
+.coaching-warning .coaching-phrases li {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-base);
   line-height: var(--line-height-body);
 }
 
-.coaching-warning .coaching-phrases li {
-  background: var(--color-disc-d-subtle);
-  border-left-color: var(--color-disc-d);
+.coaching-warning .coaching-phrases li::before,
+.coaching-warning .coaching-phrases li::after {
+  content: none;
 }
 
 .share-btn {
@@ -626,17 +685,51 @@
   border-color: var(--color-accent);
 }
 
-.coaching-locked {
-  opacity: 0.7;
+.coaching-last-note {
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--color-border);
 }
 
-.coaching-locked-hint {
+.coaching-last-note-meta {
   font-size: var(--font-size-sm);
-  color: var(--color-text);
-  font-style: italic;
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-accent-subtle);
-  border-radius: var(--radius);
+  color: var(--color-text-muted);
+}
+
+.coaching-pick-note {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* Self-pick: the reader's own style before any assessment */
+.self-pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.self-pick-hint {
+  color: var(--color-text-muted);
+}
+
+.self-pick-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.self-pick-option {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.self-pick-name {
+  font-weight: 600;
+}
+
+.profile-pick {
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--color-border);
 }
 
 /* Coach-to-log bridge */
@@ -675,6 +768,18 @@
   color: var(--color-text-subtle);
   padding: var(--space-8) 0;
   text-align: center;
+}
+
+/* visibility, not opacity: a hidden button must not take focus or clicks before it shows.
+   Reduced motion zeroes durations, not delays, so the hint still appears. */
+.loading-stuck {
+  visibility: hidden;
+  text-align: center;
+  animation: loading-stuck 0s 6s forwards;
+}
+
+@keyframes loading-stuck {
+  to { visibility: visible; }
 }
 
 /* DISC type dots */
@@ -792,6 +897,9 @@
 }
 
 .link-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
   color: var(--color-accent);
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -955,6 +1063,7 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   min-height: var(--touch-min);
+  min-width: var(--touch-min);
 }
 
 .btn-ghost:hover {
@@ -1196,6 +1305,11 @@
   transition: all var(--transition-fast);
 }
 
+.outcome-option input:focus-visible + .outcome-circle {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .outcome-option.selected .outcome-circle {
   border-color: transparent;
   transform: scale(1.08);
@@ -1303,103 +1417,39 @@
   color: var(--color-text-muted);
 }
 
-/* Insights */
-.insights-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-}
-
-.insights-overview {
-  display: flex;
-  gap: var(--space-6);
-}
-
-.insight-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.insight-number {
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.insight-label {
-  font-size: var(--font-size-xs);
+.patterns-count,
+.patterns-meta {
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 
-.insights-by-type {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.insight-type-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) 0;
-}
-
-.insight-type-name {
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-  min-width: 70px;
-}
-
-.insight-type-avg {
-  font-weight: 700;
-  font-size: var(--font-size-sm);
-  font-variant-numeric: tabular-nums;
-  min-width: 24px;
-}
-
-.insight-type-count {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  flex: 1;
-}
-
-.insight-trend {
-  font-size: var(--font-size-base);
-  flex-shrink: 0;
-}
-
-.trend-improving { color: var(--color-outcome-5); }
-.trend-stable { color: var(--color-text-subtle); }
-.trend-declining { color: var(--color-outcome-1); }
-
-.insights-tips {
+.patterns-notes {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
 }
 
-.insights-tips h4 {
-  font-size: var(--font-size-xs);
+.patterns-notes h3 {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
   font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
-.insights-tips ul {
+.patterns-notes ul {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 
-.insights-tips li {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-body);
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-accent-subtle);
-  border-radius: var(--radius);
+.patterns-notes li {
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--color-border);
+}
+
+.patterns-note {
+  font-family: var(--font-display);
+  line-height: 1.45;
 }
 
 .profile-settings {
@@ -1460,7 +1510,9 @@
 .btn-ghost-danger {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: var(--touch-min);
+  min-width: var(--touch-min);
   padding: var(--space-2) 0;
   font-size: var(--font-size-sm);
   color: var(--color-error);
@@ -1473,10 +1525,11 @@
   min-height: var(--touch-min);
   padding: var(--space-3) var(--space-6);
   background: var(--color-error);
-  color: #fff;
+  color: var(--color-bg);
   font-weight: 600;
   font-size: var(--font-size-base);
   border-radius: var(--radius);
+  white-space: nowrap;
 }
 
 .confirm-delete {
@@ -1508,7 +1561,31 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  min-height: var(--touch-min);
   padding-bottom: var(--space-2);
+}
+
+/* Static public pages read as a document: the app shell's fixed-height frame does not apply */
+html.static-page,
+html.static-page body,
+html.static-page .insight-page {
+  height: auto;
+  overflow: visible;
+}
+
+.insight-brand {
+  color: inherit;
+}
+
+.insight-brand,
+.insight-cta .btn-primary {
+  text-decoration: none;
+}
+
+.insight-gloss,
+.insight-byline {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
 }
 
 .insight-brand-name {
@@ -1537,6 +1614,25 @@
 .insight-cta-text {
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
+}
+
+.insight-siblings {
+  list-style: none;
+  padding: 0;
+}
+
+/* The whole row is the link, so a wrapped line keeps its line height and the target its size */
+.insight-siblings a {
+  display: block;
+  padding-block: 10px;
+  line-height: var(--line-height-body);
+  color: inherit;
+  text-decoration: none;
+}
+
+.insight-siblings strong {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Error boundary */
@@ -1615,7 +1711,7 @@
   }
 
   .coaching-card {
-    gap: var(--space-6);
+    gap: var(--space-10);
   }
 
 }
@@ -1632,10 +1728,6 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  .insights-overview {
-    gap: var(--space-8);
-  }
-
   .log-history .journal-list {
     max-width: 560px;
   }
@@ -1647,13 +1739,17 @@
     --max-width: 720px;
   }
 
-  .coaching-card-header {
-    padding: var(--space-5) var(--space-6);
+  .coaching-section-title {
+    font-size: 1.1875rem;
   }
 
   .coaching-section-body {
     font-size: var(--font-size-lg);
     line-height: 1.6;
+  }
+
+  .coaching-phrases li {
+    font-size: var(--font-size-lg);
   }
 
   .welcome-text {

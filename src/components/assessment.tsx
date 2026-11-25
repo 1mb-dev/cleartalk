@@ -4,6 +4,7 @@ import { scoreAssessment } from '../engine/assessment.ts';
 import { DiscWheel } from './disc-wheel.tsx';
 import { typeProfiles } from '../data/type-profiles.ts';
 import { saveAssessment, updateUserProfile, getOrCreateUser } from '../db/queries.ts';
+import { useAnswerGuard } from '../lib/use-answer-guard.ts';
 import type { DiscProfile } from '../engine/types.ts';
 
 interface AssessmentProps {
@@ -17,12 +18,14 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
   const [result, setResult] = useState<DiscProfile | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const acceptAnswer = useAnswerGuard();
 
   const total = questions.length;
   const current = questions[step];
   const progress = step / total;
 
   function selectAnswer(choice: 'a' | 'b') {
+    if (!acceptAnswer()) return;
     const updated = { ...answers, [current.id]: choice };
     setAnswers(updated);
 
@@ -80,7 +83,7 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
             {primary.blindSpots.map((b, i) => <li key={i}>{b}</li>)}
           </ul>
 
-          <h4>Growth areas</h4>
+          <h4>Things to try</h4>
           <ul>
             {primary.growthAreas.map((g, i) => <li key={i}>{g}</li>)}
           </ul>
@@ -88,7 +91,7 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
 
         {saveError && (
           <p class="error-inline" role="alert">
-            Could not save your results. Check that your browser allows storage and try again.
+            Couldn't save your results. Your data is safe - check that your browser allows storage, then try again.
           </p>
         )}
 

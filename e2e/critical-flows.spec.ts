@@ -1,14 +1,12 @@
 import { test, expect, type Page } from '@playwright/test';
+import { answerQuestions, waitForCard } from './helpers.ts';
 
 /** Add a contact via QuickTag wizard: name entry, 8 questions, confirm, save */
 async function addContact(page: Page, name: string) {
   await page.click('button:has-text("Start with someone")');
   await page.fill('.quicktag-name-input', name);
   await page.click('button:has-text("Next")');
-  for (let i = 0; i < 8; i++) {
-    await page.waitForSelector('.assessment-option');
-    await page.locator('.assessment-option').first().click();
-  }
+  await answerQuestions(page, 8);
   await page.waitForSelector('.quicktag-confirm');
   await page.click('.quicktag-confirm button:has-text("Save")');
 }
@@ -24,9 +22,223 @@ test.describe('Critical User Flows', () => {
 
     await page.click('.situation-btn:first-child');
 
-    await page.waitForSelector('.coaching-card');
+    await waitForCard(page);
     await expect(page.locator('.coaching-section-title').first()).toBeAttached();
     await expect(page.locator('.coaching-section-body').first()).toBeAttached();
+  });
+
+  test('first card asks the reader\'s style, then shows the whole card for that pair', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'PickTest');
+    await page.waitForSelector('.situation-btn');
+    await page.click('.situation-btn:first-child');
+
+    await expect(page.locator('.self-pick h2')).toHaveText('Which is closer to you?');
+    await page.click('.self-pick-option:has-text("Clarity")');
+
+    await expect(page.locator('.coaching-card .type-badge').first()).toHaveText('You: Clarity');
+    await expect(page.locator('.coaching-pick-note')).toContainText('Based on the style you picked');
+    const sections = await page.locator('.coaching-section-title').allTextContents();
+    expect(sections).toEqual(expect.arrayContaining(['Open with', 'Avoid']));
+
+    // The pick is remembered: the next card opens straight away.
+    await page.click('.back-link');
+    await page.click('.situation-btn:nth-child(2)');
+    await expect(page.locator('.coaching-card .type-badge').first()).toHaveText('You: Clarity');
+    await expect(page.locator('.self-pick')).toHaveCount(0);
+  });
+
+  test('a style picked on the first card can be changed on Profile', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'Repick');
+    await page.waitForSelector('.situation-btn');
+    await page.click('.situation-btn:first-child');
+    await page.click('.self-pick-option:has-text("Clarity")');
+    await expect(page.locator('.coaching-card .type-badge').first()).toHaveText('You: Clarity');
+
+    await page.click('.coaching-pick-note .link-btn');
+    await expect(page.locator('.self-pick-option[aria-pressed="true"]')).toContainText('Clarity');
+    await page.click('.self-pick-option:has-text("Steady")');
+    await expect(page.locator('.self-pick-option[aria-pressed="true"]')).toContainText('Steady');
+    await expect(page.locator('.welcome-text')).toContainText('You picked Steady for yourself.');
+
+    await page.goBack();
+    await expect(page.locator('.coaching-card .type-badge').first()).toHaveText('You: Steady');
+  });
+
+  test('a double tap answers one question, not two', async ({ page }) => {
+    await page.goto('/');
+    await page.click('button:has-text("Start with someone")');
+    await page.fill('.quicktag-name-input', 'DoubleTap');
+    await page.click('button:has-text("Next")');
+    await expect(page.locator('.assessment-count')).toHaveText('1/8');
+
+    // The second tap lands on the next question's option, well inside a double tap's interval.
+    const option = page.locator('.assessment-option').first();
+    await option.click();
+    await option.click();
+    await page.waitForTimeout(300);
+    await expect(page.locator('.assessment-count')).toHaveText('2/8');
+  });
+
+  test('the first card takes focus to its heading', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'FocusTest');
+    await page.waitForSelector('.situation-btn');
+
+    await page.click('.situation-btn:first-child');
+    await expect(page.locator('.self-pick')).toBeVisible();
+    await expect(page.locator('#main h1')).toBeFocused();
+
+    await page.click('.self-pick-option:has-text("Steady")');
+    await expect(page.locator('.coaching-card')).toBeVisible();
+    await expect(page.locator('#main h1')).toBeFocused();
+  });
+
+  test('a new coach route shows Loading, not the previous route\'s data', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'StaleTest');
+    await page.waitForSelector('.situation-btn');
+
+    // A one-frame flash of the style question, then Loading, made waitForCard skip its click.
+    await page.evaluate(() => {
+      const w = window as unknown as { states: string[] };
+      w.states = [];
+      new MutationObserver(() => {
+        const s = document.querySelector('.self-pick') ? 'pick' : document.querySelector('.loading-text') ? 'loading' : 'other';
+        if (w.states.at(-1) !== s) w.states.push(s);
+      }).observe(document.body, { childList: true, subtree: true });
+    });
+    await page.click('.situation-btn:first-child');
+    await page.waitForFunction(() => {
+      const states = (window as unknown as { states: string[] }).states;
+      return states.at(-1) === 'pick' && states.includes('loading');
+    });
+    const states = await page.evaluate(() => (window as unknown as { states: string[] }).states);
+    expect(states.filter(s => s !== 'other')).toEqual(['loading', 'pick']);
+  });
+
+  test('a failed load stays on its own route', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'FailTest');
+    await page.waitForSelector('.situation-btn');
+
+    // Fail the next load's user read, then let reads work again.
+    await page.evaluate(() => {
+      const w = window as unknown as { realGet: typeof IDBObjectStore.prototype.get };
+      w.realGet = IDBObjectStore.prototype.get;
+      IDBObjectStore.prototype.get = () => { throw new Error('test: read failed'); };
+    });
+    await page.click('.situation-btn:first-child');
+    await expect(page.locator('.welcome-text')).toContainText("Couldn't load your people.");
+    // Look at the screen after the new route renders and before its load starts.
+    await page.evaluate(() => {
+      const w = window as unknown as { realGet: typeof IDBObjectStore.prototype.get; errorAfterNav?: boolean };
+      IDBObjectStore.prototype.get = w.realGet;
+      const push = history.pushState;
+      history.pushState = function (...args: Parameters<History['pushState']>) {
+        push.apply(this, args);
+        setTimeout(() => { w.errorAfterNav = !!document.body.textContent?.includes("Couldn't load your people."); });
+      };
+    });
+
+    await page.click('.tab-item:has-text("Coach")');
+    await expect(page.locator('.contact-pick-card:has-text("FailTest")')).toBeVisible();
+    expect(await page.evaluate(() => (window as unknown as { errorAfterNav?: boolean }).errorAfterNav)).toBe(false);
+  });
+
+  test('card shows the last note logged about this person', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'NoteTest');
+    await page.click('.situation-btn:first-child');
+    await waitForCard(page);
+    await expect(page.locator('.coaching-last-note')).toHaveCount(0);
+
+    await page.click('button:has-text("Log how it went")');
+    await page.locator('.outcome-option').nth(3).click();
+    await page.fill('#log-note', 'Went better when I asked first.');
+    await page.click('button:has-text("Log it")');
+    await page.waitForSelector('text=Saved');
+
+    await page.click('.tab-item:has-text("Coach")');
+    await page.click('.contact-pick-card:has-text("NoteTest")');
+    await page.click('.situation-btn:nth-child(2)');
+    await waitForCard(page);
+    await expect(page.locator('.coaching-last-note .coaching-section-body')).toHaveText('Went better when I asked first.');
+    await expect(page.locator('.coaching-last-note-meta')).toHaveText('Give Feedback, today');
+
+    // Rated 4, so Profile lists it under what worked, in the reader's own words.
+    await page.click('.tab-item:has-text("Profile")');
+    await expect(page.locator('.patterns-notes h3')).toHaveText(['What worked']);
+    await expect(page.locator('.patterns-note')).toHaveText(['Went better when I asked first.']);
+  });
+
+  test('import merges: adds new people, keeps what is already here, reports skips', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'Kept');
+
+    const profile = { d: 70, i: 20, s: 30, c: 40, primary: 'D', secondary: 'C' };
+    const file = {
+      users: [],
+      assessments: [],
+      contacts: [
+        { id: 'imp-1', userId: 'default', name: 'Imported', discProfile: profile, confidence: 'high', notes: '', createdAt: 1, updatedAt: 2 },
+        { id: 'bad', name: 'No profile' },
+      ],
+      journal: [
+        { id: 'j-1', userId: 'default', contactId: 'imp-1', situationType: 'feedback', outcome: 4, note: 'From the file', loggedAt: 3 },
+        { id: 'j-2', userId: 'default', contactId: 'nobody', situationType: 'feedback', outcome: 4, note: '', loggedAt: 3 },
+      ],
+      exportedAt: '2026-11-25T00:00:00.000Z',
+    };
+
+    await page.click('.tab-item:has-text("Profile")');
+    const chooser = page.waitForEvent('filechooser');
+    await page.click('button:has-text("Choose file")');
+    await (await chooser).setFiles({ name: 'export.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(file)) });
+    await expect(page.locator('.setting-status')).toHaveText(
+      "Added or updated 1 person and 1 conversation. Skipped 2 that couldn't be used. Your data is safe.",
+    );
+
+    // The same records again change nothing, and the message says so instead of counting zeros.
+    const again = { ...file, contacts: file.contacts.slice(0, 1), journal: file.journal.slice(0, 1) };
+    const chooser2 = page.waitForEvent('filechooser');
+    await page.click('button:has-text("Choose file")');
+    await (await chooser2).setFiles({ name: 'export.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(again)) });
+    await expect(page.locator('.setting-status')).toHaveText('Nothing new in that file. Everything in it is already here.');
+
+    await page.click('.tab-item:has-text("People")');
+    await expect(page.locator('.people-card')).toHaveCount(2);
+    await expect(page.locator('.people-card:has-text("Kept")')).toBeVisible();
+    await expect(page.locator('.people-card:has-text("Imported")')).toBeVisible();
+  });
+
+  test('import on a new device restores the reader\'s style', async ({ page }) => {
+    // Opening Profile first stores a blank user that is newer than any export.
+    await page.goto('/profile');
+    await expect(page.locator('button:has-text("Choose file")')).toBeVisible();
+    await expect(page.locator('.disc-wheel-container')).toHaveCount(0);
+
+    const profile = { d: 30, i: 40, s: 80, c: 50, primary: 'S', secondary: 'C' };
+    const file = {
+      users: [{ id: 'default', displayName: '', discProfile: profile, createdAt: 1, updatedAt: 2 }],
+      assessments: [{ id: 'as-1', userId: 'default', answers: {}, result: profile, takenAt: 2 }],
+      contacts: [],
+      journal: [],
+      exportedAt: '2026-11-25T00:00:00.000Z',
+    };
+    const chooser = page.waitForEvent('filechooser');
+    await page.click('button:has-text("Choose file")');
+    await (await chooser).setFiles({ name: 'export.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(file)) });
+    await expect(page.locator('.setting-status')).toHaveText('Restored your style.');
+    await expect(page.locator('.disc-wheel-container')).toBeVisible();
   });
 
   test('coaching card has all sections', async ({ page }) => {
@@ -36,7 +248,7 @@ test.describe('Critical User Flows', () => {
 
     await page.waitForSelector('.situation-btn');
     await page.click('.situation-btn:first-child');
-    await page.waitForSelector('.coaching-card');
+    await waitForCard(page);
 
     const sections = await page.locator('.coaching-section-title').allTextContents();
     expect(sections).toContain('Approach');
@@ -50,7 +262,7 @@ test.describe('Critical User Flows', () => {
 
     await page.waitForSelector('.situation-btn');
     await page.click('.situation-btn:first-child');
-    await page.waitForSelector('.coaching-card');
+    await waitForCard(page);
 
     await page.click('button:has-text("Log how it went")');
     await page.waitForSelector('#log-contact');
@@ -66,7 +278,7 @@ test.describe('Critical User Flows', () => {
     await addContact(page, 'LogTest');
 
     await page.waitForSelector('.situation-btn');
-    await page.click('[role="tab"]:has-text("Log")');
+    await page.click('.tab-item:has-text("Log")');
     await page.waitForSelector('#log-contact');
 
     await page.selectOption('#log-contact', { index: 1 });
@@ -74,7 +286,7 @@ test.describe('Critical User Flows', () => {
     await page.locator('.outcome-option').nth(3).click();
 
     await page.click('button:has-text("Log it")');
-    await expect(page.locator('button[type="submit"] span')).toContainText('Saved!');
+    await expect(page.locator('button[type="submit"] span')).toContainText('Saved');
   });
 
   test('contact appears in People tab after creation', async ({ page }) => {
@@ -83,25 +295,48 @@ test.describe('Critical User Flows', () => {
     await addContact(page, 'PeopleCheck');
 
     await page.waitForSelector('.situation-btn');
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
 
     await expect(page.locator('.people-card-name')).toContainText('PeopleCheck');
   });
 
-  test('contact detail page shows DISC wheel and profile', async ({ page }) => {
+  test('contact detail page names the style in words, with no wheel', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('h1');
     await addContact(page, 'DetailTest');
 
     await page.waitForSelector('.situation-btn');
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
     await page.click('.people-card');
 
-    await page.waitForSelector('.disc-wheel-container');
     await expect(page.locator('h1')).toContainText('DetailTest');
+    await expect(page.locator('.coach-subtitle')).toContainText('Mostly');
     await expect(page.locator('.type-summary')).toBeAttached();
+    await expect(page.locator('.disc-wheel-container')).toHaveCount(0);
+  });
+
+  test('small text buttons still get a full touch target', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'TargetTest');
+    await page.waitForSelector('.situation-btn');
+    await page.click('.tab-item:has-text("People")');
+    await page.click('.people-card');
+    const edit = await page.locator('button:has-text("Edit")').boundingBox();
+    expect(edit?.width).toBeGreaterThanOrEqual(44);
+
+    await page.click('.tab-item:has-text("Profile")');
+    const clear = await page.locator('button:has-text("Clear")').boundingBox();
+    expect(clear?.width).toBeGreaterThanOrEqual(44);
+  });
+
+  test('clearing all data names what it does and starts on Cancel', async ({ page }) => {
+    await page.goto('/profile');
+    await page.click('button:has-text("Clear")');
+    await expect(page.locator('.confirm-delete-actions .btn-danger')).toHaveText('Delete all');
+    await expect(page.locator('.confirm-delete-actions button:has-text("Cancel")')).toBeFocused();
   });
 
   test('contact can be renamed', async ({ page }) => {
@@ -110,7 +345,7 @@ test.describe('Critical User Flows', () => {
     await addContact(page, 'OldName');
 
     await page.waitForSelector('.situation-btn');
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
     await page.click('.people-card');
 
@@ -130,7 +365,7 @@ test.describe('Critical User Flows', () => {
     await addContact(page, 'DeleteMe');
 
     await page.waitForSelector('.situation-btn');
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
     await page.click('.people-card');
 
@@ -143,21 +378,93 @@ test.describe('Critical User Flows', () => {
   });
 
   test('insight page renders for valid pair', async ({ page }) => {
-    await page.goto('/insight/d-to-s/feedback');
-    await page.waitForSelector('h1', { timeout: 10000 });
-    await expect(page.locator('h1')).toContainText('Steady');
+    await page.goto('/insight/d-to-s/feedback/');
+    await expect(page.locator('.type-badge').nth(1)).toHaveText('Them: Steady');
     await expect(page.locator('.coaching-section').first()).toBeAttached();
   });
 
-  test('insight page shows error for invalid pair', async ({ page }) => {
+  test('insight page is the whole card without JavaScript', async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto('/insight/s-to-d/difficult_news/');
+    await expect(page.locator('article h1')).not.toBeEmpty();
+    await expect(page.locator('.coaching-section-title')).toHaveText([
+      'Approach', 'Open with', 'Avoid', 'Expect this', 'If it goes sideways', 'Body language',
+    ]);
+    expect(await page.locator('.coaching-phrases').first().locator('li').count()).toBeGreaterThan(1);
+    await expect(page.locator('.coaching-on-call-label')).toHaveText('On a call');
+    await expect(page.locator('.insight-byline')).toContainText("It isn't therapy.");
+    // The footer is the sibling links, the byline and the button; no closing pitch paragraph.
+    await expect(page.locator('.insight-cta > p')).toHaveText([
+      'The same conversation, if one of these sounds more like you:',
+      "Cleartalk helps you prepare for hard conversations. It isn't therapy.",
+    ]);
+    await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveCount(1);
+    await expect(page.locator('script[src]')).toHaveCount(0);
+    await context.close();
+  });
+
+  test('same-style insight page describes the style once and links the other three', async ({ page }) => {
+    await page.goto('/insight/d-to-d/feedback/');
+    await expect(page.locator('.insight-gloss')).toHaveText('Both Drive: each of you gets to the point and decides fast.');
+    const links = page.locator('.insight-cta a:not(.btn-primary)');
+    await expect(links.locator('strong')).toHaveText(['Influence', 'Steady', 'Clarity']);
+    await links.nth(1).click();
+    await expect(page).toHaveURL(/\/insight\/s-to-d\/feedback\/$/);
+    await expect(page.locator('.type-badge').first()).toHaveText('You: Steady');
+  });
+
+  test('insight page shows not found for an invalid pair', async ({ page }) => {
     await page.goto('/insight/x-to-y/invalid');
-    await page.waitForSelector('h1');
-    await expect(page.locator('h1')).toContainText('not found');
+    await expect(page.locator('h1')).toContainText(/not found/i);
   });
 
   test('insight page has main landmark', async ({ page }) => {
-    await page.goto('/insight/d-to-i/conflict');
+    await page.goto('/insight/d-to-i/conflict/');
     await page.waitForSelector('#main');
     await expect(page.locator('#main')).toBeAttached();
+  });
+});
+
+// A load that never settles must still leave the reader a way out. The service worker is blocked
+// so page.route sees the card chunk request.
+test.describe('A load that never settles', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  test('shows the reload hint while the card script hangs, and the card when it lands', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'HangImport');
+    await page.waitForSelector('.situation-btn');
+    // Hold the card chunk; a held request can't be reloaded past here, so the reload itself is
+    // covered by the database case below.
+    let release: () => void = () => {};
+    await page.route(/\/assets\/feedback-[^/]*\.js$/, (route) => { release = () => { void route.continue(); }; });
+    await page.click('.situation-btn:first-child');
+    await page.click('.self-pick-option:has-text("Clarity")');
+
+    const hint = page.locator('.loading-stuck');
+    await expect(page.locator('.loading-text')).toBeVisible();
+    await expect(hint.getByRole('button', { name: 'Reload' })).toBeHidden();
+    await expect(hint.getByRole('button', { name: 'Reload' })).toBeVisible({ timeout: 10_000 });
+    await expect(hint).toContainText('Your data is safe');
+
+    release();
+    await expect(page.locator('.coaching-card')).toBeVisible({ timeout: 10_000 });
+  });
+
+  test('offers a reload when a database read never settles', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'HangRead');
+    await page.waitForSelector('.situation-btn');
+    // A request that never fires: the read neither resolves nor rejects.
+    await page.evaluate(() => { IDBObjectStore.prototype.get = () => ({}) as IDBRequest; });
+    await page.click('.situation-btn:first-child');
+
+    const reload = page.locator('.loading-stuck button');
+    await expect(reload).toBeVisible({ timeout: 10_000 });
+    await reload.click();
+    await expect(page.locator('.self-pick')).toBeVisible();
   });
 });

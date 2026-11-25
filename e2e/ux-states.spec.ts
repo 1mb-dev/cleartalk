@@ -88,9 +88,9 @@ test.describe('UX States', () => {
       await toggle.click(); // Light -> Dark
 
       // Navigate away and back
-      await page.locator('[role="tab"]:has-text("Coach")').click();
+      await page.locator('.tab-item:has-text("Coach")').click();
       await page.waitForSelector('h1');
-      await page.locator('[role="tab"]:has-text("Profile")').click();
+      await page.locator('.tab-item:has-text("Profile")').click();
       await page.waitForSelector('.setting-toggle');
 
       await expect(toggle).toContainText('Dark');

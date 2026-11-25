@@ -1,4 +1,4 @@
-# ClearTalk Architecture
+# Cleartalk Architecture
 
 How the app is built. Start with the [README](../README.md) for what it does.
 
@@ -17,19 +17,19 @@ Three runtime dependencies. Everything else is dev tooling.
 
 ## Structure
 
-Code lives in `src/` across six directories: `routes/` (pages), `components/` (UI), `engine/` (logic), `data/` (content), `db/` (storage), `lib/` (utilities), `styles/` (CSS tokens + components).
+Code lives in `src/` across seven directories: `routes/` (pages), `components/` (UI), `engine/` (logic), `data/` (content), `db/` (storage), `lib/` (utilities), `styles/` (CSS tokens + components).
 
 The engine layer is pure functions with no UI - see `src/engine/` for scoring, typing, coaching card loading, and pattern analysis.
 
 ## Key Decisions
 
-**Coach-first.** Users get coaching value in under 2 minutes. The self-assessment is opt-in - it personalizes two card sections. Everything else works without it.
+**Coach-first.** Users get coaching value in under 2 minutes. Before the first card the reader picks the closest of four styles; the opt-in assessment replaces that pick. Everything else works without it.
 
 **Lazy coaching cards.** Each situation file loads only when selected. The main bundle never includes coaching content.
 
-**Insight pages are standalone.** `/insight/:pair/:situation` renders outside the app shell - shareable, pre-rendered at build time for social previews.
+**Public cards are static pages.** `/insight/<pair>/<situation>/` is plain HTML built from the card data at build time, with no app JavaScript.
 
-**No backend.** IndexedDB for everything. No accounts, no tracking.
+**No backend.** IndexedDB for everything. No accounts; Cloudflare Web Analytics counts anonymous page views.
 
 ## Data Model
 

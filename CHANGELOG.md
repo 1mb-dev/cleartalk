@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.4.0 (2026-11-25)
+
+### Features
+
+- The 80 coaching cards and the style descriptions are rewritten, shorter and plainer
+- The first card asks which style is closer to you instead of sending you to the assessment
+- Each card is a public page at `/insight/<pair>/<situation>/` with its own link preview
+- Profile collects what worked and what you'd change from your own notes
+- A person's card shows your last note about them
+- The style wheel shows weight without scores
+
+### Fixed
+
+- The app is cached for offline use. Every build since 2026-03-24 failed to install its service worker
+- Importing a backup merges with what is on the device instead of replacing it, and never overwrites your style
+- The coach screen shows Loading instead of the previous screen, and offers a reload if loading stalls
+- Every error message says your data is safe
+- Relative dates count calendar days, and Profile shows the full count of logged conversations
+
+### Changed
+
+- The product is spelled Cleartalk
+- Node 24, with vitest 5, vite-plugin-pwa 2 and preact 11
+
 ## 0.3.3 (2026-08-06)
 
 ### Fixed
@@ -41,7 +65,7 @@
 - Import validation rejects malformed export files instead of silently corrupting data
 - `URL.revokeObjectURL` timing in download helper prevents empty downloads in Safari
 - `replaceAll` used for underscore replacement in share titles (was `replace`)
-- Duplicate "Open in ClearTalk" CTA removed from insight pages
+- Duplicate "Open in Cleartalk" CTA removed from insight pages
 - Empty `openWith`/`avoid` arrays no longer render undefined on insight pages
 
 ### Features
@@ -68,7 +92,7 @@
 
 ### Changed
 
-- OG image tagline aligned with ClearTalk voice ("Know what to say before you say it")
+- OG image tagline aligned with Cleartalk voice ("Know what to say before you say it")
 - Pinned wrangler-action to v3.14.1 with Wrangler CLI v4
 
 ## 0.1.0 (2026-03-24)

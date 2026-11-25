@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
 import { QuickTag } from '../components/quick-tag.tsx';
 import { CoachingCardView } from '../components/coaching-card.tsx';
-import { getContacts, getContact, getOrCreateUser } from '../db/queries.ts';
+import { getContacts, getContact, getJournalForContact, getOrCreateUser, setSelfPick } from '../db/queries.ts';
 import { getCoachingCard } from '../engine/coaching.ts';
-import { DISC_LABELS, SITUATION_LABELS, isSituation } from '../engine/types.ts';
-import type { Contact, CoachingCard, SituationType, User } from '../engine/types.ts';
-import { navigate } from '../lib/transitions.ts';
+import { DISC_LABELS, SITUATION_LABELS, isSituation, resolveYourType } from '../engine/types.ts';
+import type { Contact, CoachingCard, DiscType, JournalEntry, SituationType, User } from '../engine/types.ts';
+import { SelfPick } from '../components/self-pick.tsx';
+import { StyleLine } from '../components/style-line.tsx';
+import { focusMainHeading, navigate } from '../lib/transitions.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 import { Logo } from '../components/logo.tsx';
 import { canInstall, isInstalled, wasDismissed, triggerInstall, dismissPrompt, onInstallAvailable } from '../lib/install-prompt.ts';
@@ -19,17 +21,27 @@ export function Coach() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [card, setCard] = useState<CoachingCard | null>(null);
+  const [lastNote, setLastNote] = useState<JournalEntry | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [showQuickTag, setShowQuickTag] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const loadSeq = useRef(0);
+  // The component is reused across coach routes, so the first render after a route change still
+  // holds the previous route's data; it must not be shown until this route's load lands.
+  const routeKey = `${params.contactId ?? ''}/${params.situation ?? ''}`;
+  const [loadedKey, setLoadedKey] = useState<string | null>(null);
+  // Keyed like loadedKey, so a failure on one route is not shown on the next.
+  const [errorKey, setErrorKey] = useState<string | null>(null);
+  const error = errorKey === routeKey;
   const [installAvailable, setInstallAvailable] = useState(canInstall() && !isInstalled() && !wasDismissed());
+  const ready = !loading && loadedKey === routeKey;
+  const settledOnce = useRef(false);
 
   const pageTitle = selectedContact && isSituation(params.situation)
-    ? `${SITUATION_LABELS[params.situation]} for ${selectedContact.name} - ClearTalk`
+    ? `${SITUATION_LABELS[params.situation]} for ${selectedContact.name} - Cleartalk`
     : selectedContact
-      ? `Coaching for ${selectedContact.name} - ClearTalk`
-      : 'Coach - ClearTalk';
+      ? `Coaching for ${selectedContact.name} - Cleartalk`
+      : 'Coach - Cleartalk';
   useDocumentTitle(pageTitle);
 
   useEffect(() => {
@@ -42,40 +54,53 @@ export function Coach() {
     loadState();
   }, [params.contactId, params.situation]);
 
+  // The Loading screen has no h1, so a navigation's focus restore can run while it shows and find
+  // nothing, and a style pick unmounts the button that held focus. Either way focus is left on body.
+  useEffect(() => {
+    if (!ready) return;
+    if (settledOnce.current && document.activeElement === document.body) focusMainHeading();
+    settledOnce.current = true;
+  }, [ready]);
+
   async function loadState() {
+    // Route changes and a style pick can start overlapping loads; only the latest may write state.
+    const seq = ++loadSeq.current;
     setLoading(true);
-    setError(false);
+    setErrorKey(null);
     try {
       const [u, allContacts] = await Promise.all([
         getOrCreateUser(),
         getContacts(),
       ]);
+      const contact = params.contactId ? await getContact(params.contactId) : undefined;
+      const you = resolveYourType(u);
+      const loaded = contact && isSituation(params.situation) && you
+        ? await getCoachingCard(you.type, contact.discProfile.primary, params.situation)
+        : null;
+      const recent = loaded && contact ? await getJournalForContact(contact.id, 20) : [];
+      if (seq !== loadSeq.current) return;
       setUser(u);
       setContacts(allContacts);
-
-      if (params.contactId) {
-        const contact = await getContact(params.contactId);
-        setSelectedContact(contact ?? null);
-
-        if (contact && isSituation(params.situation)) {
-          const yourType = u.discProfile?.primary ?? contact.discProfile.primary;
-          const loaded = await getCoachingCard(
-            yourType,
-            contact.discProfile.primary,
-            params.situation,
-          );
-          setCard(loaded);
-        } else {
-          setCard(null);
-        }
-      } else {
-        setSelectedContact(null);
-        setCard(null);
-      }
+      setSelectedContact(contact ?? null);
+      setCard(loaded);
+      setLastNote(recent.find(e => e.note.trim()) ?? null);
+      setLoadedKey(routeKey);
     } catch {
-      setError(true);
+      if (seq === loadSeq.current) setErrorKey(routeKey);
     } finally {
-      setLoading(false);
+      if (seq === loadSeq.current) setLoading(false);
+    }
+  }
+
+  async function handleSelfPick(type: DiscType) {
+    // A route change during the write starts its own load, which already reads the pick; this
+    // closure's loadState would load the old route over it.
+    const seq = loadSeq.current;
+    try {
+      await setSelfPick(type);
+      if (seq === loadSeq.current) await loadState();
+    } catch {
+      if (seq === loadSeq.current) setErrorKey(routeKey);
     }
   }
 
@@ -111,8 +136,18 @@ export function Coach() {
     );
   }
 
-  if (loading) {
-    return <div class="route-shell centered"><p class="loading-text" aria-live="polite">Loading...</p></div>;
+  if (loading || (loadedKey !== routeKey && !error)) {
+    // A load that never settles (a hung chunk import or IndexedDB read) only a reload clears;
+    // the hint appears after a CSS delay, keyed so the delay restarts on each route.
+    return (
+      <div key={routeKey} class="route-shell centered" aria-live="polite">
+        <p class="loading-text">Loading...</p>
+        <div class="loading-stuck">
+          <p>This is taking longer than it should. Your data is safe - reload the page to try again.</p>
+          <button class="btn-secondary" type="button" onClick={() => location.reload()}>Reload</button>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -120,8 +155,8 @@ export function Coach() {
       <div class="route-shell centered">
         <div class="welcome-block">
           <p class="welcome-text">
-            Could not load your data. If you are in private browsing mode,
-            try a regular browser window instead.
+            Couldn't load your people. Your data is safe. If you're in a private
+            window, try a regular one.
           </p>
           <button class="btn-primary" type="button" onClick={() => loadState()}>
             Try again
@@ -131,15 +166,35 @@ export function Coach() {
     );
   }
 
-  // Step 3: Show coaching card
-  if (selectedContact && card && isSituation(params.situation)) {
+  const you = user ? resolveYourType(user) : null;
+
+  // Step 3a: Before the first card, ask which style is closer to the reader
+  if (selectedContact && isSituation(params.situation) && user && !you) {
     return (
       <div class="route-shell">
         <button class="back-link" type="button" onClick={goBack}>
           <span aria-hidden="true">{'\u2190'}</span> {selectedContact.name}
         </button>
         <h1>{SITUATION_LABELS[params.situation]}</h1>
-        <CoachingCardView card={card} hasAssessment={!!user?.discProfile} />
+        <SelfPick onPick={handleSelfPick} />
+      </div>
+    );
+  }
+
+  // Step 3: Show coaching card
+  if (selectedContact && card && you && isSituation(params.situation)) {
+    return (
+      <div class="route-shell">
+        <button class="back-link" type="button" onClick={goBack}>
+          <span aria-hidden="true">{'\u2190'}</span> {selectedContact.name}
+        </button>
+        <h1>{SITUATION_LABELS[params.situation]}</h1>
+        <CoachingCardView
+          card={card}
+          yourSource={you.source}
+          lastNote={lastNote}
+          onCheckStyle={() => navigate(() => setLocation('/profile'))}
+        />
 
         <div class="coach-log-bridge">
           <p class="coach-log-prompt">After the conversation:</p>
@@ -167,10 +222,7 @@ export function Coach() {
             {selectedContact.name}
           </span>
         </h1>
-        <p class="coach-subtitle">
-          {DISC_LABELS[selectedContact.discProfile.primary]} type
-          {selectedContact.confidence !== 'high' && ` (${selectedContact.confidence} confidence)`}
-        </p>
+        <StyleLine contact={selectedContact} />
         <div class={`situation-grid disc-accent-${selectedContact.discProfile.primary.toLowerCase()}`}>
           {(Object.entries(SITUATION_LABELS) as [SituationType, string][]).map(([key, label]) => (
             <button
@@ -205,8 +257,8 @@ export function Coach() {
           </svg>
           <h1>Before your next conversation</h1>
           <p class="welcome-text">
-            Pick a person. Pick the moment. Get clear on what to say
-            and how to say it - for the way they actually hear it.
+            Pick someone and the conversation you're about to have.
+            You get a short card for how they tend to hear things.
           </p>
           <div class="welcome-features">
             <div class="welcome-feature">
@@ -254,7 +306,7 @@ export function Coach() {
             onClick={() => selectContact(c.id)}
           >
             <span class={`type-avatar disc-${c.discProfile.primary.toLowerCase()}`} aria-hidden="true">
-              {c.discProfile.primary}
+              {Array.from(c.name.trim())[0]?.toUpperCase()}
             </span>
             <span class="contact-pick-name">{c.name}</span>
             <span class="contact-pick-type">{DISC_LABELS[c.discProfile.primary]}</span>
@@ -279,9 +331,11 @@ export function Coach() {
       {!user?.discProfile && contacts.length > 0 && (
         <div class="coach-nudge">
           <p>
-            Want advice tailored to your style too?{' '}
+            {user?.selfPick
+              ? `You picked ${DISC_LABELS[user.selfPick]} for yourself. `
+              : 'Want advice that fits how you talk, too? '}
             <button class="link-btn" type="button" onClick={() => navigate(() => setLocation('/profile'))}>
-              Take the 3-minute assessment
+              {user?.selfPick ? 'Check it in 3 minutes' : 'Take the 3-minute assessment'}
             </button>
           </p>
         </div>
@@ -289,7 +343,7 @@ export function Coach() {
 
       {installAvailable && (
         <div class="install-banner">
-          <p>Install ClearTalk for quick access and offline use</p>
+          <p>Install Cleartalk for quick access and offline use</p>
           <div class="install-banner-actions">
             <button class="btn-primary btn-sm" type="button" onClick={async () => {
               const accepted = await triggerInstall();

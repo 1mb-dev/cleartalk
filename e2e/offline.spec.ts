@@ -28,19 +28,19 @@ test.describe('Offline mode', () => {
     await context.setOffline(true);
 
     // Client-side navigation uses pushState -- no network requests needed
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('h1');
     await expect(page.locator('h1')).toBeAttached();
 
-    await page.click('[role="tab"]:has-text("Profile")');
+    await page.click('.tab-item:has-text("Profile")');
     await page.waitForSelector('h1');
     await expect(page.locator('h1')).toBeAttached();
 
-    await page.click('[role="tab"]:has-text("Log")');
+    await page.click('.tab-item:has-text("Log")');
     await page.waitForSelector('h1');
     await expect(page.locator('h1')).toBeAttached();
 
-    await page.click('[role="tab"]:has-text("Coach")');
+    await page.click('.tab-item:has-text("Coach")');
     await page.waitForSelector('h1');
     await expect(page.locator('h1')).toBeAttached();
 
@@ -60,16 +60,16 @@ test.describe('Offline mode', () => {
 
     await context.setOffline(true);
     await page.reload();
-    await expect(page.locator('[role="tab"]')).toHaveCount(4);
+    await expect(page.locator('.tab-item')).toHaveCount(4);
 
     for (const [tab, path] of [['People', '/people'], ['Log', '/log'], ['Profile', '/profile']] as const) {
-      await page.click(`[role="tab"]:has-text("${tab}")`);
+      await page.click(`.tab-item:has-text("${tab}")`);
       await expect(page).toHaveURL(path);
       await expect(page.locator('h1')).toHaveText(tab);
     }
-    await page.click('[role="tab"]:has-text("Coach")');
+    await page.click('.tab-item:has-text("Coach")');
     await expect(page).toHaveURL('/');
-    await expect(page.locator('[role="tab"][aria-selected="true"]')).toHaveText(/Coach/);
+    await expect(page.locator('.tab-item[aria-current="page"]')).toHaveText(/Coach/);
 
     await context.setOffline(false);
   });
@@ -82,7 +82,7 @@ test.describe('Offline mode', () => {
     await context.setOffline(true);
 
     // IndexedDB is local -- reads should work
-    await page.click('[role="tab"]:has-text("Profile")');
+    await page.click('.tab-item:has-text("Profile")');
     await page.waitForSelector('h1');
     // Profile loads user from IndexedDB -- should not error
     const hasError = await page.locator('.welcome-block:has-text("went wrong")').count();

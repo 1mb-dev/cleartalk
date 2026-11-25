@@ -1,169 +1,52 @@
-import type { DiscType, JournalEntry, Contact } from './types.ts';
-import { DISC_LABELS } from './types.ts';
+import type { Contact, DiscType, JournalEntry, SituationType } from './types.ts';
 
-export interface TypePairStats {
-  theirType: DiscType;
-  count: number;
-  average: number;
-  trend: 'improving' | 'stable' | 'declining';
+export interface NotedMoment {
+  note: string;
+  contactName: string;
+  situation: SituationType;
+  loggedAt: number;
 }
 
-export interface InsightsSummary {
-  totalEntries: number;
-  overallAverage: number;
-  byType: TypePairStats[];
-  frictionType: DiscType | null;
-  strongestType: DiscType | null;
-  tips: string[];
+export interface Patterns {
+  /** Notes from conversations rated 4-5, newest first. */
+  worked: NotedMoment[];
+  /** Notes from conversations rated 1-2, newest first. */
+  change: NotedMoment[];
+  /** A style the reader keeps finding hard, when there is enough to say so. */
+  rough: { type: DiscType; count: number } | null;
 }
+
+const PER_LIST = 3;
+const ROUGH_MIN = 3;
 
 /**
- * Calculate adaptation insights from journal entries.
- * Requires at least 5 entries to produce meaningful patterns.
+ * The reader's own words back to them: what went well and what they'd change, plus at most one
+ * line about a style, only once three or more conversations with it went badly.
+ * Expects entries newest first, as the journal queries return them.
  */
-export function calculateInsights(
-  entries: JournalEntry[],
-  contacts: Contact[],
-): InsightsSummary | null {
-  if (entries.length < 5) return null;
+export function findPatterns(entries: JournalEntry[], contacts: Contact[]): Patterns {
+  const byId = new Map(contacts.map(c => [c.id, c]));
+  const worked: NotedMoment[] = [];
+  const change: NotedMoment[] = [];
+  const roughByType = new Map<DiscType, number>();
 
-  const contactMap = new Map(contacts.map(c => [c.id, c]));
-
-  // Group entries by their-type
-  const byType = new Map<DiscType, number[]>();
-  for (const entry of entries) {
-    const contact = contactMap.get(entry.contactId);
+  for (const e of entries) {
+    const contact = byId.get(e.contactId);
     if (!contact) continue;
-    const type = contact.discProfile.primary;
-    const existing = byType.get(type) ?? [];
-    existing.push(entry.outcome);
-    byType.set(type, existing);
+    if (e.outcome <= 2) {
+      const t = contact.discProfile.primary;
+      roughByType.set(t, (roughByType.get(t) ?? 0) + 1);
+    }
+    const note = e.note.trim();
+    if (!note) continue;
+    const moment = { note, contactName: contact.name, situation: e.situationType, loggedAt: e.loggedAt };
+    if (e.outcome >= 4 && worked.length < PER_LIST) worked.push(moment);
+    if (e.outcome <= 2 && change.length < PER_LIST) change.push(moment);
   }
 
-  // Calculate stats per type
-  const stats: TypePairStats[] = [];
-  let totalSum = 0;
-  let totalCount = 0;
-
-  for (const type of ['D', 'I', 'S', 'C'] as DiscType[]) {
-    const outcomes = byType.get(type);
-    if (!outcomes || outcomes.length === 0) continue;
-
-    const avg = outcomes.reduce((a, b) => a + b, 0) / outcomes.length;
-    const trend = calculateTrend(outcomes);
-
-    stats.push({
-      theirType: type,
-      count: outcomes.length,
-      average: Math.round(avg * 10) / 10,
-      trend,
-    });
-
-    totalSum += outcomes.reduce((a, b) => a + b, 0);
-    totalCount += outcomes.length;
+  let rough: Patterns['rough'] = null;
+  for (const [type, count] of roughByType) {
+    if (count >= ROUGH_MIN && (!rough || count > rough.count)) rough = { type, count };
   }
-
-  // Sort by count descending
-  stats.sort((a, b) => b.count - a.count);
-
-  const overallAverage = totalCount > 0
-    ? Math.round((totalSum / totalCount) * 10) / 10
-    : 0;
-
-  // Find friction (lowest avg with 2+ entries) and strongest (highest avg with 2+ entries)
-  const qualified = stats.filter(s => s.count >= 2);
-  const friction = qualified.length > 0
-    ? qualified.reduce((min, s) => s.average < min.average ? s : min)
-    : null;
-  const strongest = qualified.length > 0
-    ? qualified.reduce((max, s) => s.average > max.average ? s : max)
-    : null;
-
-  const frictionType = friction && friction.average < 3.5 ? friction.theirType : null;
-  const strongestType = strongest && strongest.average >= 3.5 ? strongest.theirType : null;
-
-  // Generate tips
-  const tips = generateTips(stats, frictionType, strongestType, entries.length);
-
-  return {
-    totalEntries: entries.length,
-    overallAverage,
-    byType: stats,
-    frictionType,
-    strongestType,
-    tips,
-  };
-}
-
-function calculateTrend(outcomes: number[]): 'improving' | 'stable' | 'declining' {
-  if (outcomes.length < 4) return 'stable';
-
-  // Outcomes are newest-first (from getJournalEntries descending order).
-  // Reverse so older entries come first for chronological comparison.
-  const chronological = [...outcomes].reverse();
-  const mid = Math.floor(chronological.length / 2);
-  const olderHalf = chronological.slice(0, mid);
-  const newerHalf = chronological.slice(mid);
-
-  const olderAvg = olderHalf.reduce((a, b) => a + b, 0) / olderHalf.length;
-  const newerAvg = newerHalf.reduce((a, b) => a + b, 0) / newerHalf.length;
-  const delta = newerAvg - olderAvg;
-
-  if (delta > 0.4) return 'improving';
-  if (delta < -0.4) return 'declining';
-  return 'stable';
-}
-
-function generateTips(
-  stats: TypePairStats[],
-  frictionType: DiscType | null,
-  strongestType: DiscType | null,
-  totalEntries: number,
-): string[] {
-  const tips: string[] = [];
-
-  if (frictionType) {
-    tips.push(
-      `Your ${DISC_LABELS[frictionType]} conversations are running rough. ` +
-      `Before your next one, review the coaching card -- even a small adjustment lands.`
-    );
-  }
-
-  if (strongestType && strongestType !== frictionType) {
-    tips.push(
-      `${DISC_LABELS[strongestType]} interactions are going well. ` +
-      `Notice what you are doing differently there -- it might transfer.`
-    );
-  }
-
-  const improving = stats.find(s => s.trend === 'improving');
-  if (improving) {
-    tips.push(
-      `Your ${DISC_LABELS[improving.theirType]} conversations are trending up. Keep it going.`
-    );
-  }
-
-  const declining = stats.find(s => s.trend === 'declining');
-  if (declining) {
-    tips.push(
-      `${DISC_LABELS[declining.theirType]} interactions have dipped recently. ` +
-      `Worth checking in with yourself -- has something changed?`
-    );
-  }
-
-  // Gap detection
-  const coveredTypes = new Set(stats.map(s => s.theirType));
-  const missing = (['D', 'I', 'S', 'C'] as DiscType[]).filter(t => !coveredTypes.has(t));
-  if (missing.length > 0 && missing.length < 4) {
-    tips.push(
-      `You have not logged any ${missing.map(t => DISC_LABELS[t]).join(' or ')} interactions yet. ` +
-      `Who in your life fits that style?`
-    );
-  }
-
-  if (totalEntries >= 10 && tips.length === 0) {
-    tips.push('Your conversations are consistently solid across types. Well done.');
-  }
-
-  return tips.slice(0, 3);
+  return { worked, change, rough };
 }

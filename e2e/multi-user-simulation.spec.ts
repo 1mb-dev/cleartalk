@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { answerQuestions, waitForCard } from './helpers.ts';
 
 /**
  * 5-minute multi-user simulation.
@@ -13,12 +14,8 @@ async function addContactViaQuickTag(page: Page, name: string) {
   await page.click('button:has-text("Start with someone")');
   await page.fill('.quicktag-name-input', name);
   await page.click('button:has-text("Next")');
-  for (let i = 0; i < 8; i++) {
-    await page.waitForSelector('.assessment-option');
-    // Alternate choices for variety
-    const choice = i % 2;
-    await page.locator('.assessment-option').nth(choice).click();
-  }
+  // Alternate choices for variety
+  await answerQuestions(page, 8, i => i % 2);
   await page.waitForSelector('.quicktag-confirm');
   await page.click('.quicktag-confirm button:has-text("Save")');
   await page.waitForSelector('.situation-btn', { timeout: 10000 });
@@ -28,37 +25,31 @@ async function addMoreContact(page: Page, name: string) {
   await page.click('.contact-pick-add');
   await page.fill('.quicktag-name-input', name);
   await page.click('button:has-text("Next")');
-  for (let i = 0; i < 8; i++) {
-    await page.waitForSelector('.assessment-option');
-    await page.locator('.assessment-option').nth(i % 2).click();
-  }
+  await answerQuestions(page, 8, i => i % 2);
   await page.waitForSelector('.quicktag-confirm');
   await page.click('.quicktag-confirm button:has-text("Save")');
   await page.waitForSelector('.situation-btn', { timeout: 10000 });
 }
 
 async function takeAssessment(page: Page) {
-  await page.click('[role="tab"]:has-text("Profile")');
+  await page.click('.tab-item:has-text("Profile")');
   await page.waitForSelector('h1');
   await page.click('button:has-text("Take the assessment")');
-  for (let i = 0; i < 24; i++) {
-    await page.waitForSelector('.assessment-option');
-    await page.locator('.assessment-option').nth(i % 3 === 0 ? 1 : 0).click();
-  }
+  await answerQuestions(page, 24, i => (i % 3 === 0 ? 1 : 0));
   await page.waitForSelector('button:has-text("Save and continue")');
   await page.click('button:has-text("Save and continue")');
   await page.waitForSelector('.disc-wheel-container');
 }
 
 async function logOutcome(page: Page) {
-  await page.click('[role="tab"]:has-text("Log")');
+  await page.click('.tab-item:has-text("Log")');
   await page.waitForSelector('#log-contact');
   await page.selectOption('#log-contact', { index: 1 });
   await page.selectOption('#log-situation', SITUATIONS[Math.floor(Math.random() * 5)]);
   const outcome = Math.floor(Math.random() * 5);
   await page.locator('.outcome-option').nth(outcome).click();
   await page.click('button:has-text("Log it")');
-  await page.waitForSelector('text=Saved!', { timeout: 5000 });
+  await page.waitForSelector('text=Saved', { timeout: 5000 });
 }
 
 // ─────────────────────────────────────────────────────────
@@ -77,7 +68,7 @@ test.describe.parallel('Multi-user simulation', () => {
     // View all 5 situations for first contact
     for (const sit of SITUATIONS) {
       await page.click(`.situation-btn:has-text("${sitLabel(sit)}")`);
-      await page.waitForSelector('.coaching-card', { timeout: 10000 });
+      await waitForCard(page);
       await expect(page.locator('.coaching-section').first()).toBeAttached();
       await page.click('.back-link');
       await page.waitForSelector('.situation-btn');
@@ -99,12 +90,12 @@ test.describe.parallel('Multi-user simulation', () => {
     }
 
     // Check patterns section in Profile
-    await page.click('[role="tab"]:has-text("Profile")');
+    await page.click('.tab-item:has-text("Profile")');
     await page.waitForSelector('h1');
     await expect(page.locator('.patterns-section')).toBeAttached();
 
     // Check People tab shows all contacts
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
     const cards = await page.locator('.people-card').count();
     expect(cards).toBeGreaterThanOrEqual(3);
@@ -123,11 +114,11 @@ test.describe.parallel('Multi-user simulation', () => {
     await expect(page.locator('h1')).toContainText('Before your next conversation');
 
     // Explore empty states
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('h1');
     await expect(page.locator('.welcome-block')).toBeAttached();
 
-    await page.click('[role="tab"]:has-text("Log")');
+    await page.click('.tab-item:has-text("Log")');
     await page.waitForSelector('h1');
     await expect(page.locator('.welcome-block')).toBeAttached();
 
@@ -136,21 +127,21 @@ test.describe.parallel('Multi-user simulation', () => {
     await expect(page.locator('.disc-wheel-container')).toBeAttached();
 
     // Add first contact
-    await page.click('[role="tab"]:has-text("Coach")');
+    await page.click('.tab-item:has-text("Coach")');
     await page.waitForSelector('h1');
     await addContactViaQuickTag(page, 'NewUserContact');
 
-    // View a coaching card (now with assessment -- should see openWith/avoid)
+    // View a coaching card: with an assessment there is no style pick first
     await page.click('.situation-btn:first-child');
-    await page.waitForSelector('.coaching-card');
+    await expect(page.locator('.coaching-card')).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('.self-pick')).toHaveCount(0);
 
-    // Gated sections should be visible (has assessment)
     const sections = await page.locator('.coaching-section-title').allTextContents();
     expect(sections).toContain('Open with');
     expect(sections).toContain('Avoid');
 
     // Export data
-    await page.click('[role="tab"]:has-text("Profile")');
+    await page.click('.tab-item:has-text("Profile")');
     await page.waitForSelector('h1');
     await expect(page.locator('button:has-text("Download JSON")')).toBeAttached();
 
@@ -184,24 +175,24 @@ test.describe.parallel('Multi-user simulation', () => {
     }
 
     // Check profile for patterns
-    await page.click('[role="tab"]:has-text("Profile")');
+    await page.click('.tab-item:has-text("Profile")');
     await page.waitForSelector('h1');
     await page.waitForSelector('.patterns-section');
-    await expect(page.locator('.insight-stat').first()).toBeAttached();
+    await expect(page.locator('.patterns-count')).toHaveText('8 conversations logged.');
 
     // View person detail
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
     await page.locator('.people-card').first().click();
-    await page.waitForSelector('.disc-wheel-container');
+    await page.waitForSelector('.type-summary');
     await expect(page.locator('.type-summary')).toBeAttached();
 
     // Quick coach from person detail
     await page.click('.situation-btn-sm:first-child');
-    await page.waitForSelector('.coaching-card', { timeout: 10000 });
+    await waitForCard(page);
 
     // Navigate back to People tab and rename contact
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
     await page.locator('.people-card').first().click();
     await page.waitForSelector('h1');
@@ -224,22 +215,22 @@ test.describe.parallel('Multi-user simulation', () => {
     for (const yourType of DISC_TYPES) {
       for (const theirType of DISC_TYPES.slice(0, 2)) {
         const situation = SITUATIONS[Math.floor(Math.random() * 5)];
-        await page.goto(`/insight/${yourType}-to-${theirType}/${situation}`);
+        await page.goto(`/insight/${yourType}-to-${theirType}/${situation}/`);
         await page.waitForSelector('h1', { timeout: 10000 });
 
         // Verify branding
-        await expect(page.locator('.insight-brand-name')).toContainText('ClearTalk');
+        await expect(page.locator('.insight-brand-name')).toContainText('Cleartalk');
 
         // Verify coaching content
         await expect(page.locator('.coaching-section').first()).toBeAttached();
 
         // Verify CTA
-        await expect(page.locator('button:has-text("Try ClearTalk")')).toBeAttached();
+        await expect(page.locator('a:has-text("Try Cleartalk")')).toBeAttached();
       }
     }
 
     // Navigate from insight CTA to main app
-    await page.click('button:has-text("Try ClearTalk")');
+    await page.click('a:has-text("Try Cleartalk")');
     await page.waitForSelector('h1');
     // Should be on coach welcome page
     await expect(page.locator('h1')).toContainText('Before your next conversation');
@@ -247,7 +238,7 @@ test.describe.parallel('Multi-user simulation', () => {
     // Now use the app -- add a contact and view coaching card with share button
     await addContactViaQuickTag(page, 'ShareTest');
     await page.click('.situation-btn:first-child');
-    await page.waitForSelector('.coaching-card');
+    await waitForCard(page);
 
     // Share button should be present
     await expect(page.locator('.share-btn')).toBeAttached();
