@@ -211,7 +211,7 @@ export function Profile() {
 
           {patterns.rough && (
             <p class="patterns-rough">
-              {patterns.rough.count} conversations that went badly were with {DISC_LABELS[patterns.rough.type]} people.
+              {patterns.rough.count} recent conversations that went badly were with {DISC_LABELS[patterns.rough.type]} people.
               Read their card again before the next one.
             </p>
           )}
