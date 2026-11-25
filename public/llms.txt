@@ -8,14 +8,16 @@ ClearTalk coaches you for the person and the moment - what to say, what to avoid
 
 ClearTalk helps people prepare for conversations by understanding communication styles. Add a person, answer 8 quick questions about how they communicate, and get specific coaching for 5 situations: giving feedback, making a request, navigating conflict, pitching an idea, and delivering difficult news.
 
+ClearTalk isn't therapy. Your own style comes from a one-tap pick or 24 quick choices, and other people's from those 8 questions. The scoring is simple and not validated, so treat a style as a starting point for the next conversation.
+
 ## Communication styles
 
 ClearTalk uses four communication styles:
 
-- **Drive** - direct, results-oriented, decisive
-- **Influence** - expressive, enthusiastic, people-oriented
-- **Steady** - patient, reliable, harmony-seeking
-- **Clarity** - analytical, precise, quality-focused
+- **Drive** - gets to the point and decides fast
+- **Influence** - thinks out loud and likes to bring people along
+- **Steady** - listens first and keeps things calm
+- **Clarity** - wants the facts straight before committing
 
 ## Coaching cards
 
@@ -27,7 +29,7 @@ Each coaching card has a public URL:
 
 https://cleartalk.1mb.dev/insight/{your-style}-to-{their-style}/{situation}/
 
-Styles: d (Drive), i (Influence), s (Steady), c (Clarity)
+Styles in the URL use their first letter: d, i, s, c.
 Situations: feedback, request, conflict, pitch, difficult_news
 
 Example: https://cleartalk.1mb.dev/insight/d-to-i/feedback/

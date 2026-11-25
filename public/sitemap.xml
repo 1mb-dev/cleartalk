@@ -4,7 +4,7 @@
     <loc>https://cleartalk.1mb.dev/</loc>
     <priority>1.0</priority>
   </url>
-  <!-- Insight routes: 16 type-pairs x 5 situations = 80 pages -->
+  <!-- 16 style pairs x 5 situations = 80 pages -->
   <url><loc>https://cleartalk.1mb.dev/insight/d-to-d/feedback/</loc></url>
   <url><loc>https://cleartalk.1mb.dev/insight/d-to-d/request/</loc></url>
   <url><loc>https://cleartalk.1mb.dev/insight/d-to-d/conflict/</loc></url>

@@ -33,14 +33,13 @@ test.describe('Security Headers & CSP', () => {
 
   test('no inline scripts in HTML', async ({ page }) => {
     await page.goto('/');
-    // Only the module script for the app entry should exist
+    // Inline code is only the module entry; a JSON-LD block is data the browser never runs.
     const scripts = await page.locator('script').all();
     for (const script of scripts) {
       const type = await script.getAttribute('type');
       const src = await script.getAttribute('src');
-      // All scripts should be external (have src) or module type
       if (!src) {
-        expect(type).toBe('module');
+        expect(['module', 'application/ld+json']).toContain(type);
       }
     }
   });

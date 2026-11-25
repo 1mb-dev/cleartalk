@@ -1,7 +1,4 @@
 /* TEAM */
-Built by one person who reads about communication styles
-and wanted a tool that helps in real conversations.
-
 Site: https://cleartalk.1mb.dev
 Org: 1mb-dev - small libraries, sharp tools.
 
