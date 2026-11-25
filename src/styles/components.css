@@ -1669,10 +1669,6 @@ html.static-page .insight-page {
     grid-template-columns: 1fr 1fr;
   }
 
-  .insights-overview {
-    gap: var(--space-8);
-  }
-
   .log-history .journal-list {
     max-width: 560px;
   }
