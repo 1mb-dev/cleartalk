@@ -7,6 +7,9 @@ export default defineConfig({
     preact(),
     VitePWA({
       registerType: 'autoUpdate',
+      // globPatterns already precaches the manifest icons. Listing them twice under different
+      // revisions makes Workbox throw at startup, leaving a service worker that caches nothing.
+      includeManifestIcons: false,
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         globIgnores: [
