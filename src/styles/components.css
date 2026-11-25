@@ -1583,6 +1583,9 @@ html.static-page .insight-page {
 }
 
 .insight-siblings a {
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
   text-decoration: underline;
 }
 

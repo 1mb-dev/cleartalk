@@ -123,7 +123,7 @@ function page(card, key) {
       </article>
       <footer class="insight-cta">
         <p class="insight-cta-text">The same conversation, if one of these sounds more like you:</p>
-        <ul class="insight-siblings">${others.join('')}</ul>
+        <ul class="insight-siblings" role="list">${others.join('')}</ul>
         <p class="insight-byline">${BYLINE}</p>
         <p class="insight-cta-text">${CTA}</p>
         <a class="btn-primary" href="/">Try Cleartalk - free, no sign-up</a>
