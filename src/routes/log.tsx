@@ -2,7 +2,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { useLocation, useSearch } from 'wouter';
 import { OutcomeInput } from '../components/outcome-input.tsx';
 import { getContacts, addJournalEntry, getJournalEntries } from '../db/queries.ts';
-import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
+import { DISC_LABELS, SITUATION_LABELS, isSituation } from '../engine/types.ts';
 import type { Contact, JournalEntry, SituationType } from '../engine/types.ts';
 import { formatRelativeDate } from '../lib/format.ts';
 import { navigate } from '../lib/transitions.ts';
@@ -25,7 +25,7 @@ export function Log() {
   // Form state
   const [contactId, setContactId] = useState(prefillContact);
   const [situation, setSituation] = useState<SituationType | ''>(
-    prefillSituation in SITUATION_LABELS ? prefillSituation as SituationType : '',
+    isSituation(prefillSituation) ? prefillSituation : '',
   );
   const [outcome, setOutcome] = useState<1 | 2 | 3 | 4 | 5 | null>(null);
   const [note, setNote] = useState('');

@@ -92,3 +92,7 @@ export const SITUATION_LABELS: Record<SituationType, string> = {
   pitch: 'Pitch an Idea',
   difficult_news: 'Deliver Difficult News',
 };
+
+export function isSituation(s: string | undefined): s is SituationType {
+  return s !== undefined && Object.hasOwn(SITUATION_LABELS, s);
+}
