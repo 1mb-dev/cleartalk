@@ -174,7 +174,7 @@ export function Profile() {
             <h4>Under stress</h4>
             <p class="type-default">{primary.underStress}</p>
 
-            <h4>Growth areas</h4>
+            <h4>Things to try</h4>
             <ul>
               {primary.growthAreas.map((g, i) => <li key={i}>{g}</li>)}
             </ul>

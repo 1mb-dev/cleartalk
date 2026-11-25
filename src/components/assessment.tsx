@@ -80,7 +80,7 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
             {primary.blindSpots.map((b, i) => <li key={i}>{b}</li>)}
           </ul>
 
-          <h4>Growth areas</h4>
+          <h4>Things to try</h4>
           <ul>
             {primary.growthAreas.map((g, i) => <li key={i}>{g}</li>)}
           </ul>
