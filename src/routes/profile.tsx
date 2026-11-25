@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { Assessment } from '../components/assessment.tsx';
 import { DiscWheel } from '../components/disc-wheel.tsx';
-import { getOrCreateUser, getJournalEntries, getContacts } from '../db/queries.ts';
+import { getOrCreateUser, getJournalEntries, getJournalCount, getContacts } from '../db/queries.ts';
 import { typeProfiles } from '../data/type-profiles.ts';
 import { calculateInsights } from '../engine/insights.ts';
 import { exportData, downloadJson, importData, clearAllData } from '../lib/storage.ts';
@@ -16,6 +16,7 @@ export function Profile() {
   useDocumentTitle('Profile - ClearTalk');
   const [user, setUser] = useState<User | null>(null);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [entryCount, setEntryCount] = useState(0);
   const [insights, setInsights] = useState<InsightsSummary | null>(null);
   const [showAssessment, setShowAssessment] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -40,13 +41,15 @@ export function Profile() {
     setLoading(true);
     setError(false);
     try {
-      const [u, e, c] = await Promise.all([
+      const [u, e, n, c] = await Promise.all([
         getOrCreateUser(),
         getJournalEntries(200),
+        getJournalCount(),
         getContacts(),
       ]);
       setUser(u);
       setEntries(e);
+      setEntryCount(n);
       setInsights(calculateInsights(e, c));
     } catch {
       setError(true);
@@ -110,6 +113,7 @@ export function Profile() {
       setConfirmClear(false);
       setUser(null);
       setEntries([]);
+      setEntryCount(0);
       setInsights(null);
     } catch {
       setError(true);
@@ -202,7 +206,7 @@ export function Profile() {
                   <span class="insight-label">average outcome</span>
                 </div>
                 <div class="insight-stat">
-                  <span class="insight-number">{insights.totalEntries}</span>
+                  <span class="insight-number">{entryCount}</span>
                   <span class="insight-label">conversations logged</span>
                 </div>
               </div>
