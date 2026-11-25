@@ -6,7 +6,7 @@ const ROUTES = [
   { name: 'People (empty)', path: '/people' },
   { name: 'Log (empty)', path: '/log' },
   { name: 'Profile', path: '/profile' },
-  { name: 'Insight', path: '/insight/d-to-s/feedback' },
+  { name: 'Insight', path: '/insight/d-to-s/feedback/' },
   { name: 'Insight (invalid)', path: '/insight/x-to-y/bad' },
 ];
 

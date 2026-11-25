@@ -118,7 +118,7 @@ function PhraseList({ title, items, variant }: { title: string; items: string[];
 
 function ShareButton({ card }: { card: CoachingCardType }) {
   const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
-  const url = `${window.location.origin}/insight/${card.yourType.toLowerCase()}-to-${card.theirType.toLowerCase()}/${card.situation}`;
+  const url = `${window.location.origin}/insight/${card.yourType.toLowerCase()}-to-${card.theirType.toLowerCase()}/${card.situation}/`;
 
   async function handleShare() {
     try {

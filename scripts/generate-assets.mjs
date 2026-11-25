@@ -4,7 +4,7 @@
  * Run: node scripts/generate-assets.mjs
  */
 import sharp from 'sharp';
-import { mkdirSync } from 'fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 
 const OUT = 'public/assets';
 mkdirSync(OUT, { recursive: true });
@@ -88,44 +88,39 @@ const DISC_LABELS = { D: 'Drive', I: 'Influence', S: 'Steady', C: 'Clarity' };
 const DISC_COLORS = { D, I, S, C };
 const TYPES = ['D', 'I', 'S', 'C'];
 
-function pairOgSvg(yourType, theirType) {
-  const yourColor = DISC_COLORS[yourType];
-  const theirColor = DISC_COLORS[theirType];
-  const yourLabel = DISC_LABELS[yourType];
-  const theirLabel = DISC_LABELS[theirType];
+const xml = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/** Greedy word wrap; the preview has to be readable as a thumbnail, so lines stay short. */
+function wrap(text, max) {
+  const lines = [];
+  let line = '';
+  for (const word of text.split(' ')) {
+    if (line && (line + ' ' + word).length > max) { lines.push(line); line = word; }
+    else line = line ? `${line} ${word}` : word;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+/** Link preview for one public card page: the page's own headline leads. */
+function pageOgSvg(h1, situationLabel, yourType, theirType) {
+  let size = 64;
+  let lines = wrap(h1, 28);
+  if (lines.length > 3) { size = 54; lines = wrap(h1, 34); }
+  const lineHeight = Math.round(size * 1.18);
+  const top = 250 - ((lines.length - 1) * lineHeight) / 2;
+  const text = lines
+    .map((l, i) => `<text x="80" y="${top + i * lineHeight}" font-family="Georgia, serif" font-size="${size}" fill="${TEXT}">${xml(l)}</text>`)
+    .join('\n  ');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="${BG}"/>
-
-  <!-- Your type circle -->
-  <circle cx="280" cy="280" r="90" fill="${yourColor}" opacity="0.15"/>
-  <circle cx="280" cy="280" r="40" fill="${yourColor}" opacity="0.85"/>
-
-  <!-- Their type circle -->
-  <circle cx="420" cy="340" r="90" fill="${theirColor}" opacity="0.15"/>
-  <circle cx="420" cy="340" r="40" fill="${theirColor}" opacity="0.85"/>
-
-  <!-- Connection line -->
-  <line x1="310" y1="296" x2="390" y2="324" stroke="${MUTED}" stroke-width="2" opacity="0.3"/>
-
-  <!-- Arrow label -->
-  <text x="350" y="260" font-family="-apple-system, sans-serif" font-size="18" fill="${MUTED}" text-anchor="middle">${yourLabel}</text>
-  <text x="350" y="410" font-family="-apple-system, sans-serif" font-size="18" fill="${MUTED}" text-anchor="middle">to ${theirLabel}</text>
-
-  <!-- Wordmark -->
-  <text x="560" y="280" font-family="Georgia, serif" font-size="64" font-weight="400" fill="${TEXT}">ClearTalk</text>
-
-  <!-- Tagline -->
-  <text x="560" y="330" font-family="-apple-system, sans-serif" font-size="24" fill="${MUTED}">Coaching for the person and the moment.</text>
-
-  <!-- Type pair badge -->
-  <rect x="560" y="360" width="12" height="36" rx="2" fill="${yourColor}"/>
-  <rect x="578" y="360" width="12" height="36" rx="2" fill="${theirColor}"/>
-  <text x="602" y="388" font-family="-apple-system, sans-serif" font-size="22" fill="${MUTED}">${yourLabel} communicating with ${theirLabel}</text>
-
-  <!-- Bottom accent bar -->
-  <rect x="0" y="600" width="600" height="30" fill="${yourColor}" opacity="0.5"/>
-  <rect x="600" y="600" width="600" height="30" fill="${theirColor}" opacity="0.5"/>
+  <text x="80" y="96" font-family="-apple-system, sans-serif" font-size="26" font-weight="600" fill="${MUTED}">${xml(situationLabel)}</text>
+  ${text}
+  <rect x="80" y="508" width="14" height="40" rx="2" fill="${DISC_COLORS[yourType]}"/>
+  <rect x="100" y="508" width="14" height="40" rx="2" fill="${DISC_COLORS[theirType]}"/>
+  <text x="130" y="538" font-family="-apple-system, sans-serif" font-size="26" fill="${MUTED}">${DISC_LABELS[yourType]} to ${DISC_LABELS[theirType]}</text>
+  <text x="1120" y="538" font-family="Georgia, serif" font-size="38" fill="${TEXT}" text-anchor="end">ClearTalk</text>
 </svg>`;
 }
 
@@ -148,17 +143,21 @@ async function main() {
   await sharp(Buffer.from(ogSvg())).png().toFile(`${OUT}/og-image.png`);
   console.log('  og-image.png');
 
-  // Per-pair OG images (16 combinations)
+  // One preview per public card page, led by that page's headline
+  const SITUATIONS = { feedback: 'Give Feedback', request: 'Make a Request', conflict: 'Navigate Conflict', pitch: 'Pitch an Idea', difficult_news: 'Deliver Difficult News' };
+  const pages = JSON.parse(readFileSync('src/data/insight-pages.json', 'utf-8'));
   mkdirSync(`${OUT}/og`, { recursive: true });
-  for (const yours of TYPES) {
-    for (const theirs of TYPES) {
-      const pair = `${yours.toLowerCase()}-to-${theirs.toLowerCase()}`;
-      await sharp(Buffer.from(pairOgSvg(yours, theirs)))
-        .png()
-        .toFile(`${OUT}/og/${pair}.png`);
-    }
+  for (const [key, page] of Object.entries(pages)) {
+    const [pair, situation] = key.split('/');
+    const [yours, , theirs] = pair.toUpperCase().split('-');
+    await sharp(Buffer.from(pageOgSvg(page.h1, SITUATIONS[situation], yours, theirs)))
+      .png({ compressionLevel: 9, palette: true })
+      .toFile(`${OUT}/og/${pair}_${situation}.png`);
   }
-  console.log('  og/*.png (16 pair images)');
+  // The headline each image was drawn from; src/data/og-manifest.test.ts fails when they drift.
+  const manifest = Object.fromEntries(Object.entries(pages).map(([key, page]) => [key, page.h1]));
+  writeFileSync(`${OUT}/og/manifest.json`, JSON.stringify(manifest, null, 2) + '\n');
+  console.log(`  og/*.png (${Object.keys(pages).length} page images) + manifest.json`);
 
   // Favicon PNG (32x32 for browsers that don't support SVG favicons)
   const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">

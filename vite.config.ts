@@ -24,7 +24,8 @@ export default defineConfig({
           '**/difficult-news-*.js',
         ],
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//],
+        // Insight pages are static HTML with no app; the SPA shell must not answer for them.
+        navigateFallbackDenylist: [/^\/api\//, /^\/insight\//],
         runtimeCaching: [
           {
             urlPattern: /\/(feedback|request|conflict|pitch|difficult-news)-[a-zA-Z0-9_-]+\.js$/,

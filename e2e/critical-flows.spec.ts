@@ -227,20 +227,34 @@ test.describe('Critical User Flows', () => {
   });
 
   test('insight page renders for valid pair', async ({ page }) => {
-    await page.goto('/insight/d-to-s/feedback');
-    await page.waitForSelector('h1', { timeout: 10000 });
-    await expect(page.locator('h1')).toContainText('Steady');
+    await page.goto('/insight/d-to-s/feedback/');
+    await expect(page.locator('.type-badge').nth(1)).toHaveText('Them: Steady');
     await expect(page.locator('.coaching-section').first()).toBeAttached();
   });
 
-  test('insight page shows error for invalid pair', async ({ page }) => {
+  test('insight page is the whole card without JavaScript', async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto('/insight/s-to-d/difficult_news/');
+    await expect(page.locator('article h1')).not.toBeEmpty();
+    await expect(page.locator('.coaching-section-title')).toHaveText([
+      'Approach', 'Open with', 'Avoid', 'Expect this', 'If it goes sideways', 'Body language',
+    ]);
+    expect(await page.locator('.coaching-phrases').first().locator('li').count()).toBeGreaterThan(1);
+    await expect(page.locator('.coaching-on-call-label')).toHaveText('On a call');
+    await expect(page.locator('.insight-byline')).toContainText('Not therapy, and not a personality test.');
+    await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveCount(1);
+    await expect(page.locator('script[src]')).toHaveCount(0);
+    await context.close();
+  });
+
+  test('insight page shows not found for an invalid pair', async ({ page }) => {
     await page.goto('/insight/x-to-y/invalid');
-    await page.waitForSelector('h1');
-    await expect(page.locator('h1')).toContainText('not found');
+    await expect(page.locator('h1')).toContainText(/not found/i);
   });
 
   test('insight page has main landmark', async ({ page }) => {
-    await page.goto('/insight/d-to-i/conflict');
+    await page.goto('/insight/d-to-i/conflict/');
     await page.waitForSelector('#main');
     await expect(page.locator('#main')).toBeAttached();
   });

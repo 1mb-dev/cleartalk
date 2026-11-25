@@ -25,12 +25,12 @@ ClearTalk uses four communication styles:
 
 Each coaching card has a public URL:
 
-https://cleartalk.1mb.dev/insight/{your-type}-to-{their-type}/{situation}
+https://cleartalk.1mb.dev/insight/{your-style}-to-{their-style}/{situation}/
 
-Types: d, i, s, c
+Styles: d (Drive), i (Influence), s (Steady), c (Clarity)
 Situations: feedback, request, conflict, pitch, difficult_news
 
-Example: https://cleartalk.1mb.dev/insight/d-to-i/feedback
+Example: https://cleartalk.1mb.dev/insight/d-to-i/feedback/
 
 ## Privacy
 

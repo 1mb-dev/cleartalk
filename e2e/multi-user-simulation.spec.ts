@@ -224,7 +224,7 @@ test.describe.parallel('Multi-user simulation', () => {
     for (const yourType of DISC_TYPES) {
       for (const theirType of DISC_TYPES.slice(0, 2)) {
         const situation = SITUATIONS[Math.floor(Math.random() * 5)];
-        await page.goto(`/insight/${yourType}-to-${theirType}/${situation}`);
+        await page.goto(`/insight/${yourType}-to-${theirType}/${situation}/`);
         await page.waitForSelector('h1', { timeout: 10000 });
 
         // Verify branding
@@ -234,12 +234,12 @@ test.describe.parallel('Multi-user simulation', () => {
         await expect(page.locator('.coaching-section').first()).toBeAttached();
 
         // Verify CTA
-        await expect(page.locator('button:has-text("Try ClearTalk")')).toBeAttached();
+        await expect(page.locator('a:has-text("Try ClearTalk")')).toBeAttached();
       }
     }
 
     // Navigate from insight CTA to main app
-    await page.click('button:has-text("Try ClearTalk")');
+    await page.click('a:has-text("Try ClearTalk")');
     await page.waitForSelector('h1');
     // Should be on coach welcome page
     await expect(page.locator('h1')).toContainText('Before your next conversation');

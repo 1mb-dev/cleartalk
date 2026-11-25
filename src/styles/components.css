@@ -1525,6 +1525,29 @@
   padding-bottom: var(--space-2);
 }
 
+/* Static public pages read as a document: the app shell's fixed-height frame does not apply */
+html.static-page,
+html.static-page body,
+html.static-page .insight-page {
+  height: auto;
+  overflow: visible;
+}
+
+.insight-brand {
+  color: inherit;
+}
+
+.insight-brand,
+.insight-cta .btn-primary {
+  text-decoration: none;
+}
+
+.insight-gloss,
+.insight-byline {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
 .insight-brand-name {
   font-family: var(--font-display);
   font-size: var(--font-size-lg);
