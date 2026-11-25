@@ -15,7 +15,7 @@ export const questions: AssessmentQuestion[] = [
   {
     id: "q01",
     optionA: { text: "In meetings, I push to get to a decision", dimension: "D", weight: 1 },
-    optionB: { text: "In meetings, I make sure everyone's had their say before we decide", dimension: "I", weight: 1 },
+    optionB: { text: "In meetings, I get people excited about the idea before we decide", dimension: "I", weight: 1 },
   },
   {
     id: "q02",
