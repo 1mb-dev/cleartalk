@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import type { CoachingCard as CoachingCardType, DiscType, JournalEntry, Opener } from '../engine/types.ts';
 import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
-import { formatRelativeDate } from '../lib/format.ts';
+import { formatRelativeDate, midSentence } from '../lib/format.ts';
 
 interface CoachingCardProps {
   card: CoachingCardType;
@@ -71,11 +71,6 @@ export function CoachingCardView({ card, yourSource, onCheckStyle, lastNote }: C
       <ShareButton card={card} />
     </div>
   );
-}
-
-/** "Today" and "Yesterday" follow a comma; dates like "Mar 10" keep their capital. */
-function midSentence(when: string): string {
-  return when === 'Today' || when === 'Yesterday' ? when.toLowerCase() : when;
 }
 
 function Section({ title, content }: { title: string; content: string }) {

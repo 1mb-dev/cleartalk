@@ -26,43 +26,21 @@ export function Layout({ children }: LayoutProps) {
     navigate(() => setLocation(path));
   }
 
-  function handleKeyDown(e: KeyboardEvent, index: number) {
-    let next = index;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-      next = (index + 1) % tabs.length;
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-      next = (index - 1 + tabs.length) % tabs.length;
-    } else if (e.key === 'Home') {
-      next = 0;
-    } else if (e.key === 'End') {
-      next = tabs.length - 1;
-    } else {
-      return;
-    }
-    e.preventDefault();
-    const btn = document.querySelector(`[data-tab-index="${next}"]`) as HTMLButtonElement | null;
-    btn?.focus();
-    btn?.click();
-  }
-
   return (
     <div class="app-layout">
       <main id="main" class="app-content">
         {children}
       </main>
-      <nav class="tab-bar" role="tablist" aria-label="Main navigation">
-        {tabs.map((tab, i) => {
+      <nav class="tab-bar" aria-label="Main navigation">
+        {tabs.map((tab) => {
           const active = isActive(tab.path);
           return (
             <button
               key={tab.path}
-              role="tab"
-              aria-selected={active}
-              tabIndex={active ? 0 : -1}
-              data-tab-index={i}
+              type="button"
+              aria-current={active ? 'page' : undefined}
               class={`tab-item${active ? ' tab-active' : ''}`}
               onClick={() => handleTabClick(tab.path)}
-              onKeyDown={(e) => handleKeyDown(e, i)}
             >
               <tab.icon active={active} />
               <span class="tab-label">{tab.label}</span>

@@ -4,6 +4,7 @@ import { scoreAssessment } from '../engine/assessment.ts';
 import { DiscWheel } from './disc-wheel.tsx';
 import { typeProfiles } from '../data/type-profiles.ts';
 import { saveAssessment, updateUserProfile, getOrCreateUser } from '../db/queries.ts';
+import { useAnswerGuard } from '../lib/use-answer-guard.ts';
 import type { DiscProfile } from '../engine/types.ts';
 
 interface AssessmentProps {
@@ -17,12 +18,14 @@ export function Assessment({ onComplete, onCancel }: AssessmentProps) {
   const [result, setResult] = useState<DiscProfile | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const acceptAnswer = useAnswerGuard();
 
   const total = questions.length;
   const current = questions[step];
   const progress = step / total;
 
   function selectAnswer(choice: 'a' | 'b') {
+    if (!acceptAnswer()) return;
     const updated = { ...answers, [current.id]: choice };
     setAnswers(updated);
 

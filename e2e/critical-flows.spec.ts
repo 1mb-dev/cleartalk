@@ -1,15 +1,12 @@
 import { test, expect, type Page } from '@playwright/test';
-import { waitForCard } from './helpers.ts';
+import { answerQuestions, waitForCard } from './helpers.ts';
 
 /** Add a contact via QuickTag wizard: name entry, 8 questions, confirm, save */
 async function addContact(page: Page, name: string) {
   await page.click('button:has-text("Start with someone")');
   await page.fill('.quicktag-name-input', name);
   await page.click('button:has-text("Next")');
-  for (let i = 0; i < 8; i++) {
-    await page.waitForSelector('.assessment-option');
-    await page.locator('.assessment-option').first().click();
-  }
+  await answerQuestions(page, 8);
   await page.waitForSelector('.quicktag-confirm');
   await page.click('.quicktag-confirm button:has-text("Save")');
 }
@@ -50,6 +47,55 @@ test.describe('Critical User Flows', () => {
     await page.click('.situation-btn:nth-child(2)');
     await expect(page.locator('.coaching-card .type-badge').first()).toHaveText('You: Clarity');
     await expect(page.locator('.self-pick')).toHaveCount(0);
+  });
+
+  test('a style picked on the first card can be changed on Profile', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'Repick');
+    await page.waitForSelector('.situation-btn');
+    await page.click('.situation-btn:first-child');
+    await page.click('.self-pick-option:has-text("Clarity")');
+    await expect(page.locator('.coaching-card .type-badge').first()).toHaveText('You: Clarity');
+
+    await page.click('.coaching-pick-note .link-btn');
+    await expect(page.locator('.self-pick-option[aria-pressed="true"]')).toContainText('Clarity');
+    await page.click('.self-pick-option:has-text("Steady")');
+    await expect(page.locator('.self-pick-option[aria-pressed="true"]')).toContainText('Steady');
+    await expect(page.locator('.welcome-text')).toContainText('You picked Steady for yourself.');
+
+    await page.goBack();
+    await expect(page.locator('.coaching-card .type-badge').first()).toHaveText('You: Steady');
+  });
+
+  test('a double tap answers one question, not two', async ({ page }) => {
+    await page.goto('/');
+    await page.click('button:has-text("Start with someone")');
+    await page.fill('.quicktag-name-input', 'DoubleTap');
+    await page.click('button:has-text("Next")');
+    await expect(page.locator('.assessment-count')).toHaveText('1/8');
+
+    // The second tap lands on the next question's option, well inside a double tap's interval.
+    const option = page.locator('.assessment-option').first();
+    await option.click();
+    await option.click();
+    await page.waitForTimeout(300);
+    await expect(page.locator('.assessment-count')).toHaveText('2/8');
+  });
+
+  test('the first card takes focus to its heading', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('h1');
+    await addContact(page, 'FocusTest');
+    await page.waitForSelector('.situation-btn');
+
+    await page.click('.situation-btn:first-child');
+    await expect(page.locator('.self-pick')).toBeVisible();
+    await expect(page.locator('#main h1')).toBeFocused();
+
+    await page.click('.self-pick-option:has-text("Steady")');
+    await expect(page.locator('.coaching-card')).toBeVisible();
+    await expect(page.locator('#main h1')).toBeFocused();
   });
 
   test('a new coach route shows Loading, not the previous route\'s data', async ({ page }) => {
@@ -101,7 +147,7 @@ test.describe('Critical User Flows', () => {
       };
     });
 
-    await page.click('[role="tab"]:has-text("Coach")');
+    await page.click('.tab-item:has-text("Coach")');
     await expect(page.locator('.contact-pick-card:has-text("FailTest")')).toBeVisible();
     expect(await page.evaluate(() => (window as unknown as { errorAfterNav?: boolean }).errorAfterNav)).toBe(false);
   });
@@ -120,7 +166,7 @@ test.describe('Critical User Flows', () => {
     await page.click('button:has-text("Log it")');
     await page.waitForSelector('text=Saved');
 
-    await page.click('[role="tab"]:has-text("Coach")');
+    await page.click('.tab-item:has-text("Coach")');
     await page.click('.contact-pick-card:has-text("NoteTest")');
     await page.click('.situation-btn:nth-child(2)');
     await waitForCard(page);
@@ -128,7 +174,7 @@ test.describe('Critical User Flows', () => {
     await expect(page.locator('.coaching-last-note-meta')).toHaveText('Give Feedback, today');
 
     // Rated 4, so Profile lists it under what worked, in the reader's own words.
-    await page.click('[role="tab"]:has-text("Profile")');
+    await page.click('.tab-item:has-text("Profile")');
     await expect(page.locator('.patterns-notes h3')).toHaveText(['What worked']);
     await expect(page.locator('.patterns-note')).toHaveText(['Went better when I asked first.']);
   });
@@ -153,7 +199,7 @@ test.describe('Critical User Flows', () => {
       exportedAt: '2026-11-25T00:00:00.000Z',
     };
 
-    await page.click('[role="tab"]:has-text("Profile")');
+    await page.click('.tab-item:has-text("Profile")');
     const chooser = page.waitForEvent('filechooser');
     await page.click('button:has-text("Choose file")');
     await (await chooser).setFiles({ name: 'export.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(file)) });
@@ -161,7 +207,14 @@ test.describe('Critical User Flows', () => {
       "Added or updated 1 person and 1 conversation. Skipped 2 that couldn't be used. Your data is safe.",
     );
 
-    await page.click('[role="tab"]:has-text("People")');
+    // The same records again change nothing, and the message says so instead of counting zeros.
+    const again = { ...file, contacts: file.contacts.slice(0, 1), journal: file.journal.slice(0, 1) };
+    const chooser2 = page.waitForEvent('filechooser');
+    await page.click('button:has-text("Choose file")');
+    await (await chooser2).setFiles({ name: 'export.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(again)) });
+    await expect(page.locator('.setting-status')).toHaveText('Nothing new in that file. Everything in it is already here.');
+
+    await page.click('.tab-item:has-text("People")');
     await expect(page.locator('.people-card')).toHaveCount(2);
     await expect(page.locator('.people-card:has-text("Kept")')).toBeVisible();
     await expect(page.locator('.people-card:has-text("Imported")')).toBeVisible();
@@ -225,7 +278,7 @@ test.describe('Critical User Flows', () => {
     await addContact(page, 'LogTest');
 
     await page.waitForSelector('.situation-btn');
-    await page.click('[role="tab"]:has-text("Log")');
+    await page.click('.tab-item:has-text("Log")');
     await page.waitForSelector('#log-contact');
 
     await page.selectOption('#log-contact', { index: 1 });
@@ -242,7 +295,7 @@ test.describe('Critical User Flows', () => {
     await addContact(page, 'PeopleCheck');
 
     await page.waitForSelector('.situation-btn');
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
 
     await expect(page.locator('.people-card-name')).toContainText('PeopleCheck');
@@ -254,7 +307,7 @@ test.describe('Critical User Flows', () => {
     await addContact(page, 'DetailTest');
 
     await page.waitForSelector('.situation-btn');
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
     await page.click('.people-card');
 
@@ -269,7 +322,7 @@ test.describe('Critical User Flows', () => {
     await addContact(page, 'OldName');
 
     await page.waitForSelector('.situation-btn');
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
     await page.click('.people-card');
 
@@ -289,7 +342,7 @@ test.describe('Critical User Flows', () => {
     await addContact(page, 'DeleteMe');
 
     await page.waitForSelector('.situation-btn');
-    await page.click('[role="tab"]:has-text("People")');
+    await page.click('.tab-item:has-text("People")');
     await page.waitForSelector('.people-card');
     await page.click('.people-card');
 
@@ -327,7 +380,7 @@ test.describe('Critical User Flows', () => {
     await page.goto('/insight/d-to-d/feedback/');
     await expect(page.locator('.insight-gloss')).toHaveText('Both Drive: each of you gets to the point and decides fast.');
     const links = page.locator('.insight-cta a:not(.btn-primary)');
-    await expect(links).toHaveText(['Influence', 'Steady', 'Clarity']);
+    await expect(links.locator('strong')).toHaveText(['Influence', 'Steady', 'Clarity']);
     await links.nth(1).click();
     await expect(page).toHaveURL(/\/insight\/s-to-d\/feedback\/$/);
     await expect(page.locator('.type-badge').first()).toHaveText('You: Steady');

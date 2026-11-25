@@ -6,9 +6,11 @@ const ORDER: DiscType[] = ['D', 'I', 'S', 'C'];
 
 interface SelfPickProps {
   onPick: (type: DiscType) => void;
+  /** The reader's current pick, marked so they can change it. */
+  current?: DiscType;
 }
 
-export function SelfPick({ onPick }: SelfPickProps) {
+export function SelfPick({ onPick, current }: SelfPickProps) {
   return (
     <section class="self-pick" aria-labelledby="self-pick-title">
       <h2 id="self-pick-title">Which is closer to you?</h2>
@@ -19,8 +21,9 @@ export function SelfPick({ onPick }: SelfPickProps) {
         {ORDER.map(t => (
           <button
             key={t}
-            class="assessment-option self-pick-option"
+            class={`assessment-option self-pick-option${t === current ? ' selected' : ''}`}
             type="button"
+            aria-pressed={current ? t === current : undefined}
             onClick={() => onPick(t)}
           >
             <span class="self-pick-name">{DISC_LABELS[t]}</span>

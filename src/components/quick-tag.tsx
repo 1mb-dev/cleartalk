@@ -4,6 +4,7 @@ import { typeFromObservations } from '../engine/typing.ts';
 import { addContact } from '../db/queries.ts';
 import { DISC_LABELS } from '../engine/types.ts';
 import { STYLE_LINES } from '../data/style-lines.ts';
+import { useAnswerGuard } from '../lib/use-answer-guard.ts';
 import type { DiscProfile, Contact } from '../engine/types.ts';
 
 interface QuickTagProps {
@@ -17,6 +18,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
   const [answers, setAnswers] = useState<Record<string, 'a' | 'b'>>({});
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const acceptAnswer = useAnswerGuard();
 
   const total = observations.length;
 
@@ -28,6 +30,7 @@ export function QuickTag({ onComplete, onCancel }: QuickTagProps) {
   const [pendingResult, setPendingResult] = useState<{ profile: DiscProfile; confidence: Contact['confidence'] } | null>(null);
 
   function selectAnswer(choice: 'a' | 'b') {
+    if (!acceptAnswer()) return;
     const obs = observations[step];
     const updated = { ...answers, [obs.id]: choice };
     setAnswers(updated);

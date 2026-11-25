@@ -67,7 +67,7 @@ function page(card, key) {
     ? `Both ${DISC_LABELS[you]}: each of you ${STYLE_LINES[you].other}.`
     : `${DISC_LABELS[you]}: ${STYLE_LINES[you].other}. ${DISC_LABELS[them]}: ${STYLE_LINES[them].other}.`;
   const others = STYLES.filter((s) => s !== you).map((s) =>
-    `<li><a href="/insight/${s.toLowerCase()}-to-${them.toLowerCase()}/${card.situation}/">${DISC_LABELS[s]}</a>: ${esc(STYLE_LINES[s].self)}</li>`);
+    `<li><a href="/insight/${s.toLowerCase()}-to-${them.toLowerCase()}/${card.situation}/"><strong>${DISC_LABELS[s]}</strong>: ${esc(STYLE_LINES[s].self)}</a></li>`);
 
   return `<!doctype html>
 <html lang="en" class="static-page">

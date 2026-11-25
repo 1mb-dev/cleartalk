@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useParams, useLocation } from 'wouter';
 import { StyleLine } from '../components/style-line.tsx';
+import { OUTCOME_LABELS } from '../components/outcome-input.tsx';
 import { getContact, deleteContact, updateContact, getJournalForContact } from '../db/queries.ts';
 import { sanitizeName } from '../lib/sanitize.ts';
 import { SITUATION_LABELS } from '../engine/types.ts';
@@ -166,7 +167,7 @@ export function PersonDetail() {
             {entries.slice(0, 5).map(e => (
               <div key={e.id} class="journal-entry">
                 <span class={`outcome-dot outcome-${e.outcome}`} aria-hidden="true" />
-                <span class="sr-only">Outcome: {e.outcome} of 5</span>
+                <span class="sr-only">Outcome: {OUTCOME_LABELS[e.outcome - 1]}</span>
                 <div class="journal-entry-content">
                   <span class="journal-situation">{SITUATION_LABELS[e.situationType]}</span>
                   {e.note && <span class="journal-note">{e.note}</span>}

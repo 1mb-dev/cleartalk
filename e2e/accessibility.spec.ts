@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 
+/** Safari's plain Tab reaches only text fields unless the reader turns on Full Keyboard Access. */
+const tabKey = (browserName: string) => (browserName === 'webkit' ? 'Alt+Tab' : 'Tab');
+
 test.describe('Accessibility', () => {
   test('has skip-to-content link', async ({ page }) => {
     await page.goto('/');
@@ -29,42 +32,33 @@ test.describe('Accessibility', () => {
     expect(h1s).toBe(1);
   });
 
-  test('tab bar has proper ARIA roles', async ({ page }) => {
+  test('tab bar is a labelled navigation landmark that marks the current page', async ({ page }) => {
     await page.goto('/');
-    await page.waitForSelector('[role="tablist"]');
-    const tablist = page.locator('[role="tablist"]');
-    await expect(tablist).toHaveAttribute('aria-label', 'Main navigation');
-
-    const tabs = page.locator('[role="tab"]');
-    const count = await tabs.count();
-    expect(count).toBe(4);
-
-    // Active tab has aria-selected
-    const active = page.locator('[role="tab"][aria-selected="true"]');
-    await expect(active).toBeAttached();
+    const nav = page.getByRole('navigation', { name: 'Main navigation' });
+    await expect(nav.getByRole('button')).toHaveCount(4);
+    await expect(nav.locator('[aria-current="page"]')).toHaveText(/Coach/);
+    await expect(page.locator('[role="tablist"], [role="tab"]')).toHaveCount(0);
   });
 
-  test('tab bar keyboard navigation works', async ({ page }) => {
+  test('tab bar keyboard navigation works', async ({ page, browserName }) => {
     await page.goto('/');
-    await page.waitForSelector('[role="tab"]');
+    await page.locator('.tab-item:has-text("Coach")').focus();
 
-    // Focus the active tab
-    const activeTab = page.locator('[role="tab"][aria-selected="true"]');
-    await activeTab.focus();
-
-    // Arrow right should move to next tab
-    await page.keyboard.press('ArrowRight');
-    const focused = page.locator('[role="tab"]:focus');
-    await expect(focused).toBeAttached();
+    // Every item is in the Tab order, and Enter opens it.
+    await page.keyboard.press(tabKey(browserName));
+    await expect(page.locator('.tab-item:has-text("People")')).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL('/people');
+    await expect(page.locator('.tab-item[aria-current="page"]')).toHaveText(/People/);
   });
 
-  test('focus indicators are visible', async ({ page }) => {
+  test('focus indicators are visible', async ({ page, browserName }) => {
     await page.goto('/');
     await page.waitForSelector('button');
 
     // Tab through to reach a button (skip link + button)
     for (let i = 0; i < 3; i++) {
-      await page.keyboard.press('Tab');
+      await page.keyboard.press(tabKey(browserName));
     }
 
     // Check that something has focus (either :focus-visible or :focus)

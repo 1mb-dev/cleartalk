@@ -373,9 +373,12 @@
   transition: border-color var(--transition-fast), background var(--transition-fast);
 }
 
-.assessment-option:hover {
-  border-color: var(--color-accent);
-  background: var(--color-accent-subtle);
+/* A touch screen keeps :hover on the last tapped spot, where the next question's option renders */
+@media (hover: hover) {
+  .assessment-option:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-subtle);
+  }
 }
 
 .assessment-option:active {
@@ -717,6 +720,11 @@
   font-weight: 600;
 }
 
+.profile-pick {
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--color-border);
+}
+
 /* Coach-to-log bridge */
 .coach-log-bridge {
   display: flex;
@@ -882,6 +890,9 @@
 }
 
 .link-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
   color: var(--color-accent);
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -1286,6 +1297,11 @@
   transition: all var(--transition-fast);
 }
 
+.outcome-option input:focus-visible + .outcome-circle {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .outcome-option.selected .outcome-circle {
   border-color: transparent;
   transform: scale(1.08);
@@ -1499,7 +1515,7 @@
   min-height: var(--touch-min);
   padding: var(--space-3) var(--space-6);
   background: var(--color-error);
-  color: #fff;
+  color: var(--color-bg);
   font-weight: 600;
   font-size: var(--font-size-base);
   border-radius: var(--radius);
@@ -1534,6 +1550,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  min-height: var(--touch-min);
   padding-bottom: var(--space-2);
 }
 
@@ -1588,17 +1605,23 @@ html.static-page .insight-page {
   color: var(--color-text-muted);
 }
 
-/* axe link-in-text-block: a link inside a sentence needs more than color */
 .insight-siblings {
   list-style: none;
   padding: 0;
 }
 
+/* The whole row is the link, so a wrapped line keeps its line height and the target its size */
 .insight-siblings a {
-  display: inline-block;
-  min-height: 44px;
-  line-height: 44px;
+  display: block;
+  padding-block: 10px;
+  line-height: var(--line-height-body);
+  color: inherit;
+  text-decoration: none;
+}
+
+.insight-siblings strong {
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Error boundary */

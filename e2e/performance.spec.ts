@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { waitForCard } from './helpers.ts';
+import { answerQuestions, waitForCard } from './helpers.ts';
 
 test.describe('Performance', () => {
   test('page loads within 3 seconds', async ({ page }) => {
@@ -43,7 +43,7 @@ test.describe('Performance', () => {
     await page.waitForSelector('h1');
     // Navigate through all tabs
     for (const tab of ['People', 'Log', 'Profile', 'Coach']) {
-      await page.click(`[role="tab"]:has-text("${tab}")`);
+      await page.click(`.tab-item:has-text("${tab}")`);
       await page.waitForSelector('h1');
     }
     expect(rejections).toHaveLength(0);
@@ -57,10 +57,7 @@ test.describe('Performance', () => {
     await page.click('button:has-text("Start with someone")');
     await page.fill('.quicktag-name-input', 'LazyTest');
     await page.click('button:has-text("Next")');
-    for (let i = 0; i < 8; i++) {
-      await page.waitForSelector('.assessment-option');
-      await page.locator('.assessment-option').first().click();
-    }
+    await answerQuestions(page, 8);
 
     // Confirm QuickTag result
     await page.waitForSelector('.quicktag-confirm');

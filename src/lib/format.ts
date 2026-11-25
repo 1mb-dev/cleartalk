@@ -11,3 +11,8 @@ export function formatRelativeDate(ts: number): string {
   if (days < 7) return `${days}d ago`;
   return d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
 }
+
+/** "Today" and "Yesterday" after a comma; dates like "Mar 10" keep their capital. */
+export function midSentence(when: string): string {
+  return when === 'Today' || when === 'Yesterday' ? when.toLowerCase() : when;
+}

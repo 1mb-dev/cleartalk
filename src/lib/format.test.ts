@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { formatRelativeDate } from './format.ts';
+import { formatRelativeDate, midSentence } from './format.ts';
 
 describe('formatRelativeDate', () => {
   afterEach(() => {
@@ -60,5 +60,14 @@ describe('formatRelativeDate', () => {
     vi.setSystemTime(new Date('2026-03-24T09:00:00'));
     expect(formatRelativeDate(new Date('2026-03-23T23:00:00').getTime())).toBe('Yesterday');
     expect(formatRelativeDate(new Date('2026-03-22T23:30:00').getTime())).toBe('2d ago');
+  });
+});
+
+describe('midSentence', () => {
+  it('lowercases the relative words and leaves dates alone', () => {
+    expect(midSentence('Today')).toBe('today');
+    expect(midSentence('Yesterday')).toBe('yesterday');
+    expect(midSentence('3d ago')).toBe('3d ago');
+    expect(midSentence('Mar 10')).toBe('Mar 10');
   });
 });

@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'preact/hooks';
 import { Assessment } from '../components/assessment.tsx';
 import { DiscWheel } from '../components/disc-wheel.tsx';
-import { getOrCreateUser, getJournalEntries, getJournalCount, getContacts } from '../db/queries.ts';
+import { getOrCreateUser, getJournalEntries, getJournalCount, getContacts, setSelfPick } from '../db/queries.ts';
+import { SelfPick } from '../components/self-pick.tsx';
 import { typeProfiles } from '../data/type-profiles.ts';
 import { findPatterns, type NotedMoment, type Patterns } from '../engine/insights.ts';
 import { exportData, downloadJson, importData, clearAllData } from '../lib/storage.ts';
 import { canInstall, isInstalled, triggerInstall, onInstallAvailable } from '../lib/install-prompt.ts';
 import { getOfflineStatus, type OfflineStatus } from '../lib/offline-ready.ts';
 import { DISC_LABELS, SITUATION_LABELS } from '../engine/types.ts';
-import { formatRelativeDate } from '../lib/format.ts';
-import type { User, DiscProfile, JournalEntry } from '../engine/types.ts';
+import { formatRelativeDate, midSentence } from '../lib/format.ts';
+import type { User, DiscProfile, DiscType, JournalEntry } from '../engine/types.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 
 export function Profile() {
@@ -63,6 +64,15 @@ export function Profile() {
     setUser(prev => prev ? { ...prev, discProfile: profile } : prev);
   }
 
+  async function handleSelfPick(type: DiscType) {
+    try {
+      await setSelfPick(type);
+      setUser(prev => prev ? { ...prev, selfPick: type } : prev);
+    } catch {
+      setError(true);
+    }
+  }
+
   function toggleTheme() {
     const next = theme === 'auto' ? 'light' : theme === 'light' ? 'dark' : 'auto';
     setTheme(next);
@@ -93,22 +103,23 @@ export function Profile() {
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
+      setImportStatus(null);
       try {
         const text = await file.text();
         const result = await importData(text);
+        const changed = result.contacts || result.entries;
         const added = `Added or updated ${result.contacts} ${result.contacts === 1 ? 'person' : 'people'} and ${result.entries} ${result.entries === 1 ? 'conversation' : 'conversations'}.`;
         setImportStatus(
           [
             result.style ? 'Restored your style.' : '',
-            result.contacts || result.entries || !result.style ? added : '',
+            changed ? added : '',
+            !result.style && !changed && !result.skipped ? 'Nothing new in that file. Everything in it is already here.' : '',
             result.skipped ? `Skipped ${result.skipped} that couldn't be used. Your data is safe.` : '',
           ].filter(Boolean).join(' '),
         );
-        setTimeout(() => setImportStatus(null), 4000);
         await loadProfile();
       } catch {
         setImportStatus('Couldn\'t import that file. Your data is safe - make sure it\'s a Cleartalk export.');
-        setTimeout(() => setImportStatus(null), 4000);
       }
     };
     input.click();
@@ -197,6 +208,12 @@ export function Profile() {
             Take the assessment
           </button>
           <p class="welcome-hint">Takes about 3 minutes. No wrong answers.</p>
+        </div>
+      )}
+
+      {!profile && user?.selfPick && (
+        <div class="profile-pick">
+          <SelfPick current={user.selfPick} onPick={handleSelfPick} />
         </div>
       )}
 
@@ -381,7 +398,7 @@ function NoteList({ title, moments }: { title: string; moments: NotedMoment[] })
         {moments.map((m, i) => (
           <li key={i}>
             <p class="patterns-note">{m.note}</p>
-            <p class="patterns-meta">{m.contactName}, {SITUATION_LABELS[m.situation]}, {formatRelativeDate(m.loggedAt)}</p>
+            <p class="patterns-meta">{m.contactName}, {SITUATION_LABELS[m.situation]}, {midSentence(formatRelativeDate(m.loggedAt))}</p>
           </li>
         ))}
       </ul>

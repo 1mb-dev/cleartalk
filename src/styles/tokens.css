@@ -110,6 +110,8 @@
     --color-disc-c: #7094b8;
     --color-disc-c-subtle: rgb(112 148 184 / 12%);
     --color-disc-c-text: #7094b8;
+
+    --color-error: #f87171;
   }
 }
 
@@ -138,4 +140,6 @@
   --color-disc-c: #7094b8;
   --color-disc-c-subtle: rgb(112 148 184 / 12%);
   --color-disc-c-text: #7094b8;
+
+  --color-error: #f87171;
 }

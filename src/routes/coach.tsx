@@ -8,7 +8,7 @@ import { DISC_LABELS, SITUATION_LABELS, isSituation, resolveYourType } from '../
 import type { Contact, CoachingCard, DiscType, JournalEntry, SituationType, User } from '../engine/types.ts';
 import { SelfPick } from '../components/self-pick.tsx';
 import { StyleLine } from '../components/style-line.tsx';
-import { navigate } from '../lib/transitions.ts';
+import { focusMainHeading, navigate } from '../lib/transitions.ts';
 import { useDocumentTitle } from '../lib/use-document-title.ts';
 import { Logo } from '../components/logo.tsx';
 import { canInstall, isInstalled, wasDismissed, triggerInstall, dismissPrompt, onInstallAvailable } from '../lib/install-prompt.ts';
@@ -34,6 +34,8 @@ export function Coach() {
   const [errorKey, setErrorKey] = useState<string | null>(null);
   const error = errorKey === routeKey;
   const [installAvailable, setInstallAvailable] = useState(canInstall() && !isInstalled() && !wasDismissed());
+  const ready = !loading && loadedKey === routeKey;
+  const settledOnce = useRef(false);
 
   const pageTitle = selectedContact && isSituation(params.situation)
     ? `${SITUATION_LABELS[params.situation]} for ${selectedContact.name} - Cleartalk`
@@ -51,6 +53,14 @@ export function Coach() {
   useEffect(() => {
     loadState();
   }, [params.contactId, params.situation]);
+
+  // The Loading screen has no h1, so a navigation's focus restore can run while it shows and find
+  // nothing, and a style pick unmounts the button that held focus. Either way focus is left on body.
+  useEffect(() => {
+    if (!ready) return;
+    if (settledOnce.current && document.activeElement === document.body) focusMainHeading();
+    settledOnce.current = true;
+  }, [ready]);
 
   async function loadState() {
     // Route changes and a style pick can start overlapping loads; only the latest may write state.

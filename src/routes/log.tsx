@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useLocation, useSearch } from 'wouter';
-import { OutcomeInput } from '../components/outcome-input.tsx';
+import { OutcomeInput, OUTCOME_LABELS } from '../components/outcome-input.tsx';
 import { getContacts, addJournalEntry, getJournalEntries } from '../db/queries.ts';
 import { DISC_LABELS, SITUATION_LABELS, isSituation } from '../engine/types.ts';
 import type { Contact, JournalEntry, SituationType } from '../engine/types.ts';
@@ -199,7 +199,7 @@ export function Log() {
               return (
                 <div key={e.id} class="journal-entry">
                   <span class={`outcome-dot outcome-${e.outcome}`} aria-hidden="true" />
-                  <span class="sr-only">Outcome: {e.outcome} of 5</span>
+                  <span class="sr-only">Outcome: {OUTCOME_LABELS[e.outcome - 1]}</span>
                   <div class="journal-entry-content">
                     <span class="journal-person">
                       {contact?.name ?? 'Unknown'}
